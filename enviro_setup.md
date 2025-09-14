@@ -22,11 +22,11 @@ source venv/bin/activate
 # Install Django + REST + PostgreSQL driver (WHILE INSIDE THE VENV)
 pip install django djangorestframework psycopg2-binary
 
-# Create Django project
+# Create Django project (while in the /backend folder)
 django-admin startproject backend
 cd backend
 
-# Run migrations + test
+# Run migrations + test (while in the /backend folder)
 python manage.py migrate
 python manage.py runserver
 👉 Visit http://127.0.0.1:8000 to confirm it works.
