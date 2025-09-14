@@ -19,7 +19,7 @@ venv\Scripts\activate
 # Mac/Linux
 source venv/bin/activate
 
-# Install Django + REST + PostgreSQL driver
+# Install Django + REST + PostgreSQL driver (WHILE INSIDE THE VENV)
 pip install django djangorestframework psycopg2-binary
 
 # Create Django project
