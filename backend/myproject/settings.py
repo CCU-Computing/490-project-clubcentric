@@ -72,7 +72,19 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'myproject.wsgi.application'
-CORS_ALLOW_ALL_ORIGINS = True
+
+
+# CORS_ALLOW_ALL_ORIGINS = True
+# We should change the above line of code for security. The link below explains why:
+# https://pypi.org/project/django-cors-headers/
+#
+# The changed code would look like the following:
+# (make sure the url's have no trailing / at the end):
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+]
+
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
