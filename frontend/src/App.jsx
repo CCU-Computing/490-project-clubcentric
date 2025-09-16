@@ -15,20 +15,24 @@ function App() {
 
   return (
     <>
-      <Navbar/>
-      {/* Put all URLs in the routes block, each url gets a <Route/> */}
-      <Routes>
-        {/* To see a page with a :id in the url, add in an id parameter. For example: http://localhost:5173/edit/1 */}
-        <Route path="" element={<Home/>}/>              {/* Sets homepage as default page */}
-        <Route path="/create" element={<Create/>}/> 
-        <Route path="/edit/:id" element={<Edit/>}/>     {/* /:id specifies that a specfic record will be edited */}
-        <Route path="/delete/:id" element={<Delete/>}/> {/* /:id specifies that a specfic record will be deleted */}
-      </Routes>
+      <Navbar
+          content={
+            // Put all URLs in the routes block, each url gets a <Route/>
+            <Routes>
+              {/* To see a page with a :id in the url, add in an id parameter. For example: http://localhost:5173/edit/1 */}
+              <Route path="" element={<Home/>}/>              {/* Sets homepage as default page */}
+              <Route path="/create" element={<Create/>}/> 
+              <Route path="/edit/:id" element={<Edit/>}/>     {/* /:id specifies that a specfic record will be edited */}
+              <Route path="/delete/:id" element={<Delete/>}/> {/* /:id specifies that a specfic record will be deleted */}
+            </Routes>
+          }
+      />
+
     </>
   )  
+}
 
-
-
+export default App
 
   // const [calendars, setCalendars] = useState([])
   // const [club1Name, setclub1Name] = useState("")
@@ -116,6 +120,6 @@ function App() {
   //     </div>
   //   </div>
   // );
-}
+//}
 
-export default App
+// export default App
