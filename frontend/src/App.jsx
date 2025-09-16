@@ -9,17 +9,19 @@ import Home from './components/Home'      // Home Page
 import Create from './components/Create'  // Create Page
 import Edit from './components/Edit'      // Edit Page
 import Delete from './components/Delete'  // Delete Page
+import Navbar from './components/navbar/Navbar' // Navigation Bar
 
 function App() {
 
   return (
     <>
-    {/* Put all URLs in the routes block, each url gets a <Route/> */}
+      <Navbar/>
+      {/* Put all URLs in the routes block, each url gets a <Route/> */}
       <Routes>
         {/* To see a page with a :id in the url, add in an id parameter. For example: http://localhost:5173/edit/1 */}
-        <Route path="" element={<Home/>}/>             {/* Sets homepage as default page */}
+        <Route path="" element={<Home/>}/>              {/* Sets homepage as default page */}
         <Route path="/create" element={<Create/>}/> 
-        <Route path="/edit/:id" element={<Edit/>}/>    {/* /:id specifies that a specfic record will be edited */}
+        <Route path="/edit/:id" element={<Edit/>}/>     {/* /:id specifies that a specfic record will be edited */}
         <Route path="/delete/:id" element={<Delete/>}/> {/* /:id specifies that a specfic record will be deleted */}
       </Routes>
     </>
