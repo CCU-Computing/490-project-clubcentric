@@ -1,28 +1,6 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import Home from "./pages/Home";
-import FileInput from "./components/FileInput";
-import DocumentUploadForm from "./components/DocumentUploadForm";
-import Calendar from "./pages/Calendar";
-import './App.css'
+import { useEffect, useState } from 'react'
 
-function App() {
-  return (
-    <BrowserRouter>
-      <FileInput />
-      <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/DocumentUploadForm" element={<DocumentUploadForm />} />
-          <Route path="/Calendar" element={<Calendar />} />
-      </Routes>
-    </BrowserRouter>
-  )
-}
-export default App;
-
-
-/**
- * 
-function App() {
+function Calendar() {
   const [calendars, setCalendars] = useState([])
   const [club1Name, setclub1Name] = useState("")
   const [club2Name, setclub2Name] = useState("")
@@ -111,9 +89,4 @@ function App() {
   );
 }
 
-export default App
-
- * 
- * 
- * 
- */
+export default Calendar;
