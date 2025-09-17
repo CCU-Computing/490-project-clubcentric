@@ -6,6 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Menu from './Menu';
+import logo from '../../assets/Chants_Logo.png';
 
 
 const drawerWidth = 240;
@@ -16,8 +17,9 @@ export default function Navbar({content}) {
       <CssBaseline />
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
-          <Typography variant="h6" noWrap component="div">
-            Clipped drawer
+          <img width='20%' height= '20%' src={logo}/>
+          <Typography variant="h" noWrap component="div">
+            Coastal Carolina University
           </Typography>
         </Toolbar>
       </AppBar>

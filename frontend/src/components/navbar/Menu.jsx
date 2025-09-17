@@ -12,6 +12,7 @@ import Groups2Icon from '@mui/icons-material/Groups2';
 import CelebrationIcon from '@mui/icons-material/Celebration';
 import {Link, useLocation} from 'react-router';
 
+
 export default function Menu() {
   const [open, setOpen] = React.useState(true);
 
