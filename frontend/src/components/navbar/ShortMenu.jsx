@@ -30,11 +30,7 @@ export default function ShortMenu() {
       sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
       component="nav"
       aria-labelledby="nested-list-subheader"
-      subheader={
-        <ListSubheader component="div" id="nested-list-subheader">
-          Coastal Carolina Organizations
-        </ListSubheader>
-      }
+
     >
 
       {/* The link logic below goes to the homepage */}
@@ -42,52 +38,20 @@ export default function ShortMenu() {
         <ListItemIcon>
           <Groups2Icon />
         </ListItemIcon>
-        <ListItemText primary="Organizations" />
-        {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
-
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-            
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <StarBorder />
-            </ListItemIcon>
-            <ListItemText primary="Student Organizations" />
-          </ListItemButton>
-
-          
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <StarBorder />
-            </ListItemIcon>
-            <ListItemText primary="Department Organizations" />
-          </ListItemButton>
-
-        </List>
-      </Collapse>
-    </List>
-    <List
-      sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-      component="nav"
-      aria-labelledby="nested-list-subheader"
-      subheader={
-        <ListSubheader component="div" id="nested-list-subheader">
-          Club Actions
-        </ListSubheader>
-      }
-    >
-
 
       <ListItemButton component={Link} to='/create'  selected={path === '/create'}>
           <ListItemIcon>
               <CelebrationIcon />
           </ListItemIcon>
         <ListItemText primary="Create a Club" />
-        
       </ListItemButton>
 
-      {/* FIXME: Make it so this button works, edit/delete need a parameter */}
+    </List>
+
+   
+      {/* FIXME: Make it so this button works, edit/delete need a parameter 
+                 Maybe add this to the list element above when it works?*/}
       {/* <ListItemButton>
           <ListItemIcon>
               <CelebrationIcon />
@@ -103,7 +67,7 @@ export default function ShortMenu() {
       </ListItemButton> */}
 
       
-    </List>
+    
     </>
   );
 }
