@@ -6,7 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Menu from './Menu';
-import logo from '../../assets/Chants_Logo.png';
+import logo from '../../assets/images/Chants_Logo.png';
 
 
 const drawerWidth = 240;
