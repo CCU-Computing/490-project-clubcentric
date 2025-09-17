@@ -17,7 +17,7 @@ export default function Navbar({content}) {
       <CssBaseline />
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
-          <img width='20%' height= '20%' src={logo}/>
+          <img width='8%' height= '8%' src={logo}/>
           <Typography variant="h" noWrap component="div">
             Coastal Carolina University
           </Typography>

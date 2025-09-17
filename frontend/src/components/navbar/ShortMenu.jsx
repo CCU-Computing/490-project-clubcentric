@@ -66,8 +66,6 @@ export default function ShortMenu() {
         <ListItemText primary="Delete a Club" />
       </ListItemButton> */}
 
-      
-    
     </>
   );
 }
