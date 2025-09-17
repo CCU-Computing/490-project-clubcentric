@@ -1,0 +1,5 @@
+/* Anything in this file styles the ENTIRE App.jsx. */
+
+.Mui-selected {
+    background-color: lightseagreen !important;
+}
