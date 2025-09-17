@@ -10,6 +10,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarBorder from '@mui/icons-material/StarBorder';
 import Groups2Icon from '@mui/icons-material/Groups2';
+import CelebrationIcon from '@mui/icons-material/Celebration';
 
 export default function Menu() {
   const [open, setOpen] = React.useState(true);
@@ -19,6 +20,7 @@ export default function Menu() {
   };
 
   return (
+    <>
     <List
       sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
       component="nav"
@@ -60,5 +62,36 @@ export default function Menu() {
         </List>
       </Collapse>
     </List>
+    <List
+      sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+      component="nav"
+      aria-labelledby="nested-list-subheader"
+      subheader={
+        <ListSubheader component="div" id="nested-list-subheader">
+          Upcoming Events
+        </ListSubheader>
+      }
+    >
+
+
+      <ListItemButton>
+          <ListItemIcon>
+              <CelebrationIcon />
+          </ListItemIcon>
+        <ListItemText primary="Social Events" />
+        
+      </ListItemButton>
+
+            <ListItemButton>
+          <ListItemIcon>
+              <CelebrationIcon />
+          </ListItemIcon>
+        <ListItemText primary="Coastal Sports" />
+        
+      </ListItemButton>
+
+      
+    </List>
+    </>
   );
 }
