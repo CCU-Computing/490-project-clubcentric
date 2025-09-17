@@ -10,6 +10,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarBorder from '@mui/icons-material/StarBorder';
 import Groups2Icon from '@mui/icons-material/Groups2';
 import CelebrationIcon from '@mui/icons-material/Celebration';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import {Link, useLocation} from 'react-router';
 
 
@@ -67,6 +68,16 @@ export default function Menu() {
         </List>
       </Collapse>
     </List>
+            <List component="div" disablePadding>
+            
+          <ListItemButton sx={{ pl: 4 }}>
+            <ListItemIcon>
+              <CalendarMonthIcon />
+            </ListItemIcon>
+            <ListItemText primary="Calendar" />
+          </ListItemButton>
+
+        </List>
     <List
       sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
       component="nav"
