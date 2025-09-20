@@ -1,24 +1,15 @@
 import * as React from 'react';
-import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Collapse from '@mui/material/Collapse';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import StarBorder from '@mui/icons-material/StarBorder';
-import Groups2Icon from '@mui/icons-material/Groups2';
 import CelebrationIcon from '@mui/icons-material/Celebration';
+import Groups2Icon from '@mui/icons-material/Groups2';
 import {Link, useLocation} from 'react-router';
+import { justifyContent } from '@mui/system';
 
 
 export default function ShortMenu() {
-  const [open, setOpen] = React.useState(true);
 
-  const handleClick = () => {
-    setOpen(!open);
-  };
 
   const location = useLocation()
   const path = location.pathname
@@ -33,25 +24,26 @@ export default function ShortMenu() {
 
     >
 
-      {/* The link logic below goes to the homepage */}
-      <ListItemButton onClick={handleClick} component={Link} to='/' selected={path === '/'}> 
-        <ListItemIcon>
+      {/* This is the code for the Menu buttons on the NavBar when the menu is collapsed. */}
+      {/* FIXME: Maybe add this -->   inside the 
+          <ListItemButton> tag after selected statement. I couldn't get it to work -Lauren*/}
+      <ListItemButton component={Link} to='/' selected={path === '/'} sx={{display:'flex', justifyContent:'center'}}>  
+        <ListItemIcon sx={{display:'flex', justifyContent:'center'}}>
           <Groups2Icon />
         </ListItemIcon>
       </ListItemButton>
 
-      <ListItemButton component={Link} to='/create'  selected={path === '/create'}>
-          <ListItemIcon>
+      <ListItemButton component={Link} to='/create'  selected={path === '/create'} sx={{display:'flex', justifyContent:'center'}}>
+          <ListItemIcon sx={{display:'flex', justifyContent:'center'}}>
               <CelebrationIcon />
           </ListItemIcon>
-        <ListItemText primary="Create a Club" />
       </ListItemButton>
 
     </List>
 
    
       {/* FIXME: Make it so this button works, edit/delete need a parameter 
-                 Maybe add this to the list element above when it works?*/}
+                 Maybe add this to the list element above when it works*/}
       {/* <ListItemButton>
           <ListItemIcon>
               <CelebrationIcon />
