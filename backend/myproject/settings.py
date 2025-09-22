@@ -49,12 +49,13 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'myproject.urls'
@@ -75,7 +76,19 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'myproject.wsgi.application'
-CORS_ALLOW_ALL_ORIGINS = True
+
+
+# CORS_ALLOW_ALL_ORIGINS = True
+# We should change the above line of code for security. The link below explains why:
+# https://pypi.org/project/django-cors-headers/
+#
+# The changed code would look like the following:
+# (make sure the url's have no trailing / at the end):
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+]
+
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
