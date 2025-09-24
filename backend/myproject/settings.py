@@ -42,8 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',       # For API endpoints
     'corsheaders',          # To allow React frontend requests
-    'Club',
-    'docs',
+    'club.apps.ClubConfig',
+    'documents.apps.DocsConfig',
+    'calendar.apps.CalendarConfig',
 ]
 
 MIDDLEWARE = [

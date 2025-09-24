@@ -1,18 +1,12 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Home from "./pages/Home";
-import FileInput from "./components/FileInput";
-import DocumentUploadForm from "./components/DocumentUploadForm";
-import Calendar from "./pages/Calendar";
 import './App.css'
 
 function App() {
   return (
     <BrowserRouter>
-      <FileInput />
       <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/DocumentUploadForm" element={<DocumentUploadForm />} />
-          <Route path="/Calendar" element={<Calendar />} />
       </Routes>
     </BrowserRouter>
   )
@@ -21,6 +15,10 @@ export default App;
 
 
 /**
+ * 
+ * <Route path="/DocumentUploadForm" element={<DocumentUploadForm />} />
+          <Route path="/Calendar" element={<Calendar />} />
+ * 
  * 
 function App() {
   const [calendars, setCalendars] = useState([])

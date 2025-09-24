@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Calendar() {
   const [calendars, setCalendars] = useState([])
   const [club1Name, setclub1Name] = useState("")
   const [club2Name, setclub2Name] = useState("")
-
+  
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/calendar/listCalendars/")
+    fetch(`${API_URL}/api/Calendar/listCalendars/`)
     .then((res) => res.json())
     .then((data) => setCalendars(data))
     .catch((err) => console.error("Error fetching calendars:", err));
@@ -19,7 +21,7 @@ function Calendar() {
     }
 
     // Send POST to Django API
-    fetch("http://127.0.0.1:8000/api/calendar/merge_clubs/", {
+    fetch(`${API_URL}/api/Calendar/listCalendars/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -30,6 +32,7 @@ function Calendar() {
       .then((data) => {
         alert(`Merged club created: ${data.new_club_name}`);
         console.log("Merged meetings:", data.meetings);
+        console.log("API URL is:", import.meta.env.VITE_API_URL);
         // Optionally add the new club to your state so it renders immediately
         setCalendars((prevClubs) => [
           ...prevClubs,

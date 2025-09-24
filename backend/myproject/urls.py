@@ -19,15 +19,24 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
-from docs.views import DocumentViewSet
+
+from documents.views import DocumentViewSet
+from calendar.views import meetings_list, create_meeting
+from club.views import create_club
 
 router = DefaultRouter()
-router.register(r'documents', DocumentViewSet)
+router.register(r'documents', DocumentViewSet, basename='document')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/calendar/', include('Club.urls')),
-    path('api/', include(router.urls))
+    # Club endpoints
+    path('api/club/create/', create_club, name='create-club'),
+    # Meeting endpoints
+    path('api/meetings/', meetings_list, name='meetings-list'),
+    path('api/meetings/create/', create_meeting, name='create-meeting'),
+    path('api/calendars/', include('calendars.urls')),
+    # Documents via DRF router
+    path('api/', include(router.urls)),
 ]
 
 if settings.DEBUG:
