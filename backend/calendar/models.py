@@ -1,7 +1,10 @@
 from django.db import models
+from club.models import Club
 
 class Calendar(models.Model):
-    club = models.OneToOneField("club.Club", on_delete=models.CASCADE, related_name="calendar")
+    name = models.CharField(max_length=50)
+    
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="calendars")
 
     def __str__(self):
         return f"{self.club.name}"

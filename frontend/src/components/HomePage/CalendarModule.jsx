@@ -19,6 +19,19 @@ export default function CalendarModule({ clubId }) {
 
     fetchCalendar();
     }, [clubId]);
+  const addMeeting = async () => {
+    if (!newDate) return;
+
+    try {
+        const res = await calendarService.addMeeting(clubId, newDate);
+        setMeetings(prev => [...prev, res.data]); // append new meeting
+        setNewDate(""); // clear input
+    } catch (err) {
+        console.error(err);
+    }
+    };
+
+
   return (
     <div>
       <h3>Calendar</h3>
