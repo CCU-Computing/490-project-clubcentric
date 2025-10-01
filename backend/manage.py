@@ -2,7 +2,13 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+import environ
 
+# init environment
+env = environ.Env(
+    DEBUG=(bool, False)  # default value for DEBUG
+)
+env.read_env()
 
 def main():
     """Run administrative tasks."""

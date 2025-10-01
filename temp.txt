@@ -1,0 +1,35 @@
+// pages/Home.jsx
+import { useState } from "react";
+
+// Import components
+import ClubForm from "../components/HomePage/ClubForm";
+import CalendarModule from "../components/HomePage/CalendarModule";
+import DocumentModule from "../components/HomePage/DocumentModule";
+
+export function None() {
+  // Store the current club after creation
+  const [club, setClub] = useState(null);
+
+  return (
+    <div>
+      <h1>Club Dashboard</h1>
+
+      {/* If no club yet, show the form */}
+      {!club && (
+        <ClubForm
+          onCreate={(newClub) => setClub(newClub)} // callback to update state
+        />
+      )}
+
+      {/* Once club is created, show calendar and documents */}
+      {club && (
+        <div>
+          <h2>{club.name}</h2>
+
+          <CalendarModule clubId={club.slug_id} />
+          <DocumentModule clubId={club.slug_id} />
+        </div>
+      )}
+    </div>
+  );
+}
