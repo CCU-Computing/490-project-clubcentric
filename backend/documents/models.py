@@ -1,25 +1,17 @@
 from django.db import models
-
+from club.models import Club
 class DocumentManager(models.Model):
-    club = models.OneToOneField("club.Club", on_delete=models.CASCADE, related_name="document_manager")
+    name = models.CharField(max_length=50)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="document_managers")
 
     def __str__(self):
-        return f"{self.club.name} documents"
-
-
-
-def document_upload_path(instance, filename):
-    club_name = instance.document_manager.club.name.replace(" ", "_")
-    return f"{club_name}/documents/{filename}"
+        return f"{self.name} for {self.club.name}"
 
 class Document(models.Model):
     title = models.CharField(max_length=200)
-    document_manager = models.ForeignKey("documents.DocumentManager", on_delete=models.CASCADE, related_name="documents")
-    # File itself
-    file = models.FileField(upload_to=document_upload_path)
-    # Track the file
+    file = models.FileField()
     uploaded_at = models.DateTimeField(auto_now_add=True)
-
+    document_manager = models.ForeignKey(DocumentManager, on_delete=models.CASCADE, related_name="documents")
 
     def __str__(self):
         return self.title

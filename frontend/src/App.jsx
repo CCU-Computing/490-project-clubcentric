@@ -1,117 +1,29 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import './App.css'
+import ClubPage from "./pages/ClubPage";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-          <Route path="/" element={<Home />} />
-      </Routes>
-    </BrowserRouter>
-  )
-}
-export default App;
+    <Router>
+      {/* You can style this wrapper */}
+      <div className="min-h-screen flex flex-col">
+        <header className="bg-gray-800 text-white p-4">
+          <h1 className="text-xl font-bold">ClubCentric</h1>
+        </header>
 
+        <main className="flex-1 container mx-auto p-4">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/club/:id" element={<ClubPage />} />
+          </Routes>
+        </main>
 
-/**
- * 
- * <Route path="/DocumentUploadForm" element={<DocumentUploadForm />} />
-          <Route path="/Calendar" element={<Calendar />} />
- * 
- * 
-function App() {
-  const [calendars, setCalendars] = useState([])
-  const [club1Name, setclub1Name] = useState("")
-  const [club2Name, setclub2Name] = useState("")
-
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/calendar/listCalendars/")
-    .then((res) => res.json())
-    .then((data) => setCalendars(data))
-    .catch((err) => console.error("Error fetching calendars:", err));
-  }, []);
-
-  const mergeClubs = () => {
-    if (!club1Name || !club2Name || club1Name === club2Name) {
-      alert("Please select two different clubs");
-      return;
-    }
-
-    // Send POST to Django API
-    fetch("http://127.0.0.1:8000/api/calendar/merge_clubs/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: `club1_name=${encodeURIComponent(club1Name)}&club2_name=${encodeURIComponent(club2Name)}`,
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        alert(`Merged club created: ${data.new_club_name}`);
-        console.log("Merged meetings:", data.meetings);
-        // Optionally add the new club to your state so it renders immediately
-        setCalendars((prevClubs) => [
-          ...prevClubs,
-          {
-            id: Date.now(), // temporary key until backend provides real ID
-            "Club Name": data.new_club_name,
-            Meetings: data.meetings
-          }
-        ]);
-      })
-      .catch((err) => console.error(err));
-  };
-
-  return (
-    <div>
-      <h1>Club Calendars</h1>
-
-      <div style={{ marginBottom: "20px" }}>
-        <label>
-          Club 1:
-          <select value={club1Name} onChange={(e) => setclub1Name(e.target.value)}>
-            <option value="">--Select--</option>
-            {calendars.map((c) => (
-              <option key={c.id} value={c["Club Name"]}>{c["Club Name"]}</option>
-            ))}
-          </select>
-        </label>
-
-        <label style={{ marginLeft: "10px" }}>
-          Club 2:
-          <select value={club2Name} onChange={(e) => setclub2Name(e.target.value)}>
-            <option value="">--Select--</option>
-            {calendars.map((c) => (
-              <option key={c.id} value={c["Club Name"]}>{c["Club Name"]}</option>
-            ))}
-          </select>
-        </label>
-
-        <button onClick={mergeClubs} style={{ marginLeft: "10px" }}>
-          Merge Clubs
-        </button>
+        <footer className="bg-gray-200 text-gray-700 p-4 text-center">
+          &copy; 2025 ClubCentric
+        </footer>
       </div>
-
-      <div>
-        {calendars.map((c) => (
-          <div key={c.id} style={{ marginBottom: "15px" }}>
-            <h2>{c["Club Name"]}</h2>
-            <ul>
-              {c.Meetings?.map((m, i) => (
-                <li key={i}>{new Date(m.date).toLocaleString()}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </div>
+    </Router>
   );
 }
 
-export default App
-
- * 
- * 
- * 
- */
+export default App;

@@ -1,59 +1,31 @@
-// pages/Home.jsx
 import { useEffect, useState } from "react";
-import ClubForm from "../components/HomePage/ClubForm";
-import CalendarModule from "../components/HomePage/CalendarModule";
-import DocumentModule from "../components/HomePage/DocumentModule";
-import api from "../services/api"
+import { useNavigate } from "react-router-dom";
+import { getClubs } from "../services/clubService";
 
 export default function Home() {
   const [clubs, setClubs] = useState([]);
-  const [selectedClub, setSelectedClub] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchClubs = async () => {
-      try {
-        const response = await api.get("/clubs/");
-        setClubs(response.data);
-        if (response.data.length > 0) setSelectedClub(response.data[0]);
-      } catch (error) {
-        console.error("Failed to fetch clubs:", error);
-      }
-    };
-    fetchClubs();
+    getClubs().then(data => {
+      if (data) setClubs(data);
+    });
   }, []);
 
-  const handleCreateClub = async (newClubData) => {
-    try {
-      const response = await api.post("/clubs/", newClubData);
-      const createdClub = response.data;
-      setClubs((prev) => [...prev, createdClub]);
-      setSelectedClub(createdClub);
-    } catch (error) {
-      console.error("Failed to create club:", error);
-    }
+  const goToClub = (id) => {
+    navigate(`/club/${id}`);
   };
 
   return (
     <div>
-      <h1>Club Dashboard</h1>
-
-      <ClubForm onCreate={handleCreateClub} />
-
+      <h1>Clubs</h1>
       <ul>
-        {clubs.map((club) => (
-          <li key={club.slug_id} onClick={() => setSelectedClub(club)}>
+        {clubs.map(club => (
+          <li key={club.id} onClick={() => goToClub(club.id)} style={{ cursor: "pointer" }}>
             {club.name}
           </li>
         ))}
       </ul>
-
-      {selectedClub && (
-        <div>
-          <h2>{selectedClub.name}</h2>
-          <CalendarModule clubId={selectedClub.slug_id} />
-          <DocumentModule clubId={selectedClub.slug_id} />
-        </div>
-      )}
     </div>
   );
 }

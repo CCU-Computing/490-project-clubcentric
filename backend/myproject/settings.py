@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
-
+API_URL = os.environ.get("API_URL")
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -42,9 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',       # For API endpoints
     'corsheaders',          # To allow React frontend requests
-    'club.apps.ClubConfig',
-    'documents.apps.DocsConfig',
-    'calendar.apps.CalendarConfig',
+    'club',
+    'calendars',
+    'documents'
 ]
 
 MIDDLEWARE = [
