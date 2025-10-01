@@ -1,24 +1,29 @@
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction';
 import { useEffect, useState } from "react";
-import { listMeetings } from '../../services/calendarService';
+import { listMeetings } from "../../services/calendarService";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
 
-function CalendarCard({ calendar }) {
+export default function CalendarCard({ calendar }) {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
     async function fetchMeetings() {
+      console.log(calendar)
       const data = await listMeetings(calendar.id, null);
       if (data) {
-        setEvents(data.map(m => ({
-          title: m.title || 'Meeting',
-          date: m.date // FullCalendar accepts ISO strings
-        })));
+        setEvents(
+          data.map((m) => ({
+            title: m.title || "Meeting",
+            date: m.date,
+            backgroundColor: "#2f7b21ff", // blue for this calendar
+            borderColor: "#1c3050ff",
+          }))
+        );
       }
     }
     fetchMeetings();
-  }, [calendar.id]);
+  }, [calendar]);
 
   return (
     <div className="calendar-card">
@@ -32,5 +37,3 @@ function CalendarCard({ calendar }) {
     </div>
   );
 }
-
-export default CalendarCard;

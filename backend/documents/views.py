@@ -73,7 +73,6 @@ def getManagers(request):
         managers.append({"id": manager.id, "name" : manager.name})
     return JsonResponse(managers, safe=False)
 
-
 def getDocumentByID(request):
     doc_id = request.GET.get("doc_id")
     manager_id = request.GET.get("manager_id")
@@ -87,7 +86,10 @@ def getDocumentByID(request):
         except Document.DoesNotExist:
             return JsonResponse({"error" : "Document not found"}, status=404)
         
-        return JsonResponse([{"id" : document.id, "file" : document.file.url}], safe=False)
+        return JsonResponse([{
+            "id" : document.id, 
+            "file" : request.build_absolute_uri(document.file.url)
+            }], safe=False)
 
     if not doc_id:
         try:
@@ -96,7 +98,10 @@ def getDocumentByID(request):
             return JsonResponse({"error" : "Manager not found"}, status=409)
         documents = []
         for doc in manager.documents.all():
-            documents.append({"id": doc.id, "title": doc.title, "file" : doc.file.url})
+            documents.append({
+                "id": doc.id, 
+                "title": doc.title, 
+                "file" : request.build_absolute_uri(doc.file.url)})
         return JsonResponse(documents, safe=False)
 
 class DocumentViewSet(viewsets.ModelViewSet):

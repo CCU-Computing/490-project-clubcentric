@@ -1,34 +1,26 @@
-import { useState, useEffect } from "react";
-import { getManagers } from "../../services/documentService";
-import DocumentList from "./DocumentList";
+import { useState } from "react";
+import DocumentButton from "./DocumentButton";
+import DocumentViewer from "./DocumentViewer";
 
-export default function DocumentManagerList({ club_id }) {
-  const [managers, setManagers] = useState([]);
-  const [selectedManager, setSelectedManager] = useState(null);
-
-  useEffect(() => {
-    if (!club_id) return;
-    getManagers(club_id).then(data => {
-      if (data) setManagers(data);
-    });
-  }, [club_id]);
+export default function DocumentManagerList({ manager }) {
+  const [selectedDoc, setSelectedDoc] = useState(null);
 
   return (
-    <div>
-      <h2>Document Managers</h2>
-      <ul>
-        {managers.map(manager => (
-          <li key={manager.id}>
-            <button onClick={() => setSelectedManager(manager)}>
-              {manager.name}
-            </button>
-          </li>
-        ))}
-      </ul>
+    <div className="mb-6 border p-4 rounded shadow">
+      <h3 className="font-semibold mb-2">{manager.name}</h3>
 
-      {selectedManager && (
-        <DocumentList manager_id={selectedManager.id} />
-      )}
+      <div>
+        {manager.docs.length === 0 ? (
+          <p>No documents uploaded.</p>
+        ) : (
+          manager.docs.map((doc) => (
+            <DocumentButton key={doc.id} doc={doc} onOpen={setSelectedDoc} />
+          ))
+        )}
+      </div>
+
+      {/* Show the selected document */}
+      <DocumentViewer doc={selectedDoc} />
     </div>
   );
 }

@@ -25,8 +25,8 @@ def calendars_list(request):
     return JsonResponse(allCals, safe=False)
 
 def meetings_list(request):
-    calendar_id = request.POST.get("calendar_id")
-    meeting_id = request.POST.get("meeting_id")
+    calendar_id = request.GET.get("calendar_id")
+    meeting_id = request.GET.get("meeting_id")
     if not calendar_id and not meeting_id:
         return JsonResponse({"error" : "Missing fields"}, status=400)
     # only meeting OR both params given, ignore cal same logic

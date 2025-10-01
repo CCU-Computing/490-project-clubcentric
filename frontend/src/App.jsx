@@ -8,7 +8,7 @@ function App() {
       {/* You can style this wrapper */}
       <div className="min-h-screen flex flex-col">
         <header className="bg-gray-800 text-white p-4">
-          <h1 className="text-xl font-bold">ClubCentric</h1>
+          <h1 className="text-xl text-center font-bold">ClubCentric</h1>
         </header>
 
         <main className="flex-1 container mx-auto p-4">
