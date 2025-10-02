@@ -198,7 +198,8 @@ You can see the detailed workflow diagram in `docs/architecture.md`.
 
 ## Contributing
 
-We welcome contributions! Please read `CONTRIBUTING.md` for guidelines, coding style, and PR process.
+We welcome contributions! Please read [CONTRIBUTING.md](path%20with%20spaces/CONTRIBUTING.md) for guidelines, coding style, and PR process.
+
 
 Typically:
 
