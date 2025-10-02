@@ -45,7 +45,9 @@ Key features include:
 - Role-based access and permissions  
 - Version history / audit trail  
 - Notifications and activity feed  
-- REST API + React frontend  
+- REST API + React frontend
+
+---
 
 ## Table of Contents
 
@@ -116,3 +118,140 @@ cp .env.example .env
 # back to project root
 cd ..
 docker-compose up
+
+```
+
+---
+
+## Configuration
+
+Environment variables (in `.env`):
+
+```
+DEBUG=True
+DATABASE_URL=postgres://user:pass@localhost:5432/mydb
+SECRET_KEY=your_secret_key
+DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+REACT_APP_API_URL=http://localhost:8000/api
+...
+```
+
+You may also configure email server, caching, etc.
+
+---
+
+## Running the App (Dev Mode)
+
+Once dependencies are installed:
+
+```bash
+# from project root
+# start backend
+cd backend
+source venv/bin/activate
+python manage.py runserver
+
+# start frontend (in separate terminal)
+cd frontend
+npm start
+```
+
+Then visit `http://localhost:3000` in your browser.
+
+---
+
+## Testing
+
+To run backend tests:
+
+```bash
+cd backend
+pytest
+```
+
+To run frontend tests:
+
+```bash
+cd frontend
+npm test
+```
+
+---
+
+## Deployment (Production)
+
+We support Dockerized deployment:
+
+```bash
+docker build -t yourorg/mywebapp:latest .
+docker-compose -f docker-compose.prod.yml up
+```
+
+Alternatively, deploy via Kubernetes, or host on AWS/GCP/Azure.
+See `deploy/` directory for manifests and scripts.
+
+---
+
+## Architecture / Workflow
+
+Below is an outline of the system and team workflow:
+
+```
+Client (React) ←→ REST API (Django) ←→ PostgreSQL
+```
+
+* The frontend uses HTTP + WebSocket (for real-time sync)
+* The backend has modules: auth, document, collaboration, notifications
+* User stories / tasks are tracked in our backlog (see `docs/user-stories.md`)
+* Our development workflow is feature branching, PR review → CI → merge → deploy
+
+You can see the detailed workflow diagram in `docs/architecture.md`.
+
+---
+
+## Roadmap
+
+* Support offline editing
+* Mobile app (iOS / Android)
+* Role-based permissions (admin/custom roles)
+* Audit logs and rollback functionality
+* Plugin / extension system
+
+---
+
+## Contributing
+
+We welcome contributions! Please read `CONTRIBUTING.md` for guidelines, coding style, and PR process.
+
+Typically:
+
+1. Fork the repo
+2. Create a feature branch (`feature/your-feature`)
+3. Commit with clear messages
+4. Open a pull request with description and link to issue
+5. A maintainer will review and merge
+6. Update documentation 
+
+Be sure to run tests & linters before submitting.
+
+---
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+---
+
+## Acknowledgments
+
+* Inspired by [Some other project]
+* Uses open source libraries: Django, React, Celery, etc.
+* Thanks to contributors and the community
+
+---
+
+## Contact / Support
+
+For issues and bug reports, please open an issue on the GitHub repo.
+For general questions, contact **Your Name** ([you@yourorg.com](mailto:you@yourorg.com)).
+Join our Slack / Discord / Teams (invite link in docs).
