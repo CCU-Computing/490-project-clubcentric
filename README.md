@@ -6,15 +6,14 @@
 
 ## Overview
 
-MyWebApp is a full-stack web application for **X purpose** (e.g. “real-time collaboration tool for remote teams”).  
+MyWebApp is a full-stack web application for **Main User Story**.
 It enables users to create, edit, and share documents, with live updates and history tracking.
-
 
 **Main User Story:**
 
 > I am a club president, and I want to schedule and plan an event with another club president, so that we can promote inter-club collaboration easier.
 
-**Sub User Stories (Working on Now):**
+**Sub User Stories:**
 
 Currently, the team is focused on having
 - a calendar view for streamlining in a GTD manner and club collaborative, 
@@ -24,28 +23,6 @@ Currently, the team is focused on having
 - dues management view, 
 - and advanced search engine based on common interest analytics. 
 
-
-
-Essentially, take the typical roles in a club (… **Common Roles in a Club:** 
-
-1. **President**: The president leads the club, sets the vision, and represents the club in public. They are responsible for running meetings, making key decisions, and ensuring that the club's goals are met.2 
-2. **Vice President**: The vice president supports the president and may take on specific projects or initiatives. They often step in for the president when needed.2 
-3. **Secretary**: The secretary manages records, documentation, and communication within the club. They prepare meeting agendas and minutes, ensuring that all members are informed.2 
-4. **Treasurer**: The treasurer oversees the club's finances, including budgeting, tracking expenses, and preparing financial reports. They play a crucial role in managing the club's financial health.2 
-5. **Membership Chair**: This role focuses on recruiting new members, engaging current members, and improving retention rates. They often organize membership drives and outreach efforts.1 
-6. **Event Coordinator**: The event coordinator plans and executes club events and activities, ensuring that they run smoothly and meet the club's objectives.1 
-7. **Public Relations Officer**: This role manages the club's image and handles external communications, including social media and community outreach.1 
-8. **Fundraising Chair**: The fundraising chair leads efforts to raise money for the club's activities and goals, organizing events and campaigns to secure financial support.1 
-
-… ) and streamline tasks, events, and club collaboration.
-
-Key features include:
-
-- Real-time collaborative editing  
-- Role-based access and permissions  
-- Version history / audit trail  
-- Notifications and activity feed  
-- REST API + React frontend
 
 ---
 
