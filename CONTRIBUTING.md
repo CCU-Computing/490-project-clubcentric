@@ -18,9 +18,11 @@ Be sure to run tests & linters before submitting.
 ## Table of Contents
 
 1. [Commit Extended Description Protocol](#commit-extended-description-protocol)
-2. [Contributing Backend Code](#contributing-backend-code)
-3. 
-4. [Commit Cmd Line](#commit-cmd-line)
+2. [API & Endpoints](#api-&-endpoints)
+3. [Contributing Backend Code](#contributing-backend-code)
+4. [Running](#running)
+5. [Testing](#testing)
+6. [Commit Cmd Line](#commit-cmd-line)
 
 ---
 ## Commit Extended description Protocol 
