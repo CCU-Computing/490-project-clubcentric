@@ -1,6 +1,6 @@
 // pages/clubs/[id].jsx
 import { useRouter } from "next/router";
-import ClubContent from "../../components/ClubContent";
+import ClubContent from "../../components/clubs/ClubContent";
 
 export default function ClubPage() {
   const router = useRouter();

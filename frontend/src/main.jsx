@@ -3,11 +3,13 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from "react-router"; // BrowserRouter allows for multiple pages
 import './index.css'
 import App from './App.jsx'
-
+import { AuthProvider } from './components/auth/AuthContext.jsx';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter> {/* Wrap entire app with BrowserRouter */}
+      <AuthProvider>
         <App />
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
 )

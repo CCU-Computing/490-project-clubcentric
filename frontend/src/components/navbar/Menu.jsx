@@ -28,7 +28,7 @@ export default function Menu() {
   return (
     <>
     <List
-      sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+      sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.charcoal' }}
       component="nav"
       aria-labelledby="nested-list-subheader"
       subheader={
@@ -68,16 +68,16 @@ export default function Menu() {
         </List>
       </Collapse>
     </List>
-            <List component="div" disablePadding>
-            
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <CalendarMonthIcon />
-            </ListItemIcon>
-            <ListItemText primary="Calendar" />
-          </ListItemButton>
+    <List component="div" disablePadding>
+        
+      <ListItemButton sx={{ pl: 4 }}>
+        <ListItemIcon>
+          <CalendarMonthIcon />
+        </ListItemIcon>
+        <ListItemText primary="Calendar" />
+      </ListItemButton>
 
-        </List>
+    </List>
     <List
       sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
       component="nav"

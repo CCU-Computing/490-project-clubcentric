@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getClubs } from "../services/clubService";
 
-export default function Home() {
+export default function HomePage() {
   const [clubs, setClubs] = useState([]);
   const navigate = useNavigate();
 
