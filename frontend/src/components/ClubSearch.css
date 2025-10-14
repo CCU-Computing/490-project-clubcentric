@@ -1,0 +1,200 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  position: relative;
+  overflow-x: hidden;
+}
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("BGImage.jpg") no-repeat center center fixed;
+  background-size: cover;
+  filter: blur(2px);
+  z-index: -1;
+}
+
+.app {
+  padding: 20px;
+}
+
+/* Home screen */
+.home-screen {
+  text-align: center;
+  margin: 40px 0;
+}
+
+.home-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.big-btn {
+  padding: 20px 40px;
+  font-size: 18px;
+  border: none;
+  border-radius: 10px;
+  background-color: #008080; /* ✅ Coastal teal */
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.big-btn:hover {
+  background-color: #006666;
+}
+
+/* Layout */
+.layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+/* Center the search bar */
+.search-bar {
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  width: 95%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+/* Make sure main content fills available space */
+.main-content {
+  flex: 1;
+  max-width: 1500px;
+  margin-left: 40px;
+}
+
+/* Club boxes padding */
+.club {
+  background: white;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.clubs-title {
+  margin-top: 0;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.club a {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #008080; /* ✅ teal buttons */
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.club a:hover {
+  background-color: #006666;
+}
+
+.tags {
+  margin-top: 5px;
+}
+
+.tag {
+  display: inline-block;
+  background: #e9ecef;
+  color: #333;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-right: 5px;
+  font-size: 12px;
+}
+
+/* ✅ Fixed Calendar */
+.fixed-calendar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 260px;
+  height: 100%;
+  background: #bea974; /* ✅ Bronze background */
+  color: #000; /* ✅ All text black */
+  padding: 20px;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+  overflow-y: auto;
+}
+
+.fixed-calendar h3 {
+  margin-top: 0;
+  text-align: center;
+  color: #000;
+}
+
+.fixed-calendar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ✅ Day Boxes */
+.day-box {
+  background: #d9c7a3; /* lighter bronze for contrast */
+  border: 1px solid #b89c5c;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  color: #000;
+}
+
+.day-box strong {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #000;
+}
+
+/* ✅ Event Rows */
+.event {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 4px 0;
+  color: #000;
+}
+
+.event-time {
+  font-weight: bold;
+  color: #000 !important;
+}
+
+/* ✅ Calendar Button */
+.calendar-btn {
+  margin-top: 20px;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 6px;
+  background-color: #008080; /* ✅ teal */
+  color: white;
+  cursor: pointer;
+}
+
+.calendar-btn:hover {
+  background-color: #006666;
+}
