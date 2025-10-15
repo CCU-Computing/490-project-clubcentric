@@ -1,6 +1,6 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
+import { Navigate } from "react-router-dom";
 // Import Pages
 import HomePage from "./pages/HomePage";
 import ClubsPage from './pages/ClubsPage';
@@ -8,7 +8,7 @@ import ClubPage from "./pages/club/ClubPage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import Navbar from './components/navbar/Navbar' // Navigation Bar
-import ProtectedRoute from './components/auth/ProtectedRoute';
+import ProtectedRoute from './components/auth/AuthProvider';
 
 function App() {
 
@@ -59,6 +59,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
           }
       />
