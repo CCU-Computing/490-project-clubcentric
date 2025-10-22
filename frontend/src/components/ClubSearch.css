@@ -4,7 +4,7 @@ body {
   position: relative;
   overflow-x: hidden;
 }
-body::before {
+#BGImage {
   content: "";
   position: fixed;
   top: 0;

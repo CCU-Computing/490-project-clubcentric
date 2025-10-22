@@ -70,7 +70,7 @@ function ClubSearch() {
                 but if you want the image as a standard element, place it here.
                 I'm placing it inside a wrapper for simplicity. */}
             <div className="fixed-bg-wrapper">
-                <img 
+                <img id = "BGImage"
                     src={BGImage} 
                     alt="Background Image" 
                     className="BGImage" // Apply your CSS styling here
