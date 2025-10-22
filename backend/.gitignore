@@ -1,0 +1,2 @@
+# This is ignore database login info so we don't override each other's permissions
+backend/.env
