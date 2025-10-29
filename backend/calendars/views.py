@@ -6,6 +6,9 @@ from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from django.views.decorators.http import require_POST, require_GET
 from urllib.parse import parse_qs
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 def calendars_list(request):
     club_id = request.GET.get("club_id")
@@ -53,20 +56,30 @@ def meetings_list(request):
 @require_POST
 def create_calendar(request):
     club_id = request.POST.get("club_id")
+    user_id = request.POST.get("user_id")
     calendar_name = request.POST.get("calendar_name")
-    if not club_id or not calendar_name:
-        return JsonResponse({"error" : "Missing club_id or calendar_name"}, status=400)
+    if (not club_id and not user_id) or not calendar_name:
+        return JsonResponse({"error" : "Missing required fields"}, status=400)
+    elif club_id and user_id:
+        return JsonResponse({"error": "Calendar cannot belong to a user and a club."}, status=400)
     
-    try:
-        club = Club.objects.get(id=club_id)
-    except Club.DoesNotExist:
-        return JsonResponse({"error" : "Club not found"}, status=404)
+    # Club calendar
+    if club_id and not user_id:   
+        try:
+            club = Club.objects.get(id=club_id)
+        except Club.DoesNotExist:
+            return JsonResponse({"error" : "Club not found"}, status=404)
+        
+        calendar = Calendar.objects.create(name=calendar_name, club=club)
+        return JsonResponse({
+            "cal_id" : calendar.id,
+            "cal_name" : calendar.name
+        })
     
-    calendar = Calendar.objects.create(name=calendar_name, club=club)
-    return JsonResponse({
-        "cal_id" : calendar.id,
-        "cal_name" : calendar.name
-    })
+@receiver(post_save, sender=User)
+def create_user_calendar(sender, instance, created, **kwargs):
+    if created:
+        Calendar.objects.create(user=instance)
 
 @csrf_exempt
 @require_POST
