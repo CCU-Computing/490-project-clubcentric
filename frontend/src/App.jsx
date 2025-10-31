@@ -51,6 +51,16 @@ function App() {
               />
 
               <Route 
+                path="/club_search" 
+                element=
+                {
+                  <ProtectedRoute>
+                    <ClubSearch />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route 
                 path="/club/:id" 
                 element=
                 {
