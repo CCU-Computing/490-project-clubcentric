@@ -9,6 +9,7 @@ import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import Navbar from './components/navbar/Navbar' // Navigation Bar
 import ProtectedRoute from './components/auth/AuthProvider';
+import ClubSearch from './components/ClubSearch';
 
 function App() {
 
