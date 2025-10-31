@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, PartyPopper, Users } from 'lucide-react';
+import React, { useState } from 'react';
 import BGImage from '../assets/images/BGImage.jpg';
 import './ClubSearch.css';
 
 function ClubSearch() {
-    
-    // TEMPORARY club data is initialized here
     const clubs = [
         { name: "Chess Enthusiasts Club", description: "For lovers of strategy and competition.", tags: ["board games", "strategy", "tournaments"], page: "chess.html" },
         { name: "Space Exploration Society", description: "Discuss the universe, astronomy, and rockets.", tags: ["science", "astronomy", "NASA"], page: "space.html" },
@@ -20,34 +17,6 @@ function ClubSearch() {
 
     const [search, setSearch] = useState("");
 
-    const schedule = [
-        { day: "Sunday", events: [{ name: "Brunch Meetup", time: "11:00 AM" }] },
-        { day: "Monday", events: [
-        { name: "Club Meeting", time: "4:00 PM" },
-        { name: "Study Session", time: "6:00 PM" }
-        ]},
-        { day: "Tuesday", events: [{ name: "Photography Walk", time: "2:00 PM" }] },
-        { day: "Wednesday", events: [{ name: "Guest Speaker Event", time: "5:30 PM" }] },
-        { day: "Thursday", events: [{ name: "Cooking Class", time: "3:00 PM" }] },
-        { day: "Friday", events: [{ name: "Game Night", time: "7:00 PM" }] },
-        { day: "Saturday", events: [{ name: "Hiking Trip", time: "9:00 AM" }] }
-    ];
-
-    // Get current week information
-    const today = new Date();
-    const dayOfWeek = today.getDay(); 
-    const daysSinceSunday = dayOfWeek;
-    
-    const startDate = new Date(today);
-    startDate.setDate(today.getDate() - daysSinceSunday);
-
-    const weekDates = Array.from({ length: 7 }, (_, i) => {
-        const d = new Date(startDate);
-        d.setDate(startDate.getDate() + i);
-        return `${(d.getMonth() + 1).toString().padStart(2, "0")}/${d.getDate().toString().padStart(2, "0")}`;
-    });
-
-    // Search functionality for clubs
     function getMatchRank(club, query) {
         const q = query.toLowerCase();
         if (club.name.toLowerCase().includes(q)) return 1;
@@ -56,42 +25,40 @@ function ClubSearch() {
         return 999;
     }
 
-    // List of clubs with the given search parameters
     const filteredClubs = clubs
         .map(club => ({ ...club, rank: getMatchRank(club, search) }))
         .filter(club => club.rank !== 999)
         .sort((a, b) => a.rank - b.rank);
 
-
-    return ( // 🛑 ALL JSX MUST BE RETURNED AS A SINGLE ELEMENT
+    return (
         <div className="club-search-container">
-            {/* 🛑 Background Image setup from your CSS */}
-            {/* The CSS you provided (body::before) is designed to handle this background,
-                but if you want the image as a standard element, place it here.
-                I'm placing it inside a wrapper for simplicity. */}
+            {/* Background Image */}
             <div className="fixed-bg-wrapper">
-                <img id = "BGImage"
-                    src={BGImage} 
-                    alt="Background Image" 
-                    className="BGImage" // Apply your CSS styling here
-                    style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: -1 }}
+                <img
+                    id="BGImage"
+                    src={BGImage}
+                    alt="Background Image"
+                    className="BGImage"
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        zIndex: -1
+                    }}
                 />
             </div>
 
             <div className="app">
-                {/* Home Screen Buttons */}
-                <div className="home-screen">
+                {/* Home Screen */}
+                <div className="home-screen welcome-box">
                     <h1>Welcome to the Clubs Directory</h1>
-                    <div className="home-buttons">
-                        <button className="big-btn"><Calendar /> Calendar</button>
-                        <button className="big-btn"><PartyPopper /> Events</button>
-                        <button className="big-btn"><Users /> Clubs</button>
-                    </div>
                 </div>
                 
                 <div className="layout">
                     <div className="main-content">
-                        <h2>Clubs Directory</h2>
                         <div className="search-bar">
                             <input
                                 type="text"
@@ -115,34 +82,13 @@ function ClubSearch() {
                                 </div>
                             ))
                         ) : (
-                            <p>No clubs found.</p>
+                            <div className="no-clubs">No clubs found.</div>
                         )}
-                    </div>
-
-                    {/* Fixed Weekly Calendar */}
-                    <div className="fixed-calendar">
-                        <h3>Weekly Calendar</h3>
-                        <ul>
-                            {schedule.map((d, idx) => (
-                                <li key={idx} className="day-box">
-                                    <strong>{d.day} - {weekDates[idx]}</strong>
-                                    <ul>
-                                        {d.events.map((event, i) => (
-                                            <li key={i} className="event">
-                                                <span className="event-name">{event.name}</span>
-                                                <span className="event-time">{event.time}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </li>
-                            ))}
-                        </ul>
-                        <button className="calendar-btn">View Full Calendar</button>
                     </div>
                 </div>
             </div>
         </div>
     );
-} // 🛑 Component function closure
+}
 
 export default ClubSearch;
