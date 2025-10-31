@@ -6,10 +6,8 @@ from datetime import datetime
 from django.views.decorators.http import require_POST
 from urllib.parse import parse_qs
 from django.utils.text import slugify
-from django.shortcuts import render
 import hashlib
 import json
-
 
 @csrf_exempt
 @require_POST
@@ -44,9 +42,3 @@ def view_clubs(request):
     # Club not found
     except Club.DoesNotExist:
         return JsonResponse({"error" : "Club not found"}, status=404)
-    
-def index_view(request):
-    # This renders the index.html file that Vite produces
-    # (assuming you have correctly configured Django's TEMPLATES and STATIC settings
-    # to find this file, which is usually placed in a 'templates' folder).
-    return render(request, 'index.html') 
