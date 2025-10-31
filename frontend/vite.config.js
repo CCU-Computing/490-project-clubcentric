@@ -6,6 +6,16 @@ export default defineConfig({
   plugins: [react()],
   server: {
     historyApiFallback: true
-  }
+  },
+  //Vitest Configuration
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/setupTests.js',
+    css: {
+      modules: {
+        classNameStrategy: 'non-scoped',
+      },
+    },
+  },
 })
-
