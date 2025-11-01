@@ -19,8 +19,8 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter    
-from documents.views import DocumentViewSet
-import club.urls as cluburl
+from _documents.views import DocumentViewSet
+import _club.urls as cluburl
 
 router = DefaultRouter()
 router.register(r'documents', DocumentViewSet, basename='document')
