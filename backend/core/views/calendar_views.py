@@ -95,6 +95,42 @@ def create_calendar(request):
             return JsonResponse({"error" : "Cannot create calendar of another user"}, status=403)
         calendar = Calendar.objects.create(name=calendar_name, club=None, user=user)
         return JsonResponse({"cal_id" : calendar.id,"cal_name" : calendar.name})
+    
+
+@csrf_exempt
+@require_http_methods(["PUT"])
+def update_calendar(request, calendar_id):
+    '''Update a calendar's name'''
+    calendar_name = request.PUT.get("calendar_name")
+
+    if not calendar_name:
+        return JsonResponse({"error": "Missing calendar_name"}, status=400)
+
+    try:
+        calendar = Calendar.objects.get(id=calendar_id)
+    except Calendar.DoesNotExist:
+        return JsonResponse({"error": "Calendar not found"}, status=404)
+    
+    # For a club calendar, you have to be organizer or admin of the club
+    if calendar.club is not None:
+        if not Membership.objects.filter(user=request.user, club=calendar.club, role__in=['organizer', 'admin']).exists():
+            return JsonResponse({"error" : "You are not a leader of this club"}, status=403)
+            
+    # For a user calendar, you have to be the calendar owner
+    elif calendar.user is not None:
+        if calendar.user != request.user:
+            return JsonResponse({"error" : "Cannot update calendar of another user"}, status=403)
+            
+    calendar.name = calendar_name
+    calendar.save()
+    
+    return JsonResponse({
+        "cal_id": calendar.id,
+        "cal_name": calendar.name,
+        "status": "updated"
+    })
+
+
 
 @csrf_exempt
 @require_http_methods(["DELETE"])
@@ -140,68 +176,58 @@ def meetings_list(request):
             "description" : meet.description
             })
     return JsonResponse(allMeets, safe=False)
-  
+
+
 @csrf_exempt
-@require_POST
-def create_meeting(request):
-    calendar_id = request.POST.get("calendar_id")
-    datetime_str = request.POST.get("datetime_str")
-    description = request.POST.get("description")
-
-    if not calendar_id or not datetime_str:
-        return JsonResponse({"error": "Missing club_id or calendar_id or date"}, status=400)
-
-    date = parse_datetime(datetime_str)
-    if not date:
-        return JsonResponse({"error": "Invalid date format"}, status=400)
-
-    try:
-        calendar = Calendar.objects.get(id=calendar_id)
-    except Calendar.DoesNotExist:
-        return JsonResponse({"error": "Calendar not found"}, status=404)
-    # Club calendar
-    if calendar.club is not None:
-        if not Membership.objects.filter(user=request.user, club=calendar.club, role__in=['organizer', 'admin']).exists():
-            return JsonResponse({"error" : "You are not a member of this club"}, status=403) 
-        for meet in calendar.meetings(all):
-            if meet.date == date:
-                return JsonResponse({"error" : "Meeting already exists at this time"}, status=409 )
-        meeting = Meeting.objects.create(calendar=calendar, date=date, description=description)
-
-        return JsonResponse({
-            "meet_id": meeting.id,
-            "cal_id" : calendar.id,
-        })
-    # User calendar
-    else:
-        for meet in calendar.meetings(all):
-            if meet.date == date:
-                return JsonResponse({"error" : "Meeting already exists at this time"}, status=409 )
-        meeting = Meeting.objects.create(calendar=calendar, date=date, description=description)
-
-        return JsonResponse({
-            "meet_id": meeting.id,
-            "cal_id" : calendar.id,
-        })
-    
-@csrf_exempt
-@require_http_methods(["UPDATE"])
+@require_http_methods(["PUT"])
 def update_meeting(request, meeting_id):
+    datetime_str = request.PUT.get("datetime_str")
+    description = request.PUT.get("description")
     try:
         meeting = Meeting.objects.get(id=meeting_id)
     except Meeting.DoesNotExist:
         return JsonResponse({"error": "Meeting not found"}, status=404)
+    calendar = meeting.calendar
     
-    # Invalid club member
-    if meeting.calendar.club is not None:
-        if not Membership.objects.filter(user=request.user, club=meeting.calendar.club, role__in=['organizer', 'admin']).exists():
+    # Club calendar authorization
+    if calendar.club is not None:
+        # Check for organizer or admin role
+        if not Membership.objects.filter(user=request.user, club=calendar.club, role__in=['organizer', 'admin']).exists():
             return JsonResponse({"error" : "You are not a leader of this club"}, status=403)
-    # Invalid user id
-    if meeting.calendar.user is not None:
-        if meeting.calendar.user != request.user:
-            return JsonResponse({"error" : "Cannot delete calendar of another user"}, status=403)
-    meeting.delete()
-    return JsonResponse({"status": "deleted"})
+            
+    # User calendar authorization
+    elif calendar.user is not None:
+        # Check if the meeting is on the current user's personal calendar
+        if calendar.user != request.user:
+            return JsonResponse({"error" : "Cannot update meeting on another user's calendar"}, status=403)
+    
+    new_date = None
+    # Only proceed if the client actually sent a datetime string
+    if datetime_str:
+        new_date = parse_datetime(datetime_str)
+        if not new_date:
+            return JsonResponse({"error": "Invalid date format"}, status=400)
+    
+    # Conflict Check (Only if date is changing) ---
+    if new_date and new_date != meeting.date:
+        # Check if any other meeting on this calendar is at the new time.
+        if calendar.meetings.exclude(id=meeting_id).filter(date=new_date).exists():
+            return JsonResponse({"error" : "Another meeting already exists at this new time on this calendar"}, status=409 )
+    
+    # Update meeting with values only if valid values were passed in
+    if new_date:
+        meeting.date = new_date
+    if description is not None:
+        meeting.description = description
+    
+    meeting.save()
+    
+    return JsonResponse({
+        "status": "success",
+        "message": f"Meeting {meeting_id} updated successfully.",
+        "meet_id": meeting.id,
+        "cal_id" : calendar.id,
+    })
 
 
 @csrf_exempt
