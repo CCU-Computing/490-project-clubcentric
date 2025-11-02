@@ -1,5 +1,6 @@
 from django.db import models
 from _club.models import Club
+from django.conf import settings
 from django.contrib.auth.models import User
 
 class Calendar(models.Model):
@@ -13,7 +14,7 @@ class Calendar(models.Model):
         related_name="calendars")
     
     user = models.OneToOneField(
-        User, 
+        settings.AUTH_USER_MODEL, 
         null=True,
         blank=True,
         on_delete=models.CASCADE, 
