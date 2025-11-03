@@ -10,9 +10,11 @@ from urllib.parse import parse_qs
 from core.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.auth.decorators import login_required
 
 '''CALENDARS'''
 
+@login_required
 def calendars_list(request):
     '''List calendars for a user or a club'''
     club_id = request.GET.get("club_id")
@@ -60,6 +62,7 @@ def calendars_list(request):
   
 @csrf_exempt
 @require_POST
+@login_required
 def create_calendar(request):
     '''Create a blank calendar'''
     club_id = request.POST.get("club_id")
@@ -98,6 +101,7 @@ def create_calendar(request):
 
 @csrf_exempt
 @require_http_methods(["DELETE"])
+@login_required
 def delete_calendar(request, calendar_id):
     try:
         calendar = Calendar.objects.get(id=calendar_id)
@@ -117,7 +121,7 @@ def delete_calendar(request, calendar_id):
 
 
 '''MEETINGS '''
-
+@login_required
 def meetings_list(request):
     '''List meetings for a calendar'''
     calendar_id = request.GET.get("calendar_id")
@@ -143,6 +147,7 @@ def meetings_list(request):
   
 @csrf_exempt
 @require_POST
+@login_required
 def create_meeting(request):
     calendar_id = request.POST.get("calendar_id")
     datetime_str = request.POST.get("datetime_str")
@@ -186,6 +191,7 @@ def create_meeting(request):
     
 @csrf_exempt
 @require_http_methods(["UPDATE"])
+@login_required
 def update_meeting(request, meeting_id):
     try:
         meeting = Meeting.objects.get(id=meeting_id)
@@ -207,6 +213,7 @@ def update_meeting(request, meeting_id):
 
 @csrf_exempt
 @require_http_methods(["DELETE"])
+@login_required
 def delete_meeting(request, meeting_id):
     try:
         meeting = Meeting.objects.get(id=meeting_id)

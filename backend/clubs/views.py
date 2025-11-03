@@ -2,6 +2,7 @@ from .models import Club
 from django.http import JsonResponse
 from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.views.decorators.http import require_POST
 from urllib.parse import parse_qs
@@ -11,6 +12,7 @@ import json
 
 @csrf_exempt
 @require_POST
+@login_required
 def create_club(request):
     club_name = request.GET.get("club_name")
     club_description = request.GET.get("club_description")
@@ -42,3 +44,9 @@ def view_clubs(request):
     # Club not found
     except Club.DoesNotExist:
         return JsonResponse({"error" : "Club not found"}, status=404)
+
+@login_required
+def get_club_membership(request):
+    ''' Return membership status of a club '''
+    pass
+
