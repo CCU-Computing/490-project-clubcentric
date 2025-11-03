@@ -14,6 +14,7 @@ function ClubSearch() {
         { name: "Creative Writing Club", description: "Share stories, poetry, and sharpen your writing skills.", tags: ["literature", "storytelling", "poetry"], page: "writing.html" },
         { name: "Cultural Foodies", description: "Discover and share traditional dishes from around the world.", tags: ["food", "culture", "recipes", "cooking"], page: "foodies.html" }
     ];
+    
 
     const [search, setSearch] = useState("");
 
