@@ -8,7 +8,7 @@ from django.views.decorators.http import require_POST, require_GET
 from django.http import JsonResponse
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-from _club.models import Club
+from clubs.models import Club
 from datetime import datetime
 import uuid
 

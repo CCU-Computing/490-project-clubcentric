@@ -1,6 +1,6 @@
 from django.db import models
-from _club.models import Club
-from django.contrib.auth.models import User
+from clubs.models import Club
+from users.models import User
 from django.core.exceptions import ValidationError
 
 class DocumentManager(models.Model):

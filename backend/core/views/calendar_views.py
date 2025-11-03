@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from django.views.decorators.http import require_POST, require_GET, require_http_methods
 from urllib.parse import parse_qs
-from django.contrib.auth.models import User
+from core.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -196,8 +196,9 @@ def update_meeting(request, meeting_id):
     if meeting.calendar.club is not None:
         if not Membership.objects.filter(user=request.user, club=meeting.calendar.club, role__in=['organizer', 'admin']).exists():
             return JsonResponse({"error" : "You are not a leader of this club"}, status=403)
-    # Invalid user id
+    # If user calendar
     if meeting.calendar.user is not None:
+        # If user calendar is not user's, fail
         if meeting.calendar.user != request.user:
             return JsonResponse({"error" : "Cannot delete calendar of another user"}, status=403)
     meeting.delete()
