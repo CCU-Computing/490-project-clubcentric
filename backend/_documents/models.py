@@ -1,5 +1,6 @@
 from django.db import models
 from _club.models import Club
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
@@ -13,7 +14,7 @@ class DocumentManager(models.Model):
         related_name="documents")
 
     user = models.ForeignKey(
-        User, 
+        settings.AUTH_USER_MODEL, 
         null=True,
         blank=True,
         on_delete=models.CASCADE,

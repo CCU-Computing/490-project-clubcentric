@@ -1,5 +1,5 @@
-
 from django.http import JsonResponse
+from django.utils.timezone import make_aware, is_naive
 from .models import Calendar, Meeting, Club
 from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import csrf_exempt
@@ -88,24 +88,36 @@ def create_meeting(request):
     datetime_str = request.POST.get("datetime_str")
 
     if not calendar_id or not datetime_str:
-        return JsonResponse({"error": "Missing club_id or calendar_id or date"}, status=400)
+        return JsonResponse({"error": "Missing calendar_id or datetime_str"}, status=400)
 
     date = parse_datetime(datetime_str)
     if not date:
-        return JsonResponse({"error": "Invalid date format"}, status=400)
+        return JsonResponse({"error": "Invalid datetime format"}, status=400)
+    if is_naive(date):
+        from django.utils import timezone
+        date = make_aware(date)
 
+    # Get the calendar
     try:
-        calendar = Club.calendars.get(id=calendar_id)
+        calendar = Calendar.objects.get(id=calendar_id)
     except Calendar.DoesNotExist:
-        return JsonResponse({"error": "Calendar not found for this club"}, status=404)
+        return JsonResponse({"error": "Calendar not found"}, status=404)
 
-    for meet in calendar.meetings(all):
-        if meet.date == date:
-            return JsonResponse({"error" : "Meeting already exists at this time"}, status=409 )
+    # Prevent duplicate meetings
+    if Meeting.objects.filter(calendar=calendar, date=date).exists():
+        return JsonResponse({"error": "Meeting already exists at this time"}, status=409)
+
+    # Create the meeting
     meeting = Meeting.objects.create(calendar=calendar, date=date)
 
+    # Return the created meeting on success
     return JsonResponse({
-        "meet_id": meeting.id,
-        "cal_id" : calendar.id,
-        "date" : meeting.date
+        "meeting_id": meeting.id,
+        "calendar_id": calendar.id,
+        "date": meeting.date.isoformat(),
+        "owner": (
+            calendar.club.name if calendar.club
+            else calendar.user.username if calendar.user
+            else None
+        ),
     })

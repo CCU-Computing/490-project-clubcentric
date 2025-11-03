@@ -49,9 +49,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',       # For API endpoints
     'corsheaders',          # To allow React frontend requests
-    'club',
-    'calendars',
-    'documents'
+    '_club',
+    '_calendars',
+    '_documents',
+    '_user',
+    'clubs',
+    'communication',
+    'core'
 ]
 
 MIDDLEWARE = [
@@ -157,3 +161,5 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True  
+
+AUTH_USER_MODEL = '_user.UserProfile'
