@@ -1,10 +1,10 @@
 from users.models import User
 from django.http import JsonResponse
-from backend.core.models.calendar_model import Calendar, Meeting
+from calendar.models import Calendar, Meeting
 from clubs.models import Club, Membership
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET, require_http_methods
-from core.models import User
+from models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 
