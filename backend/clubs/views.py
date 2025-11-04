@@ -1,5 +1,6 @@
 from .models import Club, Membership
 from django.http import JsonResponse
+from users.views import is_member
 from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -60,7 +61,56 @@ def update_club(request):
     if not club_id:
         return JsonResponse({"error": "Missing required field: club_id"}, status=400)
 
+    try:
+        club = Club.objects.filter(id=club_id)
+    except Club.DoesNotExist:
+        return JsonResponse({"error": "club not found"}, status=404)
+    
+    if not is_member(user=request.user, club=club, role="organizer"):
+        return JsonResponse({"error": "must be an organizer of this club to update data"}, status=409)
+    
+    updated = []
+    
+    if club_name:
+        club.name = club_name
+        updated.append(('club_name', club.name))
 
+    if club_description:
+        club.description = club_description
+        updated.append(('club_description', club.description))
+
+    if club_picture:
+        club.display_picture = club_picture
+        updated.append(('club_picture', club.display_picture.url))
+
+    if club_links:
+        club.links = club_links
+        updated.append(("club_links", club.links))
+
+    return JsonResponse(updated, safe=False)
+
+@csrf_exempt
+@require_POST
+@login_required
+def delete_club(request):
+    club_id = request.POST.get('club_id')
+
+    if not club_id:
+        return JsonResponse({"error" : "Missing required fields"}, status=400)
+    
+    try:
+        club = Club.objects.get(id=club_id)
+    except Club.DoesNotExist:
+        return JsonResponse({"error": "club not found"}, status=404)
+    
+    if is_member(request.user, club=club, role='organizer'):
+        return JsonResponse({"error": "Permissions"}, status=403)
+    
+    club.delete()
+    return JsonResponse({"status": "deleted"})
+
+
+''' OTHER FUNC '''
 @login_required
 def merge_club(request):
     ''' Merge two clubs '''
