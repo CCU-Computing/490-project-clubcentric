@@ -1,13 +1,13 @@
 
 from django.http import JsonResponse
-from backend.core.models.calendar_model import Calendar, Meeting
+from calendar.models import Calendar, Meeting
 from clubs.models import Club, Membership
 from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from django.views.decorators.http import require_POST, require_GET, require_http_methods
 from urllib.parse import parse_qs
-from core.models import User
+from models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.decorators import login_required

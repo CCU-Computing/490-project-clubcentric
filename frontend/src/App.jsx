@@ -8,6 +8,7 @@ import ClubPage from "./pages/club/ClubPage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import Navbar from './components/navbar/Navbar' // Navigation Bar
+import ClubSearch from './pages/ClubSearch'
 import ProtectedRoute from './components/auth/AuthProvider';
 
 function App() {
@@ -56,6 +57,16 @@ function App() {
                 {
                   <ProtectedRoute>
                     <ClubPage/>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route 
+                path="/club_search" 
+                element=
+                {
+                  <ProtectedRoute>
+                    <ClubSearch/>
                   </ProtectedRoute>
                 }
               />

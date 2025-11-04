@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter    
 from _documents.views import DocumentViewSet
 import _club.urls as cluburl
+import calendar.urls as calendarurl
 
 router = DefaultRouter()
 router.register(r'documents', DocumentViewSet, basename='document')
@@ -29,6 +30,10 @@ urlpatterns = [
     path(f'{settings.API_URL}/admin/', admin.site.urls),
     # Club endpoints
     path(f'{settings.API_URL}/clubs/', include(cluburl)),
+
+    #Calendar endpoints
+    path(f'{settings.API_URL}/calendar/', include(calendarurl)),
+
 ]
 
 if settings.DEBUG:
