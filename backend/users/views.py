@@ -8,6 +8,21 @@ from core.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 
+''' INTERNAL LOGIC -- NOT CALLED BY URL '''
+def is_member(user: User, club: Club, role='member'):
+    ''' Check if user is a member of a club, with an optional role '''
+    
+    # Return false if not authenticated
+    if not user.is_authenticated:
+        return False
+    
+    # Filter based on parameters
+    us_member = Membership.objects.filter(user=user, club=club, role=role)
+    # Return bool of existence of Membership object
+    return us_member.exists()
+
+
+
 @csrf_exempt
 @require_POST
 def login_user(request):
@@ -24,7 +39,7 @@ def login_user(request):
         return JsonResponse({'success': True, 'user_id': user.id})
     else:
         return JsonResponse({'error': 'Invalid credentials'}, status=401)
-    
+
 ''' CRUD for user '''
 
 @csrf_exempt
@@ -150,6 +165,7 @@ def update_password(request):
     request.user.save()
 
     return JsonResponse({"sucess": "password updated"})
+
 
 @csrf_exempt
 @require_POST

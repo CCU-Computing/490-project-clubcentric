@@ -1,4 +1,4 @@
-from .models import Club
+from .models import Club, Membership
 from django.http import JsonResponse
 from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import csrf_exempt
@@ -10,6 +10,8 @@ from django.utils.text import slugify
 import hashlib
 import json
 
+
+''' CRUD '''
 @csrf_exempt
 @require_POST
 @login_required
@@ -46,7 +48,47 @@ def view_clubs(request):
         return JsonResponse({"error" : "Club not found"}, status=404)
 
 @login_required
+@csrf_exempt
+@require_POST
+def update_club(request):
+    club_id = request.POST.get("club_id")
+    club_name = request.POST.get("club_name")
+    club_description = request.POST.get("club_description")
+    club_picture = request.FILES.get("club_picture")
+    club_links = request.POST.get("club_links")
+
+    if not club_id:
+        return JsonResponse({"error": "Missing required field: club_id"}, status=400)
+
+
+@login_required
+def merge_club(request):
+    ''' Merge two clubs '''
+
+@login_required
 def get_club_membership(request):
     ''' Return membership status of a club '''
-    pass
-
+    
+    club_id = request.GET.get("club_id")
+    
+    if not club_id:
+        return JsonResponse({"error": "missing required fields"}, status=400)
+    
+    try:
+        club = Club.objects.get(id=club_id)
+    except Club.DoesNotExist:
+        return JsonResponse({"error": "club not found"}, status=404)
+    
+    if not Membership.objects.filter(user=request.user, club=club).exists():
+        return JsonResponse({"error" : "You are not a member of this club"}, status=403)
+    
+    membership = Membership.objects.filter(club=club)
+    
+    members = {
+        m.user.get_full_name(): m.role for m in membership
+    }
+    
+    if not members:
+        return JsonResponse({"message": "No members in this club"})
+    else:
+        return JsonResponse({"members:": members})
