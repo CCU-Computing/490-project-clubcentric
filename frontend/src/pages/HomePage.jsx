@@ -1,90 +1,45 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getClubs } from "../services/clubService";
-import "../components/homePage.css";
-// IMPORTANT: Ensure the 'homeBG' import is NOT present here.
+import React from 'react';
+import '../components/HomePage.css';
 
-export default function HomePage() {
-  const [clubs, setClubs] = useState([]);
-  const [search, setSearch] = useState("");
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    getClubs().then((data) => {
-      if (data) setClubs(data);
-    });
-  }, []);
-
-  const goToClub = (id) => {
-    navigate(`/club/${id}`);
-  };
-
-  // Local filtering (search doesn’t navigate)
-  const filteredClubs = clubs.filter(
-    (club) =>
-      club.name.toLowerCase().includes(search.toLowerCase()) ||
-      club.description.toLowerCase().includes(search.toLowerCase())
-  );
-
+const HomePage = () => {
   return (
-    // Background is handled entirely by CSS on this container
-    <div className="homepage-container"> 
-      {/* Hero Section */}
-      <header className="hero-section">
+    <div className="homepage-container">
+      {/* HERO SECTION */}
+      <section className="hero-section">
         <div className="hero-content">
-          <h1>Discover Campus Life & Opportunities</h1>
-          <p>Find student organizations, upcoming events, and ways to engage.</p>
-          <button
-            className="cta-button"
-            onClick={() => navigate("../club_search")}
-          >
-            Browse Clubs
-          </button>
+          <h1>Welcome to Our Club Finder</h1>
+          <p>Discover and join clubs that match your interests</p>
+          <button className="cta-button">Get Started</button>
         </div>
-      </header>
+      </section>
 
-      {/* Search and Clubs */}
+      {/* SEARCH SECTION */}
       <section className="search-overview">
-        <h2>Quick Search</h2>
+        <h2>Find a Club</h2>
         <input
           type="text"
           placeholder="Search clubs..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
           className="quick-search-input"
         />
       </section>
 
-      {/* Featured Clubs */}
+      {/* FEATURED CLUBS */}
       <section className="highlighted-clubs">
         <h2>Featured Clubs</h2>
         <div className="club-cards">
-          {filteredClubs.slice(0, 4).map((club) => (
-            <div
-              key={club.id}
-              className="club-card"
-              onClick={() => goToClub(club.id)}
-            >
-              <h3>{club.name}</h3>
-              <p>{club.description}</p>
-            </div>
-          ))}
-          {filteredClubs.length === 0 && (
-            <div className="no-clubs">No clubs found.</div>
-          )}
+          <div className="club-card">Art Club</div>
+          <div className="club-card">Chess Club</div>
+          <div className="club-card">Coding Club</div>
         </div>
       </section>
 
-      {/* Explore More */}
+      {/* EXPLORE MORE */}
       <section className="explore-more">
-        <h2>Want to explore more?</h2>
-        <button
-          className="secondary-cta"
-          onClick={() => navigate("../club_search")}
-        >
-          Browse Clubs
-        </button>
+        <h2>Want to see more?</h2>
+        <button className="secondary-cta">Explore All Clubs</button>
       </section>
     </div>
   );
-}
+};
+
+export default HomePage;

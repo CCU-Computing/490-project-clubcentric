@@ -1,19 +1,22 @@
-/* GLOBAL RESET: Removes the default browser margin causing the white bar at the top */
-body {
-    margin: 0; 
-    padding: 0;
+/* --- GLOBAL RESET --- */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: none; /* prevent white background bleeding through */
 }
 
+/* --- PAGE CONTAINER --- */
 .homepage-container {
   font-family: Arial, sans-serif;
   color: #333;
   position: relative;
   min-height: 100vh;
   overflow-x: hidden;
+  z-index: 0; /* ensures stacking above blurred background */
 }
 
-/* --- BACKGROUND IMAGE WITH BLUR APPLIED VIA PSEUDO-ELEMENT --- */
-
+/* --- BACKGROUND IMAGE WITH BLUR --- */
 .homepage-container::before {
   content: '';
   position: fixed;
@@ -22,23 +25,11 @@ body {
   width: 100%;
   height: 100%;
   
-  /* Path must be correct relative to this CSS file's location */
-  background-image: url('../assets/images/homeBG.jpg'); 
-  background-position: center;
-  background-attachment: fixed;
-  background-size: cover;
+  background: url('../assets/images/homeBG.jpg') center/cover fixed no-repeat;
+  filter: blur(8px) brightness(0.8);
   
-  /* Applies the blur */
-  filter: blur(8px) brightness(0.8); 
-  
-  /* Stays behind content */
-  z-index: -1;
+  z-index: -1; /* keep it behind content */
 }
-
-/* * IMPORTANT: Ensure that the conflicting background rules (like the original 
-* .background-image, .homepage-container at the bottom, and .homepage-container img) 
-* are completely deleted from this file, leaving only the one above. 
-*/
 
 /* --- HERO SECTION --- */
 .hero-section {
@@ -100,7 +91,7 @@ body {
 /* --- FEATURED CLUBS --- */
 .highlighted-clubs {
   padding: 40px 20px;
-  background-color: rgba(255, 255, 255, 0.85); 
+  background-color: rgba(255, 255, 255, 0.85);
   border-radius: 8px;
   margin: 20px auto;
   width: 90%;
@@ -136,7 +127,7 @@ body {
   text-align: center;
 }
 
-/* --- EXPLORE MORE --- */
+/* --- EXPLORE MORE SECTION --- */
 .explore-more {
   padding: 40px 20px;
   text-align: center;
