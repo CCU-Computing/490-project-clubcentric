@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import BGImage from '../assets/images/BGImage.jpg';
 import '../components/ClubSearch.css';
 
 function ClubSearch() {

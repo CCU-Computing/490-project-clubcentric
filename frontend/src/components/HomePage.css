@@ -1,0 +1,158 @@
+/* GLOBAL RESET: Removes the default browser margin causing the white bar at the top */
+body {
+    margin: 0; 
+    padding: 0;
+}
+
+.homepage-container {
+  font-family: Arial, sans-serif;
+  color: #333;
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* --- BACKGROUND IMAGE WITH BLUR APPLIED VIA PSEUDO-ELEMENT --- */
+
+.homepage-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  /* Path must be correct relative to this CSS file's location */
+  background-image: url('../assets/images/homeBG.jpg'); 
+  background-position: center;
+  background-attachment: fixed;
+  background-size: cover;
+  
+  /* Applies the blur */
+  filter: blur(8px) brightness(0.8); 
+  
+  /* Stays behind content */
+  z-index: -1;
+}
+
+/* * IMPORTANT: Ensure that the conflicting background rules (like the original 
+* .background-image, .homepage-container at the bottom, and .homepage-container img) 
+* are completely deleted from this file, leaving only the one above. 
+*/
+
+/* --- HERO SECTION --- */
+.hero-section {
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 20px;
+  color: white;
+}
+
+.hero-content {
+  background: rgba(0, 0, 0, 0.55);
+  padding: 30px 40px;
+  border-radius: 8px;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.cta-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #006f71;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cta-button:hover {
+  background-color: #005b5d;
+}
+
+/* --- SEARCH SECTION --- */
+.search-overview {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.quick-search-input {
+  max-width: 400px;
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* --- FEATURED CLUBS --- */
+.highlighted-clubs {
+  padding: 40px 20px;
+  background-color: rgba(255, 255, 255, 0.85); 
+  border-radius: 8px;
+  margin: 20px auto;
+  width: 90%;
+  max-width: 1000px;
+}
+
+.club-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.club-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.club-card:hover {
+  transform: translateY(-3px);
+  background-color: #e8fdf9;
+}
+
+.no-clubs {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* --- EXPLORE MORE --- */
+.explore-more {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.secondary-cta {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: transparent;
+  color: #006f71;
+  border: 2px solid #006f71;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.secondary-cta:hover {
+  background-color: #006f71;
+  color: white;
+}
