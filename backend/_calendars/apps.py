@@ -2,7 +2,7 @@ from django.apps import AppConfig
 
 class CalendarsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'calendars'
+    name = '_calendars'
 
     def ready(self):
-        import calendars.signals
+        import _calendars.signals

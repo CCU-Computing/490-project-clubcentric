@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter    
 from _documents.views import DocumentViewSet
 import _club.urls as cluburl
-import calendar.urls as calendarurl
+import _calendars.urls as calendarurl
 
 router = DefaultRouter()
 router.register(r'documents', DocumentViewSet, basename='document')

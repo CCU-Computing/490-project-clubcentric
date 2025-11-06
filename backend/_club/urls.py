@@ -1,5 +1,5 @@
 from django.urls import path, include
-import calendars.urls as cal
+import _calendars.urls as cal
 import _documents.urls as doc
 import _club.views as viewsClub
 urlpatterns = [

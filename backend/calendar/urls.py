@@ -1,5 +1,5 @@
 from django.urls import path
-from backend.calendar import views 
+from calendar import views 
 
 # Define app_name for namespace isolation (good practice)
 app_name = 'calendar_app'
