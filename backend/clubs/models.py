@@ -27,3 +27,13 @@ class Membership(models.Model):
 
     class Meta:
         unique_together = ('user', 'club')
+
+class MergeRequest(models.Model):
+    club_1 = models.ForeignKey(Club, on_delete=models.CASCADE)
+    club_2 = models.ForeignKey(Club, on_delete=models.CASCADE)
+
+    accepted_1 = models.BooleanField(default=False)
+    accepted_2 = models.BooleanField(default=False)
+
+    created = models.BooleanField(default=False)
+    merged_club = models.ForeignKey(Club, blank=True, null=True, on_delete=models.CASCADE)

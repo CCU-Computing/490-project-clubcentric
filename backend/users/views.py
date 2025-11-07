@@ -9,15 +9,18 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 
 ''' INTERNAL LOGIC -- NOT CALLED BY URL '''
-def is_member(user: User, club: Club, role='member'):
+def is_member(user: User, club: Club, role='default'):
     ''' Check if user is a member of a club, with an optional role '''
     
     # Return false if not authenticated
     if not user.is_authenticated:
         return False
     
-    # Filter based on parameters
-    us_member = Membership.objects.filter(user=user, club=club, role=role)
+    if role == 'default':
+        # Filter based on parameters
+        us_member = Membership.objects.filter(user=user, club=club)
+    else:
+        us_member = Membership.objects.filter(user=user, club=club, role=role)
     # Return bool of existence of Membership object
     return us_member.exists()
 
@@ -74,23 +77,44 @@ def create_user(request):
 
 @login_required
 def get_user_data(request):
+    user_id = request.GET.get("user_id")
+    
+    # Get own data
+    if not user_id:
+        bio = request.user.bio or None
+        profile_picture = request.user.profile_picture.url or None
 
-    bio = request.user.bio or None
+        response = {
+            "id": request.user.id,
+            "username": request.user.username,
+            "first_name": request.user.first_name,
+            "last_name": request.user.last_name,
+            "email": request.user.email,
+            "bio": bio,
+            "profile_picture": profile_picture
+        }
+        return JsonResponse(response)
+    
+    # Get someone else's data
+    else:
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "user not found"}, status=404)
+        
+        bio = user.bio or None
+        profile_picture = user.profile_picture.url or None
 
-
-    profile_picture = None
-    if request.user.profile_picture:
-        profile_picture = request.build_absolute_url(request.user.profile_picture.url)
-
-    response = {
-        "username": request.user.username,
-        "first_name": request.user.first_name,
-        "last_name": request.user.last_name,
-        "email": request.user.email,
-        "bio": bio,
-        "profile_picture": profile_picture
-    }
-    return JsonResponse(response)
+        response = {
+            "id": user.id,
+            "username": user.username,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "bio": bio,
+            "profile_picture": profile_picture
+        }
+        return JsonResponse(response)
 
 @csrf_exempt
 @require_POST
@@ -98,9 +122,9 @@ def get_user_data(request):
 def update_user(request):
 
     ''' Update non critical user fields '''
-    required = ["username", "password", "first_name", "last_name", "email"]
-    all_missing = all(f not in request or not request[f] for f in required)
+    required = ["username", "first_name", "last_name", "email"]
     
+    all_missing = all(f not in request or not request[f] for f in required)
     if all_missing:
         return JsonResponse({"error" : "Missing required field(s)"}, status=400)
 
@@ -111,7 +135,6 @@ def update_user(request):
     bio = request.POST.get('bio')
     profile_picture = request.FILES.get('profile_picture')
 
-    user = User.objects.get(id=request.user.id)
     updated = []
     
     # Update username
@@ -120,35 +143,35 @@ def update_user(request):
         if User.objects.filter(username=username).exists():
             return JsonResponse({'error' : 'username already exists.'}, status=409) 
 
-        user.username = username
-        updated.append(('username', user.username))
+        request.user.username = username
+        updated.append(('username', request.user.username))
     
     # Update first name
     if first_name:
-        user.first_name = first_name
-        updated.append(('first_name', user.first_name))
+        request.user.first_name = first_name
+        updated.append(('first_name', request.user.first_name))
 
     # Update last name
     if last_name:
-        user.last_name = last_name
-        updated.append(('last_name', user.last_name))
+        request.user.last_name = last_name
+        updated.append(('last_name', request.user.last_name))
 
     # Update email
     if email:
-        user.email = email
-        updated.append(('email', user.email))
+        request.user.email = email
+        updated.append(('email', request.user.email))
 
     # Update bio
     if bio:
-        user.bio = bio
-        updated.append(('bio', user.bio))
+        request.user.bio = bio
+        updated.append(('bio', request.user.bio))
 
     # Update profile_picture
     if profile_picture:
-        user.profile_picture = profile_picture
-        updated.append(('profile_picture', user.profile_picture))
+        request.user.profile_picture = profile_picture
+        updated.append(('profile_picture', request.user.profile_picture))
 
-    user.save()
+    request.user.save()
     return JsonResponse(updated, safe=False)
 
 @csrf_exempt
