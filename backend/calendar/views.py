@@ -11,10 +11,45 @@ from models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.decorators import login_required
-
+from users.views import is_member
 '''CALENDARS'''
 
+
+@csrf_exempt
+@require_POST
 @login_required
+def create_calendar(request):
+    '''Create a blank calendar'''
+    club_id = request.POST.get("club_id")
+    calendar_name = request.POST.get("calendar_name")
+
+    # error checking
+    if not calendar_name:
+        return JsonResponse({"error" : "Missing required fields"}, status=400)
+
+    # Club calendar
+    if club_id:
+        
+        try:
+            club = Club.objects.get(id=club_id)
+        except Club.DoesNotExist:
+            return JsonResponse({"error" : "Club not found"}, status=404)
+        
+        if not is_member(user=request.user, club=club, role="organizer"):
+            return JsonResponse({"error" : "You are not a leader of this club"}, status=403)
+        
+        calendar = Calendar.objects.create(name=calendar_name, club=club, user=None)
+        return JsonResponse({"status" : True, "id": calendar.id})
+    
+    # User calendar
+    else:
+        if Calendar.objects.filter(name=calendar_name).exists():
+            return JsonResponse({"error": "calendar with this name already exists"}, status=409)
+        calendar = Calendar.objects.create(name=calendar_name, club=None, user=request.user)
+        return JsonResponse({"status" : True, "id": calendar.id})
+
+@login_required
+@csrf_exempt
 def calendars_list(request):
     '''List calendars for a user or a club'''
     club_id = request.GET.get("club_id")
@@ -60,68 +95,127 @@ def calendars_list(request):
                 ]
         return JsonResponse(allCals, safe=False)
   
+@login_required
+@require_POST
+@csrf_exempt
+def update_calendar(request):
+    cal_id = request.POST.get("cal_id")
+    cal_name = request.POST.get("cal_name")
+
+    if not cal_id or not cal_name:
+        return JsonResponse({"error": "missing required fields"}, status=400)
+    
+    try:
+        calendar = Calendar.objects.get(id=cal_id)
+    except Calendar.DoesNotExist:
+        return JsonResponse({"error": "calendar not found"}, status=404)
+    
+    # User calendar
+    if calendar.user:
+        if Calendar.objects.filter(user=request.user, name=cal_name).exists():
+            return JsonResponse({"error": "A calendar with this name already exists"}, status=409)
+        
+        if calendar.user != request.user:
+            return JsonResponse({"error" : "this calendar does not belong to you"}, status=403)
+        
+        calendar.name = cal_name
+        calendar.save()
+        return JsonResponse({"status": True})
+    
+    # Club calendar
+    if calendar.club:
+        if not is_member(user=request.user, club=calendar.club, role="organizer"):
+            return JsonResponse({"error": "you are not an organizer of the associated club"}, status=403)
+        
+        if Calendar.objects.filter(club=calendar.club, name=cal_name).exists():
+            return JsonResponse({"error": "A calendar with this name already exists"}, status=409)
+        
+        calendar.name = cal_name
+        calendar.save()
+        return JsonResponse({"status": True})
+    
+    return JsonResponse({"error": "club fields error"}, status=400)
+
+@csrf_exempt
+@login_required
+@require_POST
+def delete_calendar(request):
+    cal_id = request.POST.get("cal_id")
+    try:
+        calendar = Calendar.objects.get(id=cal_id)
+    except Calendar.DoesNotExist:
+        return JsonResponse({"error": "Calendar not found"}, status=404)
+    
+    # User cal
+    if calendar.user:
+        if calendar.user != request.user:
+            return JsonResponse({"error" : "this calendar does not belong to you"}, status=403)
+        calendar.meetings.all().delete()
+        calendar.delete()
+        return JsonResponse({"status": True})
+    
+    # Club Calendar
+    if calendar.club:
+        if not is_member(user=request.user, club=calendar.club, role="organizer"):
+            return JsonResponse({"error": "you are not an organizer of the associated club"}, status=403)
+        calendar.meetings.all().delete()
+        calendar.delete()
+        return JsonResponse({"status": True})
+
+    return JsonResponse({"status": False})
+
+
+'''MEETINGS '''
+
 @csrf_exempt
 @require_POST
 @login_required
-def create_calendar(request):
-    '''Create a blank calendar'''
-    club_id = request.POST.get("club_id")
-    user_id = request.POST.get("user_id")
-    calendar_name = request.POST.get("calendar_name")
+def create_meeting(request):
+    calendar_id = request.POST.get("calendar_id")
+    datetime_str = request.POST.get("datetime_str")
+    description = request.POST.get("description")
 
-    # error checking
-    if (not club_id and not user_id) or not calendar_name:
-        return JsonResponse({"error" : "Missing required fields"}, status=400)
-    elif club_id and user_id:
-        return JsonResponse({"error": "Calendar cannot belong to a user and a club."}, status=400)
-    
-    # Club calendar
-    if club_id:
-        if not Membership.objects.filter(user=request.user, club=club, role__in=['organizer', 'admin']).exists():
-            return JsonResponse({"error" : "You are not a leader of this club"}, status=403)
-        try:
-            club = Club.objects.get(id=club_id)
-        except Club.DoesNotExist:
-            return JsonResponse({"error" : "Club not found"}, status=404)
-        
-        calendar = Calendar.objects.create(name=calendar_name, club=club, user=None)
-        return JsonResponse({"cal_id" : calendar.id,"cal_name" : calendar.name})
-    
-    # User calendar
-    if user_id:
-        try:
-            user = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            return JsonResponse({"error" : "user not found"}, status=404)
-        # Invalid user
-        if calendar.user != request.user:
-            return JsonResponse({"error" : "Cannot create calendar of another user"}, status=403)
-        calendar = Calendar.objects.create(name=calendar_name, club=None, user=user)
-        return JsonResponse({"cal_id" : calendar.id,"cal_name" : calendar.name})
+    if not calendar_id or not datetime_str or not description:
+        return JsonResponse({"error": "Missing required fields"}, status=400)
 
-@csrf_exempt
-@require_http_methods(["DELETE"])
-@login_required
-def delete_calendar(request, calendar_id):
+    date = parse_datetime(datetime_str)
+    if not date:
+        return JsonResponse({"error": "Invalid date format"}, status=400)
+
     try:
         calendar = Calendar.objects.get(id=calendar_id)
     except Calendar.DoesNotExist:
         return JsonResponse({"error": "Calendar not found"}, status=404)
     
-    # Invalid club member
-    if calendar.club is not None:
-        if not Membership.objects.filter(user=request.user, club=calendar.club, role__in=['organizer', 'admin']).exists():
-            return JsonResponse({"error" : "You are not a leader of this club"}, status=403)
-    # Invalid user id
-    if calendar.user is not None:
+    # Club calendar
+    if calendar.club:
+        if not is_member(user=request.user, club=calendar.club, role="organizer"):
+            return JsonResponse({"error" : "You are not a member of this club"}, status=403) 
+        meets = Meeting.objects.filter(calendar=calendar)
+        for meet in meets:
+            if meet.date == date:
+                return JsonResponse({"error" : "Meeting already exists at this time"}, status=409)
+        
+        meeting = Meeting.objects.create(calendar=calendar, date=date, description=description)
+
+        return JsonResponse({"status": True, "meet_id": meeting.id})
+    
+    # User calendar
+    if calendar.user:
         if calendar.user != request.user:
-            return JsonResponse({"error" : "Cannot delete calendar of another user"}, status=403)
-    calendar.delete()
-    return JsonResponse({"status": "deleted"})
+            return JsonResponse({"error": "this calendar does not belong to you"}, status=403)
+        
+        meets = Meeting.objects.filter(calendar=calendar)
+        for meet in meets:
+            if meet.date == date:
+                return JsonResponse({"error" : "Meeting already exists at this time"}, status=409)
+        
+        meeting = Meeting.objects.create(calendar=calendar, date=date, description=description)
 
+        return JsonResponse({"status" : True, "meet_id": meeting.id})
 
-'''MEETINGS '''
 @login_required
+@csrf_exempt
 def meetings_list(request):
     '''List meetings for a calendar'''
     calendar_id = request.GET.get("calendar_id")
@@ -144,89 +238,68 @@ def meetings_list(request):
             "description" : meet.description
             })
     return JsonResponse(allMeets, safe=False)
-  
+ 
 @csrf_exempt
+@login_required
 @require_POST
-@login_required
-def create_meeting(request):
-    calendar_id = request.POST.get("calendar_id")
-    datetime_str = request.POST.get("datetime_str")
-    description = request.POST.get("description")
-
-    if not calendar_id or not datetime_str:
-        return JsonResponse({"error": "Missing club_id or calendar_id or date"}, status=400)
-
-    date = parse_datetime(datetime_str)
-    if not date:
-        return JsonResponse({"error": "Invalid date format"}, status=400)
+def update_meeting(request):
+    meet_id = request.POST.get("meet_id")
+    desc = request.POST.get("desc")
+    if not meet_id or not desc:
+        return JsonResponse({"error": "Missing required fields"}, status=400)
 
     try:
-        calendar = Calendar.objects.get(id=calendar_id)
-    except Calendar.DoesNotExist:
-        return JsonResponse({"error": "Calendar not found"}, status=404)
-    # Club calendar
-    if calendar.club is not None:
-        if not Membership.objects.filter(user=request.user, club=calendar.club, role__in=['organizer', 'admin']).exists():
-            return JsonResponse({"error" : "You are not a member of this club"}, status=403) 
-        for meet in calendar.meetings(all):
-            if meet.date == date:
-                return JsonResponse({"error" : "Meeting already exists at this time"}, status=409 )
-        meeting = Meeting.objects.create(calendar=calendar, date=date, description=description)
-
-        return JsonResponse({
-            "meet_id": meeting.id,
-            "cal_id" : calendar.id,
-        })
-    # User calendar
-    else:
-        for meet in calendar.meetings(all):
-            if meet.date == date:
-                return JsonResponse({"error" : "Meeting already exists at this time"}, status=409 )
-        meeting = Meeting.objects.create(calendar=calendar, date=date, description=description)
-
-        return JsonResponse({
-            "meet_id": meeting.id,
-            "cal_id" : calendar.id,
-        })
-    
-@csrf_exempt
-@require_http_methods(["UPDATE"])
-@login_required
-def update_meeting(request, meeting_id):
-    try:
-        meeting = Meeting.objects.get(id=meeting_id)
+        meeting = Meeting.objects.get(id=meet_id)
     except Meeting.DoesNotExist:
         return JsonResponse({"error": "Meeting not found"}, status=404)
     
-    # Invalid club member
-    if meeting.calendar.club is not None:
-        if not Membership.objects.filter(user=request.user, club=meeting.calendar.club, role__in=['organizer', 'admin']).exists():
+    calendar = meeting.calendar
+    
+    # Club
+    if calendar.club:
+        if not is_member(user=request.user, club=calendar.club, role="organizer"):
             return JsonResponse({"error" : "You are not a leader of this club"}, status=403)
-    # If user calendar
-    if meeting.calendar.user is not None:
-        # If user calendar is not user's, fail
-        if meeting.calendar.user != request.user:
-            return JsonResponse({"error" : "Cannot delete calendar of another user"}, status=403)
-    meeting.delete()
-    return JsonResponse({"status": "deleted"})
-
+        meeting.description = desc
+        meeting.save()
+        return JsonResponse({"status": True})
+    
+    # User
+    if calendar.user:
+        if calendar.user != request.user:
+            return JsonResponse({"error": "this meeting does not belong to you"}, status=403)
+        meeting.description = desc
+        meeting.save()
+        return JsonResponse({"status": True})
+    
+    return JsonResponse({"status" : False})
 
 @csrf_exempt
-@require_http_methods(["DELETE"])
 @login_required
-def delete_meeting(request, meeting_id):
+@require_POST
+def delete_meeting(request):
+    meet_id = request.POST.get("meet_id")
+    if not meet_id:
+        return JsonResponse({"error": "Missing required fields"}, status=400)
+
     try:
-        meeting = Meeting.objects.get(id=meeting_id)
+        meeting = Meeting.objects.get(id=meet_id)
     except Meeting.DoesNotExist:
         return JsonResponse({"error": "Meeting not found"}, status=404)
     
-    # Invalid club member
-    if meeting.calendar.club is not None:
-        if not Membership.objects.filter(user=request.user, club=meeting.calendar.club, role__in=['organizer', 'admin']).exists():
+    calendar = meeting.calendar
+    
+    # Club
+    if calendar.club:
+        if not is_member(user=request.user, club=calendar.club, role="organizer"):
             return JsonResponse({"error" : "You are not a leader of this club"}, status=403)
-    # Invalid user id
-    if meeting.calendar.user is not None:
-        if meeting.calendar.user != request.user:
-            return JsonResponse({"error" : "Cannot delete calendar of another user"}, status=403)
-    meeting.delete()
-    return JsonResponse({"status": "deleted"})
+        meeting.delete()
+        return JsonResponse({"status": True})
+    
+    # User
+    if calendar.user:
+        if calendar.user != request.user:
+            return JsonResponse({"error": "this meeting does not belong to you"}, status=403)
+        meeting.delete()
+        return JsonResponse({"status": True})
+    
+    return JsonResponse({"status" : False})

@@ -5,8 +5,9 @@ from clubs.models import Club, Membership
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET, require_http_methods
 from models import User
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+
 
 ''' INTERNAL LOGIC -- NOT CALLED BY URL '''
 def is_member(user: User, club: Club, role='default'):
@@ -16,13 +17,10 @@ def is_member(user: User, club: Club, role='default'):
     if not user.is_authenticated:
         return False
     
-    if role == 'default':
-        # Filter based on parameters
-        us_member = Membership.objects.filter(user=user, club=club)
-    else:
-        us_member = Membership.objects.filter(user=user, club=club, role=role)
-    # Return bool of existence of Membership object
-    return us_member.exists()
+    qs = Membership.objects.filter(user=user, club=club)
+    if role:
+        qs = qs.filter(role=role)
+    return qs.exists()
 
 @csrf_exempt
 @require_POST
@@ -37,7 +35,7 @@ def login_user(request):
 
     if user is not None:
         login(request, user)
-        return JsonResponse({'success': True, 'user_id': user.id})
+        return JsonResponse({'status': True})
     else:
         return JsonResponse({'error': 'Invalid credentials'}, status=401)
 
@@ -49,7 +47,7 @@ def create_user(request):
     ''' Create a new user '''
     
     required = ["username", "password", "first_name", "last_name", "email"]
-    missing = [f for f in required if f not in request or not request[f]]
+    missing = [f for f in required if not request.POST.get(f)]
     if missing:
         return JsonResponse({"error" : "Missing required fields"}, status=400)
 
@@ -71,7 +69,7 @@ def create_user(request):
     
     new_user.set_password(password)
     new_user.save()
-    return JsonResponse({"user_id": new_user.id, 'username' : new_user.username})
+    return JsonResponse({"status" : True, "user_id": new_user.id})
 
 @login_required
 def get_user_data(request):
@@ -79,17 +77,14 @@ def get_user_data(request):
     
     # Get own data
     if not user_id:
-        bio = request.user.bio or None
-        profile_picture = request.user.profile_picture.url or None
-
         response = {
             "id": request.user.id,
             "username": request.user.username,
             "first_name": request.user.first_name,
             "last_name": request.user.last_name,
             "email": request.user.email,
-            "bio": bio,
-            "profile_picture": profile_picture
+            "bio": request.user.bio or "",
+            "profile_picture": request.user.profile_picture.url if request.user.profile_picture else None
         }
         return JsonResponse(response)
     
@@ -122,8 +117,7 @@ def update_user(request):
     ''' Update non critical user fields '''
     required = ["username", "first_name", "last_name", "email"]
     
-    all_missing = all(f not in request or not request[f] for f in required)
-    if all_missing:
+    if all(not request.POST.get(f) for f in required):
         return JsonResponse({"error" : "Missing required field(s)"}, status=400)
 
     username = request.POST.get('username')
@@ -132,45 +126,36 @@ def update_user(request):
     email = request.POST.get('email')
     bio = request.POST.get('bio')
     profile_picture = request.FILES.get('profile_picture')
-
-    updated = []
     
     # Update username
     if username:
         # Already exists
-        if User.objects.filter(username=username).exists():
+        if User.objects.filter(username=username).exclude(id=request.user.id).exists():
             return JsonResponse({'error' : 'username already exists.'}, status=409) 
-
         request.user.username = username
-        updated.append(('username', request.user.username))
     
     # Update first name
     if first_name:
         request.user.first_name = first_name
-        updated.append(('first_name', request.user.first_name))
 
     # Update last name
     if last_name:
         request.user.last_name = last_name
-        updated.append(('last_name', request.user.last_name))
 
     # Update email
     if email:
         request.user.email = email
-        updated.append(('email', request.user.email))
 
     # Update bio
     if bio:
         request.user.bio = bio
-        updated.append(('bio', request.user.bio))
 
     # Update profile_picture
     if profile_picture:
         request.user.profile_picture = profile_picture
-        updated.append(('profile_picture', request.user.profile_picture))
 
     request.user.save()
-    return JsonResponse(updated, safe=False)
+    return JsonResponse({"status" : True})
 
 @csrf_exempt
 @require_POST
@@ -182,14 +167,17 @@ def update_password(request):
         return JsonResponse({"error": "missing fields"}, status=400)
 
     request.user.set_password(password)
-
     request.user.save()
 
-    return JsonResponse({"sucess": "password updated"})
+    # Maintain login for user
+    update_session_auth_hash(request, request.user)
+
+    return JsonResponse({"status": True})
 
 @csrf_exempt
 @require_POST
 @login_required
 def delete_user(request):
     request.user.delete()
-    return JsonResponse({"success": True})
+    logout(request)
+    return JsonResponse({"status": True})
