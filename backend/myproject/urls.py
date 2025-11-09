@@ -34,4 +34,7 @@ urlpatterns = [
     # User endpoints
     path(f'user/', include(user_urls)),
 
+    # Documents
+    path(f"documents/", include("documents.urls")),
+
 ]
