@@ -21,15 +21,17 @@ export async function newClub(name, description)
 {
   try 
   {
-    const response = await api.get(`/clubs/new/`, {
-      club_name: name,
-      club_description: description
+    const response = await api.post(`/clubs/new/`, null, {
+      params: {
+        club_name: name,
+        club_description: description
+      }
     });
     return response.data;
   }
   catch (error)
   {
-    console.error("Get clubs failed:", error);
-    return null;
+    console.error("Create club failed:", error);
+    throw error;
   }
 }

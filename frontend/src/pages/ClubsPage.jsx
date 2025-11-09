@@ -1,10 +1,22 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getClubs } from "../services/clubService";
+import { getClubs, newClub } from "../services/clubService";
+import ClubCard from "../components/clubs/ClubCard";
+import CreateClubCard from "../components/clubs/CreateClubCard";
+import CreateClubModal from "../components/clubs/CreateClubModal";
+import { 
+  TextField, 
+  InputAdornment, 
+  Container, 
+  Typography, 
+  Box,
+  Grid
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 export default function ClubsPage() {
   const [clubs, setClubs] = useState([]);
-  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     getClubs().then(data => {
@@ -12,24 +24,100 @@ export default function ClubsPage() {
     });
   }, []);
 
-  const goToClub = (id) => {
-    navigate(`/club/${id}`);
+  // Filter clubs based on search query
+  const filteredClubs = clubs.filter(club => 
+    club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    club.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCreateClub = async (clubData) => {
+    const result = await newClub(clubData.name, clubData.description);
+    if (result) {
+      // refresh the clubs list
+      const updatedClubs = await getClubs();
+      if (updatedClubs) setClubs(updatedClubs);
+    }
   };
 
   return (
-    <div className="bg-blue-50 min-h-screen flex flex-col items-center p-6">
-      <h1 className="text-3xl font-bold mb-6">Clubs</h1>
-      <ul className="w-full max-w-md space-y-3">
-        {clubs.map((club) => (
-          <li
-            key={club.id}
-            onClick={() => goToClub(club.id)}
-            className="p-4 bg-white rounded-lg shadow hover:bg-red-500 cursor-pointer transition-colors duration-200"
-          >
-            {club.name}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Box sx={{ bgcolor: 'grey.50', minHeight: '100vh', py: 4 }}>
+      <Container maxWidth="lg">
+        {/* Page Title */}
+        <Typography 
+          variant="h3" 
+          component="h1" 
+          gutterBottom 
+          sx={{ fontWeight: 700, mb: 3, textAlign: 'center' }}
+        >
+          Clubs
+        </Typography>
+
+        {/* Search Bar */}
+        <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center' }}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Search clubs by name or description..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            sx={{ maxWidth: 600 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon color="action" />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+
+        {/* Clubs Grid */}
+        <Grid container spacing={3}>
+          {/* Create Club Card - only show if no search query */}
+          {!searchQuery && (
+            <Grid item xs={12} sm={6} md={4}>
+              <CreateClubCard onClick={handleOpenModal} />
+            </Grid>
+          )}
+          
+          {filteredClubs.length > 0 ? (
+            filteredClubs.map((club) => (
+              <Grid item xs={12} sm={6} md={4} key={club.id}>
+                <ClubCard club={club} />
+              </Grid>
+            ))
+          ) : (
+            <Grid item xs={12}>
+              <Typography 
+                variant="body1" 
+                color="text.secondary" 
+                sx={{ textAlign: 'center', mt: 4 }}
+              >
+                {searchQuery ? 'No clubs found matching your search.' : 'No clubs available.'}
+              </Typography>
+            </Grid>
+          )}
+        </Grid>
+
+        {/* Create Club Modal */}
+        <CreateClubModal 
+          open={isModalOpen}
+          onClose={handleCloseModal}
+          onCreateClub={handleCreateClub}
+        />
+      </Container>
+    </Box>
   );
 }
