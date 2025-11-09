@@ -24,7 +24,7 @@ import calendar.urls as cal_urls
 import users.urls as user_urls
 
 urlpatterns = [
-    path(f'{settings.API_URL}/admin/', admin.site.urls),
+    path(f'admin/', admin.site.urls),
     # Club endpoints
     path(f'clubs/', include(club_urls)),
 
