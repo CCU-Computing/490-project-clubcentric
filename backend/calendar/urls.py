@@ -1,32 +1,24 @@
 from django.urls import path
-from calendar import views 
-
-# Define app_name for namespace isolation (good practice)
-app_name = 'calendar_app'
+from . import views 
 
 urlpatterns = [
-    # --- Calendar Endpoints ---
-    # Final URL: /api/calendar/list/
-    path('list/', views.calendars_list, name='calendar-list'),
+    # Calendar
     
-    # Final URL: /api/calendar/create/
+    # GET
+    path('get/', views.calendars_list, name='calendar-get'),
+    
+    # POST
     path('create/', views.create_calendar, name='calendar-create'),
-    
-    # Final URL: /api/calendar/1/delete/
-    path('<int:calendar_id>/delete/', views.delete_calendar, name='calendar-delete'),
+    path('update/', views.update_calendar, name='calendar-update'),
+    path('delete/', views.delete_calendar, name='calendar-delete'),
 
+    # Meeting
 
-
-    # --- Meeting Endpoints ---
-    # Final URL: /api/calendar/meetings/list/
+    # GET
     path('meetings/list/', views.meetings_list, name='meeting-list'),
     
-    # Final URL: /api/calendar/meetings/create/
+    # POST
     path('meetings/create/', views.create_meeting, name='meeting-create'),
-    
-    # Final URL: /api/calendar/meetings/1/update/
-    path('meetings/<int:meeting_id>/update/', views.update_meeting, name='meeting-update'),
-    
-    # Final URL: /api/calendar/meetings/1/delete/
-    path('meetings/<int:meeting_id>/delete/', views.delete_meeting, name='meeting-delete'),
+    path('meetings/update/', views.update_meeting, name='meeting-update'),
+    path('meetings/delete/', views.delete_meeting, name='meeting-delete'),
 ]
