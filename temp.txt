@@ -1,5 +1,12 @@
 Checklist: Backend
 
+return structure for post
+invalid: 
+    error : description
+valid:
+    status: bool, info : info
+lists are separate
+
 Models: (views +)
     User
         - username

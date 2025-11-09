@@ -11,6 +11,7 @@ from datetime import datetime
 from django.views.decorators.http import require_POST
 from urllib.parse import parse_qs
 from django.utils.text import slugify
+from django.db import models
 import hashlib
 import json
 
@@ -21,8 +22,8 @@ import json
 @require_POST
 @login_required
 def create_club(request):
-    club_name = request.GET.get("club_name")
-    club_description = request.GET.get("club_description")
+    club_name = request.POST.get("club_name")
+    club_description = request.POST.get("club_description")
 
     if not club_name or not club_description:
         return JsonResponse({"error" : "Missing required fields"}, status=400)
@@ -31,7 +32,7 @@ def create_club(request):
         return JsonResponse({"error": "Club already exists"}, status=409)
     
     club = Club.objects.create(name=club_name, description=club_description)
-    return JsonResponse({"id" : club.id, "name" : club.name})
+    return JsonResponse({"status": True, "id" : club.id})
     
 def view_clubs(request):
     club_id = request.GET.get("club_id")
@@ -45,12 +46,13 @@ def view_clubs(request):
      
     # Return club data based on ID
     try:
-        club = Club.objects.get(id=club_id)
-        data = {"id" : club.id, "name" : club.name, "description" : club.description}
-        return JsonResponse(data)
+        club = Club.objects.get(id=club_id)   
     # Club not found
     except Club.DoesNotExist:
         return JsonResponse({"error" : "Club not found"}, status=404)
+    
+    data = {"id" : club.id, "name" : club.name, "description" : club.description}
+    return JsonResponse(data)
 
 @login_required
 @csrf_exempt
@@ -91,6 +93,7 @@ def update_club(request):
         club.links = club_links
         updated.append(("club_links", club.links))
 
+    club.save()
     return JsonResponse(updated, safe=False)
 
 @csrf_exempt
@@ -134,13 +137,14 @@ def delete_club(request):
         manager.delete()
 
     club.delete()
-    return JsonResponse({"status": "deleted"})
+    return JsonResponse({"status": True})
 
 ''' MEMBERSHIP CRUD '''
 
 @login_required
+@require_POST
 def join_club(request):
-    club_id = request.GET.get("club_id")
+    club_id = request.POST.get("club_id")
     if not club_id:
         return JsonResponse({"error": "missing required fields"}, status=400)
     try:
@@ -219,7 +223,7 @@ def update_membership(request):
     if not user_id or not club_id or not new_role:
         return JsonResponse({"error": "missing required fields"}, status=400)
     
-    if new_role != "member" or new_role != "organizer":
+    if new_role not in ["member", "organizer"]:
         return JsonResponse({"error": "invalid new_role entry"}, status=400)
 
     try:
@@ -242,7 +246,7 @@ def update_membership(request):
             membership = Membership.objects.get(user=user, club=club)
             membership.role = new_role
             membership.save()
-            return JsonResponse({"success": True})
+            return JsonResponse({"status": True})
 
         else:
             return JsonResponse({"error": "user not a member of requested club"}, status=403)
@@ -278,7 +282,7 @@ def delete_membership(request):
             if is_member(user=user, club=club, role='member'):
                 member = Membership.objects.get(user=user, club=club, role='member')
                 member.delete()
-                return JsonResponse({"success": True})
+                return JsonResponse({"status": True})
 
             elif is_member(user=user, club=club, role='organizer'):
                 return JsonResponse({"error": "cannot remove fellow organizer"}, status=403)
@@ -294,13 +298,14 @@ def delete_membership(request):
         if is_member(user=request.user, club=club):
             member = Membership.objects.get(user=request.user, club=club)
             member.delete()
-            return JsonResponse({"success": True})
+            return JsonResponse({"status": True})
         
         else:
             return JsonResponse({"error": "you are not a member of this club"}, status=404)
 
 ''' MERGE REQUEST CRUD '''
 @login_required
+@require_POST
 def create_merge_request(request):
     club_id_1 = request.POST.get("club_id_1")
     club_id_2 = request.POST.get("club_id_2")
@@ -323,11 +328,13 @@ def create_merge_request(request):
         if MergeRequest.objects.filter(club_1=club_1, club_2=club_2).exists() or MergeRequest.objects.filter(club_1=club_2, club_2=club_1).exists():
             return JsonResponse({"error": "request already exists"}, status=409)
         
-        request = MergeRequest.objects.create(club_1=club_1, )
-
+        request = MergeRequest.objects.create(club_1=club_1, club_2=club_2, accepted_1=True, merged_club=None)
+        return JsonResponse({"status": True})
+    else:
+        return JsonResponse({"error": "you are not an organizer of this club"}, status=403)
 
 @login_required
-def view_merge_status(request):
+def view_merge_request(request):
     club_id = request.GET.get("club_id")
 
     if not club_id:
@@ -343,18 +350,77 @@ def view_merge_status(request):
         request = MergeRequest.objects.filter(club_2=club)
         if not request.exists():
             return JsonResponse({"error": "merge request for this club does not exist"}, status=404)
+    
+    # Request exists
+    if not request.accepted_1:
+        return JsonResponse({"awaiting": request.club_1.id})
+    
+    if not request.accepted_2:
+        return JsonResponse({"awaiting": request.club_2.id})
 
 @login_required
-def update_merge_status(request):
-    pass
+@require_POST
+def update_merge_request(request):
+    club_id = request.POST.get("club_id")
+
+    if not club_id:
+        return JsonResponse({"error": "missing required fields"}, status=400)
+    
+    try:
+        club = Club.objects.get(id=club_id)
+    except Club.DoesNotExist:
+        return JsonResponse({"error": "club not found"}, status=404)
+    
+    if not is_member(user=request.user, club=club, role="organizer"):
+        return JsonResponse({"error": "you are not an organizer of this club"}, status=403)
+
+    merge_req = MergeRequest.objects.filter(
+        models.Q(club_1=club) | models.Q(club_2=club)
+    ).first()
+    
+    if not merge_req:
+        return JsonResponse({"error": "merge request for this club does not exist"}, status=404)
+
+    ready = merge_req.accept(club)
+    
+    if ready:
+        if not merge_req.created:
+            merge_req.perform_merge()
+            return JsonResponse({"status": True, "merged_id": merge_req.new_club.id})
+        else:
+            return JsonResponse({"status" : True, "merged_id": merge_req.new_club.id})
+    else:
+        if not request.accepted_1:
+            return JsonResponse({"status": True, "awaiting": merge_req.club_2.id})
+    
+        if not request.accepted_2:
+            return JsonResponse({"status": True, "awaiting" : merge_req.club_1.id})
+
 
 @login_required
+@require_POST
 def delete_merge_request(request):
-    pass
+    club_id = request.POST.get("club_id")
 
-@login_required
-def merge_club(request):
-    ''' Merge two clubs '''
+    if not club_id:
+        return JsonResponse({"error": "missing required fields"}, status=400)
+    
+    try:
+        club = Club.objects.get(id=club_id)
+    except Club.DoesNotExist:
+        return JsonResponse({"error": "club not found"}, status=404)
+    
+    if not is_member(user=request.user, club=club, role="organizer"):
+        return JsonResponse({"error": "you are not an organizer of this club"}, status=403)
 
+    merge_req = MergeRequest.objects.filter(
+        models.Q(club_1=club) | models.Q(club_2=club)
+    ).first()
+    
+    if not merge_req:
+        return JsonResponse({"error": "merge request for this club does not exist"}, status=404)
 
+    merge_req.delete()
+    
+    return JsonResponse({"status": True})
 

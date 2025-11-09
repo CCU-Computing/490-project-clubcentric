@@ -24,8 +24,6 @@ def is_member(user: User, club: Club, role='default'):
     # Return bool of existence of Membership object
     return us_member.exists()
 
-
-
 @csrf_exempt
 @require_POST
 def login_user(request):
@@ -188,7 +186,6 @@ def update_password(request):
     request.user.save()
 
     return JsonResponse({"sucess": "password updated"})
-
 
 @csrf_exempt
 @require_POST
