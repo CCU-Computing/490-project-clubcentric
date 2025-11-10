@@ -11,6 +11,7 @@ import Navbar from './components/navbar/Navbar' // Navigation Bar
 import ClubSearch from './pages/ClubSearch'
 import ProtectedRoute from './components/auth/AuthProvider';
 
+
 function App() {
 
   return (
@@ -47,6 +48,16 @@ function App() {
                 {
                   <ProtectedRoute>
                     <ClubsPage/>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route 
+                path="/club_search" 
+                element=
+                {
+                  <ProtectedRoute>
+                    <ClubSearch/>
                   </ProtectedRoute>
                 }
               />
