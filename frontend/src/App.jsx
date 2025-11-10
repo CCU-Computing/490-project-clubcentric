@@ -10,6 +10,7 @@ import ProfilePage from "./pages/ProfilePage";
 import Navbar from './components/navbar/Navbar' // Navigation Bar
 import ClubSearch from './pages/ClubSearch'
 import ProtectedRoute from './components/auth/AuthProvider';
+import ClubSearch from './pages/ClubSearch';
 
 function App() {
 
@@ -47,6 +48,16 @@ function App() {
                 {
                   <ProtectedRoute>
                     <ClubsPage/>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route 
+                path="/club_search" 
+                element=
+                {
+                  <ProtectedRoute>
+                    <ClubSearch/>
                   </ProtectedRoute>
                 }
               />

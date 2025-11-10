@@ -1,0 +1,215 @@
+.no-clubs {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.club-search-container {
+  min-height: 100vh;
+  position: relative; 
+  z-index: 1; /* Keep content above the background */
+}
+
+.club-search-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../assets/images/BGImage.jpg'); 
+  background-position: center;
+  background-attachment: fixed; /* Keep it fixed for scrolling effect */
+  background-size: cover;
+  filter: blur(2px); 
+  z-index: -1;
+}
+
+/* --- FIX: Remove top white bar --- */
+html, body, #root {
+  margin: 0; 
+  padding: 0;
+  height: 100%;
+  background: none;
+}
+
+/* --- HOMEPAGE CONTAINER --- */
+.homepage-container {
+  font-family: Arial, sans-serif;
+  color: #333;
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  z-index: 0; /* FIX: ensure content sits above pseudo-element */
+}
+
+/* --- BACKGROUND IMAGE --- */
+.homepage-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  background-image: url('../assets/images/homeBG.jpg'); 
+  background-position: center;
+  background-attachment: fixed;
+  background-size: cover;
+  
+  filter: blur(2px) brightness(0.8); 
+  
+  z-index: -1; /* FIX: properly behind content but above body */
+}
+
+/* --- HERO SECTION --- */
+.hero-section {
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 20px;
+  color: white;
+}
+
+.hero-content {
+  background: rgba(0, 0, 0, 0.55);
+  padding: 30px 40px;
+  border-radius: 8px;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.cta-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #006f71;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cta-button:hover {
+  background-color: #005b5d;
+}
+
+/* --- SEARCH SECTION --- */
+.search-overview {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+/* ✅ “Quick Search” above the bar, with white background but no layout shift */
+.search-overview h2 {
+  display: block;
+  margin-bottom: 15px;
+  background-color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.quick-search-input {
+  max-width: 400px;
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.highlighted-clubs {
+  padding: 40px 20px;
+  background-color: rgba(255, 255, 255, 0.85); 
+  border-radius: 8px;
+  margin: 20px auto;
+  width: 90%;
+  max-width: 1000px;
+  text-align: center; /* ✅ Centers all text in this section */
+}
+
+
+.club-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.club-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.club-card:hover {
+  transform: translateY(-3px);
+  background-color: #e8fdf9;
+}
+
+.no-clubs {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* --- EXPLORE MORE --- */
+.explore-more {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+/* ✅ Matching background for “Want to explore more?” */
+.explore-more h2 {
+  display: block;
+  margin-bottom: 15px;
+  background-color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
+/* ✅ Made the bottom “Browse Clubs” button solid */
+.secondary-cta {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #006f71; /* solid color */
+  color: white;
+  border: 2px solid #006f71;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.secondary-cta:hover {
+  background-color: #005b5d;
+  border-color: #005b5d;
+  color: white;
+}
