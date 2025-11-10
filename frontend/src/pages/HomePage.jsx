@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getClubs } from "../services/clubService";
 import "../components/homePage.css";
-// IMPORTANT: Ensure the 'homeBG' import is NOT present here.
 
 export default function HomePage() {
   const [clubs, setClubs] = useState([]);
@@ -27,8 +26,7 @@ export default function HomePage() {
   );
 
   return (
-    // Background is handled entirely by CSS on this container
-    <div className="homepage-container"> 
+    <div className="homepage-container">
       {/* Hero Section */}
       <header className="hero-section">
         <div className="hero-content">
@@ -43,19 +41,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* Search and Clubs */}
-      <section className="search-overview">
-        <h2>Quick Search</h2>
-        <input
-          type="text"
-          placeholder="Search clubs..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="quick-search-input"
-        />
-      </section>
-
-      {/* Featured Clubs */}
+      {/* ✅ Featured Clubs */}
       <section className="highlighted-clubs">
         <h2>Featured Clubs</h2>
         <div className="club-cards">
@@ -73,6 +59,57 @@ export default function HomePage() {
             <div className="no-clubs">No clubs found.</div>
           )}
         </div>
+      </section>
+
+      {/* ✅ NEW: Events Section */}
+      <section className="highlighted-clubs">
+        <h2>Events</h2>
+        <div className="club-cards">
+          {/* Placeholder items — replace with actual event objects later */}
+          <div className="club-card">
+            <h3>Welcome Back Bash</h3>
+            <p>Kick off the semester with food, games, and student org booths.</p>
+          </div>
+          <div className="club-card">
+            <h3>Leadership Summit</h3>
+            <p>Workshops and panels designed to grow your leadership skills.</p>
+          </div>
+          <div className="club-card">
+            <h3>Volunteer Day</h3>
+            <p>Join students for a community cleanup and service projects.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ✅ NEW: Documents Section (under Events) */}
+      <section className="highlighted-clubs">
+        <h2>Documents</h2>
+        <div className="club-cards">
+          <div className="club-card">
+            <h3>Club Registration Packet</h3>
+            <p>Information required to register or renew a club.</p>
+          </div>
+          <div className="club-card">
+            <h3>Event Planning Guide</h3>
+            <p>A checklist to help organize and host campus events.</p>
+          </div>
+          <div className="club-card">
+            <h3>Funding Request Form</h3>
+            <p>Instructions and requirements for applying for club funding.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Search Section */}
+      <section className="search-overview">
+        <h2>Quick Search</h2>
+        <input
+          type="text"
+          placeholder="Search clubs..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="quick-search-input"
+        />
       </section>
 
       {/* Explore More */}
