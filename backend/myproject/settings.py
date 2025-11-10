@@ -49,15 +49,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',       # For API endpoints
     'corsheaders',          # To allow React frontend requests
-    'club',
-    'calendars',
-    'documents'
+    #'clubs',
+    #'calendar',
+    #'document',
+    #'users'
+    '_club',
+    '_documents',
+    '_calendars',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -95,6 +99,7 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
+    "http://127.0.0.1:5173",
 ]
 
 
