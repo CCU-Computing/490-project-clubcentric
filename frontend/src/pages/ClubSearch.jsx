@@ -34,8 +34,6 @@ function ClubSearch() {
 
     return (
         <div className="club-search-container">
-            <div className="app">
-                {/* Home Screen */}
                 <div className="home-screen welcome-box">
                     <h1>Welcome to the Clubs Directory</h1>
                 </div>
@@ -55,12 +53,13 @@ function ClubSearch() {
                             filteredClubs.map((club, index) => (
                                 <div key={index} className="club">
                                     <h3>{club.name}</h3>
-                                    <p>{club.description}</p>
+                                    {/* Swapped order: Tags are now above Description */}
                                     <div className="tags">
                                         {club.tags.map((tag, i) => (
                                             <span key={i} className="tag">{tag}</span>
                                         ))}
                                     </div>
+                                    <p>{club.description}</p>
                                     <a href={club.page}>Visit Page →</a>
                                 </div>
                             ))
@@ -70,8 +69,7 @@ function ClubSearch() {
                     </div>
                 </div>
             </div>
-        </div>
-    );
+    )
 }
 
 export default ClubSearch;
