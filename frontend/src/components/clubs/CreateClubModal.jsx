@@ -61,7 +61,7 @@ export default function CreateClubModal({ open, onClose, onCreateClub }) {
         name: clubName.trim(),
         description: clubDescription.trim(),
         summary: clubSummary.trim(),
-        VideoEmbed: clubVideoEmbed.trim()
+        videoEmbed: clubVideoEmbed.trim()
       });
       
       // Reset form and close modal on success
