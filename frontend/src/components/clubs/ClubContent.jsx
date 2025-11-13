@@ -26,6 +26,9 @@ export default function ClubContent({ clubId }) {
     <div>
       <h2>{club.name}</h2>
       <p>{club.description}</p>
+      <p>{club.summary}</p>
+      <p>{club.videoEmbed}</p>
+      
 
      
       <h3>Calendar</h3>
