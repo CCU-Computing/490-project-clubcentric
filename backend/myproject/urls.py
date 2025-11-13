@@ -22,6 +22,7 @@ from rest_framework.routers import DefaultRouter
 import clubs.urls as club_urls
 import calendar.urls as cal_urls
 import users.urls as user_urls
+import document.urls as doc_urls
 
 urlpatterns = [
     path(f'admin/', admin.site.urls),
@@ -35,6 +36,6 @@ urlpatterns = [
     path(f'user/', include(user_urls)),
 
     # Documents
-    path(f"documents/", include("documents.urls")),
+    path(f"documents/", include(doc_urls)),
 
 ]

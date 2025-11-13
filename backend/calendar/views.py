@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from django.views.decorators.http import require_POST, require_GET, require_http_methods
 from urllib.parse import parse_qs
-from models import User
+from .models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.decorators import login_required

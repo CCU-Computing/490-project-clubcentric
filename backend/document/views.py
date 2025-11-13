@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
-from forms import DocumentForm
+from .forms import DocumentForm
 from rest_framework import viewsets
-from _documents.models import Document, DocumentManager
-from serializers import DocumentSerializer
+from .serializers import DocumentSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
 from django.http import JsonResponse
@@ -13,6 +12,7 @@ from datetime import datetime
 import uuid
 from django.contrib.auth.decorators import login_required
 from users.views import is_member
+from .models import DocumentManager, Document
 
 @csrf_exempt
 @require_POST

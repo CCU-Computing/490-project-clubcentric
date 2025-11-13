@@ -15,8 +15,8 @@ class Club(models.Model):
 class Membership(models.Model):
     # A membership is tied to one user and club at a time
     # Multiple memberships can exist for a club or user
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="member_user")
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="member_club")
     # Roles each user can have in a club
     role = models.CharField(max_length=50, choices=[
         ('member', 'Member'),
@@ -29,8 +29,8 @@ class Membership(models.Model):
         unique_together = ('user', 'club')
 
 class MergeRequest(models.Model):
-    club_1 = models.ForeignKey(Club, on_delete=models.CASCADE)
-    club_2 = models.ForeignKey(Club, on_delete=models.CASCADE)
+    club_1 = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="club_a_merge")
+    club_2 = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="club_b_merge")
 
     accepted_1 = models.BooleanField(default=False)
     accepted_2 = models.BooleanField(default=False)

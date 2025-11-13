@@ -4,7 +4,7 @@ from calendar.models import Calendar, Meeting
 from clubs.models import Club, Membership
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET, require_http_methods
-from models import User
+from .models import User
 from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 
