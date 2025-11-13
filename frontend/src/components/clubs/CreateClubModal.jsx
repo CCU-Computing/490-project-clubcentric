@@ -60,6 +60,8 @@ export default function CreateClubModal({ open, onClose, onCreateClub }) {
       await onCreateClub({
         name: clubName.trim(),
         description: clubDescription.trim(),
+        summary: clubSummary.trim(),
+        VideoEmbed: clubVideoEmbed.trim()
       });
       
       // Reset form and close modal on success
@@ -149,7 +151,6 @@ export default function CreateClubModal({ open, onClose, onCreateClub }) {
               value={clubVideoEmbed}
               onChange={(e) => setClubVideoEmbed(e.target.value)}
               fullWidth
-              required
               autoFocus
               disabled={isSubmitting}
               helperText={`${clubVideoEmbed.length}/400 characters`}

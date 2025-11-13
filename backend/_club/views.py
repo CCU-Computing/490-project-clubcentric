@@ -31,7 +31,7 @@ def view_clubs(request):
     # If no id provided, return all clubs
     if not club_id:
         allClubs = [
-            {"id" : c.id, "name" : c.name, "description" : c.description} 
+            {"id" : c.id, "name" : c.name, "description" : c.description, "summary" : c.summary, "videoEmbed" : c.videoEmbed} 
             for c in Club.objects.all()
             ]
         return JsonResponse(allClubs, safe=False)
@@ -39,7 +39,7 @@ def view_clubs(request):
     # Return club data based on ID
     try:
         club = Club.objects.get(id=club_id)
-        data = {"id" : club.id, "name" : club.name, "description" : club.description}
+        data = {"id" : club.id, "name" : club.name, "description" : club.description, "summary" : club.summary, "videoEmbed" : club.videoEmbed}
         return JsonResponse(data)
     # Club not found
     except Club.DoesNotExist:
