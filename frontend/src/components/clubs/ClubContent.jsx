@@ -26,6 +26,17 @@ export default function ClubContent({ clubId }) {
     return match ? match[1] : embedString; // if no match, assume it's already a URL
 }
 
+function isValidUrl(string) {
+        try {
+            return new URL(string) && (string.startsWith('http://') || string.startsWith('https://'));
+        } catch (e) {
+            if (string.includes('youtube.com') || string.includes('youtu.be')) {
+                return true;
+            }
+            return false;
+        }
+    }
+
   if (!club) return <p>Loading...</p>;
 
   
@@ -34,15 +45,17 @@ export default function ClubContent({ clubId }) {
       <h2>{club.name}</h2>
       <p>{club.description}</p>
       <p>{club.summary}</p>
-      <iframe
-        width="950"
-        height="534"
-        src={extractVideoUrl(club.videoEmbed)}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-        style={{ backgroundColor: 'white' }}
-      ></iframe>
+      { (club.videoEmbed && isValidUrl(extractVideoUrl(club.videoEmbed))) && (
+        <iframe
+            width="950"
+            height="534"
+            src={extractVideoUrl(club.videoEmbed)}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+            style={{ backgroundColor: 'white' }}
+        ></iframe>
+    )}
       
 
      
