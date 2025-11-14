@@ -20,14 +20,29 @@ export default function ClubContent({ clubId }) {
     });
   }, [clubId]);
 
+  function extractVideoUrl(embedString) {
+    if (!embedString) return '';
+    const match = embedString.match(/src="(.+?)"/);
+    return match ? match[1] : embedString; // if no match, assume it's already a URL
+}
+
   if (!club) return <p>Loading...</p>;
 
+  
   return (
     <div>
       <h2>{club.name}</h2>
       <p>{club.description}</p>
       <p>{club.summary}</p>
-      <p>{club.videoEmbed}</p>
+      <iframe
+        width="950"
+        height="534"
+        src={extractVideoUrl(club.videoEmbed)}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerPolicy="strict-origin-when-cross-origin"
+        allowFullScreen
+        style={{ backgroundColor: 'white' }}
+      ></iframe>
       
 
      

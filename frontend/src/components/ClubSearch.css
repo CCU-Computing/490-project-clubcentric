@@ -1,6 +1,5 @@
 /* Global and Base Styles */
 body {
-    /* Removed Inter font import, using a standard system stack */
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     margin: 0;
     position: relative;
@@ -20,16 +19,16 @@ body {
     width: 100%;
     height: 100%;
     background-image: url('../assets/images/BGImage.jpg');
-    background-size: cover;      /* fills screen */
-    background-position: center; /* centers image */
-    background-repeat: no-repeat; 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     z-index: -1;
 }
 
 .club-search-container {
     min-height: 100vh;
-    position: relative; 
-    z-index: 1; 
+    position: relative;
+    z-index: 1;
 }
 
 /* Home screen */
@@ -85,7 +84,7 @@ body {
 .main-content {
     flex: 1;
     max-width: 800px;
-    margin: 0 auto; /* Center the content */
+    margin: 0 auto;
 }
 
 /* --------------------------------- */
@@ -97,24 +96,21 @@ body {
     margin-bottom: 25px;
     border-radius: 12px;
     
-    /* Initial state: Just enough height for Name + Tags + Padding */
-    height: 110px; 
+    /* Changed to max-height for dynamic expansion */
+    max-height: 110px; 
     overflow: hidden; 
     position: relative; 
 
-    /* Smooth transition for all properties */
     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
     
-    /* Aesthetics */
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     cursor: pointer;
 }
 
 .club:hover {
-    /* Expanded state */
-    height: 250px; 
+    /* Set a large max-height to accommodate all content (text + resized video) */
+    max-height: 700px; 
     
-    /* Lift and emphasize */
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     transform: translateY(-5px) scale(1.01); 
 }
@@ -137,11 +133,34 @@ body {
 
 /* Show Description on hover */
 .club:hover p {
-    max-height: 200px; 
+    /* Increased max-height to ensure description displays */
+    max-height: 300px; 
     opacity: 1;
     margin-top: 10px;
     margin-bottom: 15px; 
 }
+
+/* NEW VIDEO STYLES (iframe) */
+.club iframe {
+    /* Set a smaller, consistent size for the video */
+    max-width: 100%;
+    width: 600px;
+    height: 337px; /* 16:9 aspect ratio */
+    margin-top: 15px;
+    margin-bottom: 15px;
+
+    /* Initially hide the video */
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Show the video on hover */
+.club:hover iframe {
+    max-height: 400px; /* Must be larger than the height of the video */
+    opacity: 1;
+}
+
 /* --------------------------------- */
 
 /* The tags div is always visible now */
@@ -165,7 +184,6 @@ body {
 
 /* Hiding Link (a) initially using max-height and opacity */
 .club a {
-    /* Change to flow layout for max-height transition to work */
     display: inline-block;
     position: relative;
     bottom: initial;
@@ -188,6 +206,7 @@ body {
 
 /* Show Link on hover */
 .club:hover a {
+    /* Ensured max-height is sufficient for the button */
     max-height: 50px;
     opacity: 1;
     padding: 8px 16px; 
