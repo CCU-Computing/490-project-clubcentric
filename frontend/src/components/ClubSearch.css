@@ -73,6 +73,8 @@ body {
     background: white;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     outline: none;
+    /* FIX: Explicitly set text color to black */
+    color: #000000;
 }
 .search-bar input:focus {
     border-color: #006F71;
@@ -83,7 +85,7 @@ body {
 /* Main Content */
 .main-content {
     flex: 1;
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -96,7 +98,6 @@ body {
     margin-bottom: 25px;
     border-radius: 12px;
     
-    /* Changed to max-height for dynamic expansion */
     max-height: 110px; 
     overflow: hidden; 
     position: relative; 
@@ -108,8 +109,7 @@ body {
 }
 
 .club:hover {
-    /* Set a large max-height to accommodate all content (text + resized video) */
-    max-height: 700px; 
+    max-height: 1000px; 
     
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     transform: translateY(-5px) scale(1.01); 
@@ -133,7 +133,6 @@ body {
 
 /* Show Description on hover */
 .club:hover p {
-    /* Increased max-height to ensure description displays */
     max-height: 300px; 
     opacity: 1;
     margin-top: 10px;
@@ -142,10 +141,9 @@ body {
 
 /* NEW VIDEO STYLES (iframe) */
 .club iframe {
-    /* Set a smaller, consistent size for the video */
     max-width: 100%;
-    width: 600px;
-    height: 337px; /* 16:9 aspect ratio */
+    width: 1000px;
+    height: 562px; 
     margin-top: 15px;
     margin-bottom: 15px;
 
@@ -157,7 +155,7 @@ body {
 
 /* Show the video on hover */
 .club:hover iframe {
-    max-height: 400px; /* Must be larger than the height of the video */
+    max-height: 600px; 
     opacity: 1;
 }
 
@@ -206,7 +204,6 @@ body {
 
 /* Show Link on hover */
 .club:hover a {
-    /* Ensured max-height is sufficient for the button */
     max-height: 50px;
     opacity: 1;
     padding: 8px 16px; 
