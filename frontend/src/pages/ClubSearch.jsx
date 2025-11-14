@@ -89,7 +89,7 @@ function ClubSearch() {
                                 )}
                                 
                                 <p></p>
-                                <a>Visit Page →</a>
+                                <a href={`/club/${club.id}`}>Visit Page →</a>
                             </div>
                         ))
                     ) : (
