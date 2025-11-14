@@ -5,6 +5,7 @@ import '../components/ClubSearch.css';
 function ClubSearch() {
     const [clubs, setClubs] = useState([]);
     const [search, setSearch] = useState("");
+    
 
     useEffect(() => {
         getClubs().then(data => {
@@ -64,9 +65,10 @@ function ClubSearch() {
                             <div key={index} className="club">
                                 <h3>{club.name}</h3>
                                 <div className="tags">
-                                    {club.tags && club.tags.map((tag, i) => (
+                                {/*    {club.tags && club.tags.map((tag, i) => (
                                         <span key={i} className="tag">{tag}</span>
-                                    ))}
+                                    ))} */}
+                                
                                 </div>
                                 <p>{club.description}</p>
                                 
