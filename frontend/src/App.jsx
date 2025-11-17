@@ -9,6 +9,7 @@ import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import Navbar from './components/navbar/Navbar' // Navigation Bar
 import ClubSearch from './pages/ClubSearch'
+import DocumentsPage from "./pages/Documents";
 import ProtectedRoute from './components/auth/AuthProvider';
 
 
@@ -82,10 +83,10 @@ function App() {
                 }
               />
               <Route path="*" element={<Navigate to="/login" replace />} />
+              <Route path="/documents" element={<DocumentsPage managerId={1} />} />
             </Routes>
           }
       />
-
     </>
   )  
 }

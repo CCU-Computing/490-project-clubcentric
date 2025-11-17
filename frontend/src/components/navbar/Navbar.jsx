@@ -36,7 +36,7 @@ export default function Navbar({ content }) {
         position="fixed"
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: '#093331',
+          backgroundColor: '#006F71',
           color: '#fff'
         }}
       >
