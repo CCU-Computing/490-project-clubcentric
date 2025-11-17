@@ -1,0 +1,98 @@
+[
+    {
+        "model": "_club.club",
+        "pk": 1,
+        "fields": {
+            "name": "One Punch Man Club",
+            "description": "This club is for people who love exercise and being a hero for fun!"
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 2,
+        "fields": {
+            "name": "Pokemon Go Club",
+            "description": "Play and get outside with fellow Pokemon Go players!"
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 3,
+        "fields": {
+            "name": "Coastal Activities Board (CAB)",
+            "description": "Provides a variety of quality entertainment and leadership opportunities to all Coastal Carolina University students."
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 4,
+        "fields": {
+            "name": "International Club",
+            "description": "Creates a warm and welcoming space where everyone feels at home! Dive into vibrant cultures, explore exciting places, and make new friends."
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 5,
+        "fields": {
+            "name": "Club Swim",
+            "description": "A place for those who love the water and swimming. We welcome anyone who is willing to work and shares the same passion."
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 6,
+        "fields": {
+            "name": "Anthropology and Geography Club",
+            "description": "Hosts activities, lectures, field trips, and events throughout the year, open to all students regardless of major."
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 7,
+        "fields": {
+            "name": "Coastal Sea Turtle Club",
+            "description": "Involves students in volunteer work and educational activities associated with sea turtle organizations both locally and globally."
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 8,
+        "fields": {
+            "name": "The Sustainability Club",
+            "description": "Creates opportunities for students to proactively engage in service to benefit people, culture, and the environment on and off campus."
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 9,
+        "fields": {
+            "name": "Hiking and Trail Explorers",
+            "description": "Organized hikes and outdoor adventures for all fitness levels to explore local trails."
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 10,
+        "fields": {
+            "name": "Creative Writing Workshop",
+            "description": "A supportive environment for writers of all genres to share work, receive feedback, and improve their craft."
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 11,
+        "fields": {
+            "name": "Culinary Arts & Tasting Club",
+            "description": "Explore different cuisines, share recipes, and host monthly cooking and tasting events."
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 12,
+        "fields": {
+            "name": "Volunteering Outreach Group",
+            "description": "Coordinate and participate in various community service projects to make a positive impact."
+        }
+    }
+]

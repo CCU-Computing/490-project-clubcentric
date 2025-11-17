@@ -4,6 +4,10 @@ from _club.models import Club
 from .models import DocumentManager
 
 @receiver(post_save, sender=Club)
-def create_docmanager_for_club(sender, instance, created, **kwargs):
+def create_docmanager_for_club(sender, instance, created, raw=False, **kwargs):
+    # This check prevents the signal from running when loading fixtures (like with loaddata)
+    if raw:
+        return
+
     if created:
         DocumentManager.objects.create(club=instance)

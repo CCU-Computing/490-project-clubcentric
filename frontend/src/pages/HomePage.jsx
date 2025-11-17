@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getClubs } from "../services/clubService";
-import "../components/homePage.css";
+import "../components/HomePage.css";
 
 export default function HomePage() {
   const [clubs, setClubs] = useState([]);
