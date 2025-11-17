@@ -1,6 +1,6 @@
 from users.models import User
 from django.http import JsonResponse
-from calendar.models import Calendar, Meeting
+from calendar_app.models import Calendar, Meeting
 from clubs.models import Club, Membership
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET, require_http_methods
@@ -12,18 +12,14 @@ from django.contrib.auth.decorators import login_required
 ''' INTERNAL LOGIC -- NOT CALLED BY URL '''
 def is_member(user: User, club: Club, role='default'):
     ''' Check if user is a member of a club, with an optional role '''
-    
-    # Return false if not authenticated
-    if not user.is_authenticated:
-        return False
-    
+
     qs = Membership.objects.filter(user=user, club=club)
-    if role:
+    if role != "default":
         qs = qs.filter(role=role)
     return qs.exists()
 
+
 @csrf_exempt
-@require_POST
 def login_user(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
@@ -39,6 +35,13 @@ def login_user(request):
     else:
         return JsonResponse({'error': 'Invalid credentials'}, status=401)
 
+
+@csrf_exempt
+@login_required
+@require_POST
+def logout_user(request):
+    logout(request)
+    return JsonResponse({"status": True})
 ''' CRUD for user '''
 
 @csrf_exempt
@@ -115,7 +118,7 @@ def get_user_data(request):
 def update_user(request):
 
     ''' Update non critical user fields '''
-    required = ["username", "first_name", "last_name", "email"]
+    required = ["username", "first_name", "last_name", "email", "bio", "profile_picture"]
     
     if all(not request.POST.get(f) for f in required):
         return JsonResponse({"error" : "Missing required field(s)"}, status=400)

@@ -20,7 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter    
 import clubs.urls as club_urls
-import calendar.urls as cal_urls
+import calendar_app.urls as cal_urls
 import users.urls as user_urls
 import document.urls as doc_urls
 
@@ -39,3 +39,6 @@ urlpatterns = [
     path(f"documents/", include(doc_urls)),
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

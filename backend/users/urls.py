@@ -10,6 +10,7 @@ urlpatterns = [
     path("delete/", views.delete_user, name="delete-user"),
 
     # Other
-    path("login/", views.login, name="login-user"),
+    path("login/", views.login_user, name="login-user"),
+    path("logout/", views.logout_user, name="logout-user"),
     path("password/", views.update_password, name="password-user")
 ]

@@ -1,6 +1,6 @@
 
 from django.http import JsonResponse
-from calendar.models import Calendar, Meeting
+from calendar_app.models import Calendar, Meeting
 from clubs.models import Club, Membership
 from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import csrf_exempt
@@ -53,14 +53,7 @@ def create_calendar(request):
 def calendars_list(request):
     '''List calendars for a user or a club'''
     club_id = request.GET.get("club_id")
-    user_id = request.GET.get("user_id")
-    
-    # Check proper arguments
-    if not club_id and not user_id:
-        return JsonResponse({"error": "Missing club_id or user_id"}, status=400)
-    if club_id and user_id:
-        return JsonResponse({'error': "Specify either a user or club"}, status=400)
-    
+
     # Return club calendars
     if club_id:  
         # Get the club from ID
@@ -81,10 +74,10 @@ def calendars_list(request):
         return JsonResponse(allCals, safe=False)
     
     # Return user calendars
-    if user_id:  
+    else:  
         # Get the club from ID
         try:
-            user = User.objects.get(id=user_id)
+            user = User.objects.get(id=request.user.id)
         except User.DoesNotExist:
             return JsonResponse({"error": "User not found"}, status=404)
         

@@ -61,7 +61,7 @@ def get_managers(request):
         return JsonResponse(managers, safe=False)
     else:
         managers = []
-        for manager in request.user.document_managers.all():
+        for manager in DocumentManager.objects.filter(user=request.user):
             managers.append({"id": manager.id, "name" : manager.name})
         return JsonResponse(managers, safe=False)
 
@@ -136,45 +136,29 @@ def upload_document(request):
     except DocumentManager.DoesNotExist:
         return JsonResponse({"error" : "Document manager not found"}, status=404)
     
+    if Document.objects.filter(title=title, document_manager=document_manager).exists():
+        return JsonResponse({"error": "document already exists with the same title"}, status=409)
+
+    # May be wrong to do uploaded_file.name
     if document_manager.club:
         if not is_member(user=request.user, club=document_manager.club, role="organizer"):
             return JsonResponse({"error": "you are not an organizer of the associated club"}, status=403)
-        
-        if Document.objects.filter(title=title, document_manager=document_manager).exists():
-            return JsonResponse({"error": "document already exists with the same title"}, status=409)
-
-        # May be wrong to do uploaded_file.name
-        path = f"{document_manager.club.id}/documents/manager_{manager_id}/{uuid.uuid4().hex}_{uploaded_file.name}"
-
-        save_path = default_storage.save(path, uploaded_file)
-
-        doc = Document.objects.create(
-            title=title,
-            file=save_path,
-            uploaded_at=datetime.now(),
-            document_manager=document_manager
-        )
-        return JsonResponse({"status": True, "id" : doc.id})
-    # User
+    
+        store_id = f"club_{document_manager.club.id}"
     else:
-        if request.user != document_manager.user:
-            return JsonResponse({"error": "cannot upload to a manager that is not yours"}, status=403)
-        
-        if Document.objects.filter(title=title, document_manager=document_manager).exists():
-            return JsonResponse({"error": "document already exists with the same title"}, status=409)
+        store_id = f"user_{request.user.id}"
+    path = f"{store_id}/documents/manager_{manager_id}/{uuid.uuid4().hex[:8]}_{uploaded_file.name}"
 
-        # May be wrong to do uploaded_file.name
-        path = f"{request.user.id}/documents/manager_{manager_id}/{uuid.uuid4().hex}_{uploaded_file.name}"
+    save_path = default_storage.save(path, uploaded_file)
 
-        save_path = default_storage.save(path, uploaded_file)
-
-        doc = Document.objects.create(
-            title=title,
-            file=save_path,
-            uploaded_at=datetime.now(),
-            document_manager=document_manager
-        )
-        return JsonResponse({"status": True, "id" : doc.id})
+    doc = Document.objects.create(
+        title=title,
+        file=save_path,
+        uploaded_at=datetime.now(),
+        document_manager=document_manager
+    )
+    doc.save()
+    return JsonResponse({"status": True, "id" : doc.id})
 
 @login_required
 @csrf_exempt
@@ -206,12 +190,12 @@ def get_documents(request):
         return JsonResponse({
             "id": document.id,
             "title": document.title,
-            "file": request.build_absolute_url(document.file.url)
+            "file": request.build_absolute_uri(document.file.url)
         })
 
     if manager_id:
         try:
-            manager = DocumentManager.objects.filter(id=manager_id)
+            manager = DocumentManager.objects.get(id=manager_id)
         except DocumentManager.DoesNotExist:
             return JsonResponse({"error": "manager not found"}, status=404)
         

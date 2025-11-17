@@ -17,6 +17,8 @@ AUTH_USER_MODEL = 'users.User'
 API_URL = os.environ.get("API_URL")
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "/media/"
 
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 env = environ.Env(
@@ -35,9 +37,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -50,7 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',       # For API endpoints
     'corsheaders',          # To allow React frontend requests
     'clubs',
-    'calendar',
+    'calendar_app',
     'document',
     'users',
 ]
@@ -58,9 +57,9 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
