@@ -71,16 +71,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
-              <Route 
-                path="/club_search" 
-                element=
-                {
-                  <ProtectedRoute>
-                    <ClubSearch/>
-                  </ProtectedRoute>
-                }
-              />
               <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
           }
