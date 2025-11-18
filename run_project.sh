@@ -68,4 +68,4 @@ wait
 # 3.  **Run:** Make sure your virtual environment is active (like in your screenshot), then run: (also be in the main project repo folder)
 # ```bash
 
-# ./run_project.sh    ~~~OR~~~   # ./run_project.sh ./run_project.sh --load-data
+# ./run_project.sh    ~~~OR~~~   ./run_project.sh --load-data
