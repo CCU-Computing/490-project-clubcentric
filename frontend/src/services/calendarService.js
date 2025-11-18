@@ -1,49 +1,62 @@
-// services/clubService.js
 import api from "./api"
 
-export async function listCalendars(club_id) 
+export async function createCalendar(club_id, calendar_name) 
 {
   try 
   {
-    if (club_id == null) 
+    if (calendar_name == null) 
     {
       console.error("Missing fields.");
       return null;
     }
     else 
     {
-      const response = await api.get(`/clubs/calendars/`, { params: { club_id } });
+      // Making user calendar
+      if (club_id == null)
+      {
+        const response = await api.post(`/clubs/calendar/create/`, {
+          calendar_name : calendar_name
+        });
+        return response.data;
+      }
+      // Club calendar
+      else
+      {
+        const response = await api.post(`/clubs/calendar/create/`, {
+          club_id : club_id,
+          calendar_name : calendar_name
+        });
+        return response.data;
+      }
+    }
+  }
+  catch (error)
+  {
+    console.error("Create calendar failed:", error);
+    return null;
+  }
+}
+
+export async function listCalendars(club_id) 
+{
+  try 
+  {
+    // Get user's calendars
+    if (club_id == null) 
+    {
+      const response = await api.get(`/calendar/create/`);
+      return response.data;
+    }
+    // Club's calendars
+    else 
+    {
+      const response = await api.get(`/calendar/get/`, { params: { club_id } });
       return response.data;
     }
   }
   catch (error)
   {
     console.error("Get clubs failed:", error);
-    return null;
-  }
-}
-
-export async function createCalendar(club_id, calendar_name) 
-{
-  try 
-  {
-    if (club_id == null || calendar_name == null) 
-    {
-      console.error("Missing fields.");
-      return null;
-    }
-    else 
-    {
-      const response = await api.post(`/clubs/calendars/new/`, {
-        club_id : club_id,
-        calendar_name : calendar_name
-      });
-      return response.data;
-    }
-  }
-  catch (error)
-  {
-    console.error("Create calendar failed:", error);
     return null;
   }
 }
