@@ -1,12 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {
-  Card,
-  CardContent,
-  Typography,
-  Chip,
+import { 
+  Card, 
+  CardContent, 
+  Typography, 
+  Chip, 
   Box,
-  CardActionArea
+  CardActionArea 
 } from '@mui/material';
 import GroupIcon from '@mui/icons-material/Group';
 
@@ -20,8 +20,8 @@ export default function ClubCard({ club }) {
   const clubTags = club.tags || ['Active', 'Social', 'Student-Led'];
 
   return (
-    <Card
-      sx={{
+    <Card 
+      sx={{ 
         height: '100%',
         width: 350,
         maxWidth: '100%',
@@ -30,11 +30,11 @@ export default function ClubCard({ club }) {
       <CardActionArea onClick={handleCardClick} sx={{ height: '100%' }}>
         <CardContent sx={{ p: 3 }}>
           {/* Club Name */}
-          <Typography
-            variant="h5"
-            component="h3"
+          <Typography 
+            variant="h5" 
+            component="h3" 
             gutterBottom
-            sx={{
+            sx={{ 
               fontWeight: 700,
               color: 'text.primary',
               mb: 2
@@ -46,13 +46,13 @@ export default function ClubCard({ club }) {
           {/* Tags */}
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
             {clubTags.map((tag, index) => (
-              <Chip
+              <Chip 
                 key={index}
                 label={tag}
                 size="small"
                 color="primary"
                 variant="outlined"
-                sx={{
+                sx={{ 
                   fontWeight: 600,
                   fontSize: '0.75rem'
                 }}
@@ -61,8 +61,8 @@ export default function ClubCard({ club }) {
           </Box>
 
           {/* Club Description */}
-          <Typography
-            variant="body2"
+          <Typography 
+            variant="body2" 
             color="text.secondary"
             sx={{
               overflow: 'hidden',
