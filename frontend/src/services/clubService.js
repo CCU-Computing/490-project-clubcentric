@@ -17,14 +17,16 @@ export async function getClubs(club_id)
   }
 }
 
-export async function newClub(name, description) 
+export async function newClub(name, description, summary, videoEmbed) 
 {
   try 
   {
     const response = await api.post(`/clubs/new/`, null, {
       params: {
         club_name: name,
-        club_description: description
+        club_description: description,
+        club_summary: summary,
+        club_videoEmbed: videoEmbed 
       }
     });
     return response.data;

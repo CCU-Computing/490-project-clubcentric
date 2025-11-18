@@ -43,7 +43,7 @@ export default function ClubsPage() {
   };
 
   const handleCreateClub = async (clubData) => {
-    const result = await newClub(clubData.name, clubData.description);
+    const result = await newClub(clubData.name, clubData.description, clubData.summary, clubData.videoEmbed);
     if (result) {
       // refresh the clubs list
       const updatedClubs = await getClubs();
