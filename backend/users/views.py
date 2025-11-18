@@ -20,6 +20,7 @@ def is_member(user: User, club: Club, role='default'):
 
 
 @csrf_exempt
+@require_POST
 def login_user(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
