@@ -1,4 +1,5 @@
 import api from "./api";
+import getCookie from "../utils/cookies"
 
 export async function create_manager(name, club_id) {
     try 
@@ -13,6 +14,13 @@ export async function create_manager(name, club_id) {
             {
                 name : name,
                 club_id :club_id
+            },
+            {
+                headers:
+                {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
+                }
             }
         );
         return response.data;
@@ -30,12 +38,32 @@ export async function get_managers(club_id)
     {
         if (club_id == null) 
         {
-            const response = await api.get("/documents/managers/get/");
+            const response = await api.get(
+                "/documents/managers/get/",
+                {
+                    headers:
+                    {
+                        "X-CSRFToken": getCookie("csrftoken")
+                    }
+                }
+            );
             return response.data;
         }
         else
         {
-            const response = await api.get("/documents/managers/get/", { params : { club_id }});
+            const response = await api.get(
+                "/documents/managers/get/",
+                {
+                    params:
+                    {
+                        club_id
+                    },
+                    headers:
+                    {
+                        "X-CSRFToken": getCookie("csrftoken")
+                    }
+                }
+            );
             return response.data;
         }
     }
@@ -60,6 +88,13 @@ export async function update_manager(manager_id, name)
             {
                 manager_id : manager_id,
                 name : name
+            },
+            {
+                headers:
+                {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
+                }
             }
         );
         return response.data;
@@ -84,6 +119,13 @@ export async function delete_manager(manager_id)
             "/documents/managers/delete/",
             {
                 manager_id : manager_id
+            },
+            {
+                headers:
+                {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
+                }
             }
         );
         return response.data;
@@ -109,7 +151,17 @@ export async function upload_document(title, manager_id, uploaded_file)
 
     try 
     {
-        const response = await api.post("/documents/upload/", formData);
+        const response = await api.post(
+            "/documents/upload/",
+            formData,
+            {
+                headers:
+                {
+                    "Content-Type": "multipart/form-data",
+                    "X-CSRFToken": getCookie("csrftoken")
+                }
+            }
+        );
         return response.data;
     } 
     catch (error) 
@@ -136,12 +188,36 @@ export async function get_document(document_id, manager_id)
     {
         if (document_id)
         {
-            const response = await api.get("/documents/get/", { params : { document_id }});
+            const response = await api.get(
+                "/documents/get/",
+                {
+                    params :
+                    {
+                        document_id
+                    },
+                    headers:
+                    {
+                        "X-CSRFToken": getCookie("csrftoken")
+                    }
+                }
+            );
             return response.data;
         }
         else if (manager_id)
         {
-            const response = await api.get("/documents/get/", { params : { manager_id }});
+            const response = await api.get(
+                "/documents/get/",
+                {
+                    params :
+                    {
+                        manager_id
+                    },
+                    headers:
+                    {
+                        "X-CSRFToken": getCookie("csrftoken")
+                    }
+                }
+            );
             return response.data;
         }
     } 
@@ -161,10 +237,19 @@ export async function delete_document(document_id)
     }
     try 
     {
-        const response = await api.post("/documents/upload/",
+        const response = await api.post(
+            "/documents/upload/",
             { 
                 doc_id :  document_id 
-            });
+            },
+            {
+                headers:
+                {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
+                }
+            }
+        );
         return response.data;
     } 
     catch (error) 

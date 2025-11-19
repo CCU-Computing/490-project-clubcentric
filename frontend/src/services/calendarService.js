@@ -60,26 +60,46 @@ export async function create_calendar(club_id, calendar_name)
 
 export async function get_calendars(club_id) 
 {
-  try 
-  {
-    // Get user's calendars
-    if (club_id == null) 
-    {
-      const response = await api.get(`/calendar/get/`);
-      return response.data;
-    }
-    // Club's calendars
-    else 
-    {
-      const response = await api.get(`/calendar/get/`, { params: { club_id } });
-      return response.data;
-    }
-  }
-  catch (error)
-  {
-    console.error("Get calendar failed:", error);
-    return null;
-  }
+	try 
+	{
+		// Get user's calendars
+		if (club_id == null) 
+		{
+			const response = await api.get(
+				`/calendar/get/`,
+				{
+					headers:
+					{
+						"X-CSRFToken": getCookie("csrftoken")
+					}
+				}
+			);
+			return response.data;
+		}
+		// Club's calendars
+		else 
+		{
+			const response = await api.get(
+				`/calendar/get/`,
+				{
+					params:
+					{
+						club_id
+					},
+					headers:
+					{
+						"X-CSRFToken": getCookie("csrftoken")
+					}
+				}
+			);
+			return response.data;
+		}
+	}
+	catch (error)
+	{
+		console.error("Get calendar failed:", error);
+		return null;
+	}
 }
 
 export async function update_calendar(calendar_id, calendar_name) 
@@ -100,12 +120,12 @@ export async function update_calendar(calendar_id, calendar_name)
 				calendar_name : calendar_name
 				},
 				{
-				headers:
-				{
-					"Content-Type": "application/json",
-					"X-CSRFToken": getCookie("csrftoken")
+					headers:
+					{
+						"Content-Type": "application/json",
+						"X-CSRFToken": getCookie("csrftoken")
+					}
 				}
-    		}
 			);
 			return response.data;
 		}
@@ -207,12 +227,10 @@ export async function get_meetings(calendar_id)
 					},
 					headers:
 					{
-						"Content-Type": "application/json",
 						"X-CSRFToken": getCookie("csrftoken")
 					}
-				}
-					
-				);
+				}	
+			);
 			return response.data;
 		}
 	}

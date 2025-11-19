@@ -1,4 +1,5 @@
 import api from "./api"
+import { getCookie } from "../utils/cookies";
 
 export async function create_club(name, description) 
 {
@@ -14,6 +15,13 @@ export async function create_club(name, description)
 			{
 				club_name : name,
 				club_description : description
+			},
+			{
+				headers:
+				{
+					"Content-Type": "application/json",
+					"X-CSRFToken": getCookie("csrftoken")
+				}
 			}
 		);
 		return response.data;
@@ -32,7 +40,13 @@ export async function get_club(club_id)
 		if (club_id == null) 
 		{
 			const response = await api.get(
-				`/clubs/get/`
+				`/clubs/get/`,
+				{
+					headers:
+					{
+						"X-CSRFToken": getCookie("csrftoken")
+					}
+				}
 			);
 			return response.data;
 		}
@@ -44,6 +58,10 @@ export async function get_club(club_id)
 					params:
 					{
 						club_id : club_id
+					},
+					headers:
+					{
+						"X-CSRFToken": getCookie("csrftoken")
 					}
 				}
 			);
@@ -78,6 +96,13 @@ export async function update_club(club_id, name, description, picture, links)
 					club_description : description,
 					club_picture : display,
 					club_links : links
+				},
+				{
+					headers:
+					{
+						"Content-Type": "application/json",
+						"X-CSRFToken": getCookie("csrftoken")
+					}
 				}
 			);
 			return response.data;
@@ -105,6 +130,13 @@ export async function delete_club(club_id)
 				`/clubs/delete/`,
 				{
 					club_id : club_id
+				},
+				{
+					headers:
+					{
+						"Content-Type": "application/json",
+						"X-CSRFToken": getCookie("csrftoken")
+					}
 				}
 			);
 			return response.data;
@@ -130,6 +162,13 @@ export async function join_club(club_id)
 			`/clubs/members/add/`,
 			{
 				club_id : club_id,
+			},
+			{
+				headers:
+				{
+					"Content-Type": "application/json",
+					"X-CSRFToken": getCookie("csrftoken")
+				}
 			}
 		);
 		return response.data;
@@ -153,6 +192,10 @@ export async function get_membership(club_id, user_id)
 				{
 					club_id : club_id,
 					user_id : user_id
+				},
+				headers:
+				{
+					"X-CSRFToken": getCookie("csrftoken")
 				}
 			}
 		);
@@ -182,6 +225,13 @@ export async function update_membership(user_id, club_id, role)
 					user_id : user_id,
 					club_id : club_id,
 					new_role : role
+				},
+				{
+					headers:
+					{
+						"Content-Type": "application/json",
+						"X-CSRFToken": getCookie("csrftoken")
+					}
 				}
 			);
 			return response.data;
@@ -210,6 +260,13 @@ export async function remove_membership(club_id, user_id)
 				{
 					club_id : club_id,
 					user_id : user_id
+				},
+				{
+					headers:
+					{
+						"Content-Type": "application/json",
+						"X-CSRFToken": getCookie("csrftoken")
+					}
 				}
 			);
 			return response.data;
@@ -236,6 +293,13 @@ export async function create_merge(club_id_1, club_id_2)
 			{
 				club_id_1 : club_id_1,
 				club_id_2 : club_id_2
+			},
+			{
+				headers:
+				{
+					"Content-Type": "application/json",
+					"X-CSRFToken": getCookie("csrftoken")
+				}
 			}
 		);
 		return response.data;
@@ -257,6 +321,10 @@ export async function get_merge(club_id)
 				params:
 				{
 					club_id : club_id
+				},
+				headers:
+				{
+					"X-CSRFToken": getCookie("csrftoken")
 				}
 			}
 		);
@@ -284,6 +352,13 @@ export async function update_merge(club_id)
 				`/clubs/merge/update/`,
 				{
 					club_id : club_id
+				},
+				{
+					headers:
+					{
+						"Content-Type": "application/json",
+						"X-CSRFToken": getCookie("csrftoken")
+					}
 				}
 			);
 			return response.data;
@@ -311,6 +386,13 @@ export async function delete_merge(club_id)
 				`/clubs/merge/delete/`,
 				{
 					club_id : club_id
+				},
+				{
+					headers:
+					{
+						"Content-Type": "application/json",
+						"X-CSRFToken": getCookie("csrftoken")
+					}
 				}
 			);
 			return response.data;

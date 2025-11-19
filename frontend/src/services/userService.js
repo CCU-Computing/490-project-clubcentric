@@ -1,4 +1,5 @@
 import api from "./api"
+import { getCookie } from "../utils/cookies";
 
 export async function create_user(username, password, first_name, last_name, email) 
 {
@@ -20,6 +21,13 @@ export async function create_user(username, password, first_name, last_name, ema
                     first_name : first_name,
                     last_name : last_name,
                     email : email
+                },
+                {
+                    headers:
+                    {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie("csrftoken")
+                    }
                 }
             );
             return response.data;
@@ -39,12 +47,32 @@ export async function get_user(user_id)
         // Return if invalid inputs
         if (user_id == null) 
         {
-            const response = await api.get(`/user/get/`);
+            const response = await api.get(
+                `/user/get/`,
+                {
+					headers:
+					{
+						"X-CSRFToken": getCookie("csrftoken")
+					}
+				}
+            );
             return response.data;
         }
         else 
         {
-            const response = await api.get(`/user/get/`, { params: { user_id } });
+            const response = await api.get(
+                `/user/get/`,
+                {
+                    params:
+                    {
+                        user_id
+                    },
+					headers:
+					{
+						"X-CSRFToken": getCookie("csrftoken")
+					}
+				}
+            );
             return response.data;
         }
     }
@@ -81,11 +109,12 @@ export async function update_user(username, first_name, last_name, email, bio, p
                     
                 },
                 {
-                    headers:
-                    {
-                        "Content-Type": "multipart/form-data"
-                    }
-                }
+					headers:
+					{
+						"Content-Type": "multipart/form-data",
+						"X-CSRFToken": getCookie("csrftoken")
+					}
+				}
             );
             return response.data;
         }
@@ -101,7 +130,16 @@ export async function delete_user()
 {
     try 
     {
-        const response = await api.post(`/user/delete/`);
+        const response = await api.post(
+            `/user/delete/`,
+            {
+                headers:
+                {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
+                }
+            }
+        );
         return response.data;
     }
     catch (error)
@@ -128,7 +166,14 @@ export async function login_user(username, password)
                 {
                     username : username,
                     password: password
-                }
+                },
+                {
+					headers:
+					{
+						"Content-Type": "application/json",
+						"X-CSRFToken": getCookie("csrftoken")
+					}
+				}
             );
             return response.data;
         }
@@ -144,7 +189,16 @@ export async function logout_user()
 {
     try 
     {
-        const response = await api.post(`/user/logout/`);
+        const response = await api.post(
+            `/user/logout/`,
+            {
+                headers:
+                {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
+                }
+            }
+        );
         return response.data;
     }
     catch (error)
@@ -170,7 +224,14 @@ export async function change_password(password)
                 `/user/login/`, 
                 {
                     password: password
-                }
+                },
+                {
+					headers:
+					{
+						"Content-Type": "application/json",
+						"X-CSRFToken": getCookie("csrftoken")
+					}
+				}
             );
             return response.data;
         }
