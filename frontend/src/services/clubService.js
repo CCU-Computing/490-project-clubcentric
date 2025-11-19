@@ -33,6 +33,32 @@ export async function create_club(name, description)
 	}
 }
 
+export async function getClubs() 
+{
+    try 
+    {
+        const response = await api.get(
+            `/clubs/get/`,
+            {
+                headers:
+                {
+                    "X-CSRFToken": getCookie("csrftoken")
+                }
+            }
+        );
+        // This relies on your backend returning all clubs when club_id is missing/null
+        return response.data;
+    }
+    catch (error)
+    {
+        console.error("get clubs failed:", error);
+        throw error;
+    }
+}
+
+
+
+
 export async function get_club(club_id) 
 {
 	try 

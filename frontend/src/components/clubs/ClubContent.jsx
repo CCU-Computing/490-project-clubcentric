@@ -45,6 +45,35 @@ function isValidUrl(string) {
       <h2>{club.name}</h2>
       <p>{club.description}</p>
       <p>{club.summary}</p>
+      <p>Last Meeting Date: {club.lastMeetingDate}</p>
+      
+      <div 
+        style={{ 
+          display: 'flex', 
+          flexWrap: 'wrap', 
+          gap: '8px', 
+          marginTop: '15px', 
+          marginBottom: '15px' 
+        }}
+      >
+        {club.tags.map((tag, index) => (
+            <span 
+                key={index} 
+                style={{ 
+                  backgroundColor: '#f0f0f0', 
+                  color: '#333', 
+                  padding: '5px 10px', 
+                  borderRadius: '20px', 
+                  fontSize: '0.85rem', 
+                  fontWeight: '600',
+                  border: '1px solid #ddd' 
+                }}
+            >
+                {tag}
+            </span>
+        ))}
+      </div>
+
       { (club.videoEmbed && isValidUrl(extractVideoUrl(club.videoEmbed))) && (
         <iframe
             width="950"
