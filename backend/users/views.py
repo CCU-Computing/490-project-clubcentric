@@ -72,6 +72,7 @@ def create_user(request):
     new_user.save()
     return JsonResponse({"status" : True, "user_id": new_user.id})
 
+@require_GET
 @login_required
 def get_user_data(request):
     user_id = request.GET.get("user_id")
