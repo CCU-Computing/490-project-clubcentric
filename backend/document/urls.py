@@ -13,7 +13,7 @@ urlpatterns = [
     # Manager CRUD
     path("managers/create/", views.create_manager, name="create-manager"),
     path("managers/get/", views.get_managers, name="get-managers"),
-    path("c", views.update_manager, name="update-manager"),
+    path("managers/update/", views.update_manager, name="update-manager"),
     path("managers/delete/", views.delete_manager, name="delete-manager"),
 
     # Document CRUD
