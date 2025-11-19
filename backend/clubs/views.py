@@ -362,18 +362,30 @@ def view_merge_request(request):
     except Club.DoesNotExist:
         return JsonResponse({"error": "club not found"}, status=404)
     
-    request = MergeRequest.objects.filter(club_1=club)
-    if not request.exists():
-        request = MergeRequest.objects.filter(club_2=club)
-        if not request.exists():
+    # Find in club 1 position
+    merge_req = MergeRequest.objects.filter(club_1=club)
+    if not merge_req.exists():
+        # Find in club 2 position
+        merge_req = MergeRequest.objects.filter(club_2=club)
+        if not merge_req.exists():
             return JsonResponse({"error": "merge request for this club does not exist"}, status=404)
+
+        # Request exists
+        if merge_req.accepted_2:
+            if merge_req.accepted_1:
+                return JsonResponse({"ready to merge": True})
+            else:
+                return JsonResponse({"waiting for other club to accept": True})
+        else:
+            return JsonResponse({"waiting for your club to accept": True})
     
-    # Request exists
-    if not request.accepted_1:
-        return JsonResponse({"awaiting": request.club_1.id})
-    
-    if not request.accepted_2:
-        return JsonResponse({"awaiting": request.club_2.id})
+    if merge_req.accepted_1:
+        if merge_req.accepted_2:
+            return JsonResponse({"ready to merge": True})
+        else:
+            return JsonResponse({"waiting for other club to accept": True})
+    else:
+        return JsonResponse({"waiting for your club to accept": True})
 
 @login_required
 @require_POST
