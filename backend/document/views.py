@@ -14,7 +14,6 @@ from django.contrib.auth.decorators import login_required
 from users.views import is_member
 from .models import DocumentManager, Document
 
-@csrf_exempt
 @require_POST
 @login_required
 def create_manager(request):
@@ -65,7 +64,6 @@ def get_managers(request):
             managers.append({"id": manager.id, "name" : manager.name})
         return JsonResponse(managers, safe=False)
 
-@csrf_exempt
 @login_required
 @require_POST
 def update_manager(request):
@@ -96,7 +94,6 @@ def update_manager(request):
 
     return JsonResponse({"status": True})
 
-@csrf_exempt
 @login_required
 @require_POST
 def delete_manager(request):
@@ -120,7 +117,6 @@ def delete_manager(request):
     manager.delete()
     return JsonResponse({"status": True})
 
-@csrf_exempt
 @login_required
 @require_POST
 def upload_document(request):
@@ -161,7 +157,6 @@ def upload_document(request):
     return JsonResponse({"status": True, "id" : doc.id})
 
 @login_required
-@csrf_exempt
 def get_documents(request):
     doc_id = request.GET.get("doc_id")
     manager_id = request.GET.get("manager_id")
@@ -216,7 +211,6 @@ def get_documents(request):
         return JsonResponse(documents, safe=False)
 
 @login_required
-@csrf_exempt
 @require_POST
 def delete_document(request):
     doc_id = request.GET.get("doc_id")

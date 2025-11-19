@@ -1,4 +1,5 @@
 import api from "./api"
+import getCookie from "../utils/cookies"
 
 export async function create_calendar(club_id, calendar_name) 
 {
@@ -14,18 +15,38 @@ export async function create_calendar(club_id, calendar_name)
       // Making user calendar
       if (club_id == null)
       {
-        const response = await api.post(`calendar/create/`, {
-          calendar_name : calendar_name
-        });
+        const response = await api.post(
+			`calendar/create/`,
+			{
+          		calendar_name : calendar_name
+        	},
+			{
+				headers:
+				{
+					"Content-Type": "application/json",
+					"X-CSRFToken": getCookie("csrftoken")
+				}
+    		}
+		);
         return response.data;
       }
       // Club calendar
       else
       {
-        const response = await api.post(`calendar/create/`, {
-          club_id : club_id,
-          calendar_name : calendar_name
-        });
+        const response = await api.post(
+			`calendar/create/`,
+			{
+			club_id : club_id,
+			calendar_name : calendar_name
+			},
+			{
+				headers:
+				{
+					"Content-Type": "application/json",
+					"X-CSRFToken": getCookie("csrftoken")
+				}
+    		}
+		);
         return response.data;
       }
     }
@@ -72,10 +93,20 @@ export async function update_calendar(calendar_id, calendar_name)
 		}
 		else 
 		{
-			const response = await api.post(`calendar/update/`, {
-			cal_id : calendar_id,
-			calendar_name : calendar_name
-			});
+			const response = await api.post(
+				`calendar/update/`,
+				{
+				cal_id : calendar_id,
+				calendar_name : calendar_name
+				},
+				{
+				headers:
+				{
+					"Content-Type": "application/json",
+					"X-CSRFToken": getCookie("csrftoken")
+				}
+    		}
+			);
 			return response.data;
 		}
 	}
@@ -97,9 +128,19 @@ export async function delete_calendar(calendar_id)
 		}
 		else 
 		{
-			const response = await api.post(`calendar/delete/`, {
-			cal_id : calendar_id,
-			});
+			const response = await api.post(
+				`calendar/delete/`,
+				{
+				cal_id : calendar_id,
+				},
+				{
+					headers:
+					{
+						"Content-Type": "application/json",
+						"X-CSRFToken": getCookie("csrftoken")
+					}
+				}
+			);
 			return response.data;
 		}
 	}
@@ -121,11 +162,21 @@ export async function create_meeting(calendar_id, datetime_str, description)
 		}
 		else 
 		{
-			const response = await api.post(`/calendar/meetings/create`, {
-			calendar_id: calendar_id,
-			datetime_str: datetime_str,
-			description : description
-			});
+			const response = await api.post(
+				`/calendar/meetings/create`,
+				{
+				calendar_id: calendar_id,
+				datetime_str: datetime_str,
+				description : description
+				},
+				{
+					headers:
+					{
+						"Content-Type": "application/json",
+						"X-CSRFToken": getCookie("csrftoken")
+					}
+				}
+			);
 			return response.data;
 		}
 	}
@@ -147,7 +198,21 @@ export async function get_meetings(calendar_id)
 		}
 		else 
 		{
-			const response = await api.get(`/calendar/meetings/list/`, { params: {calendar_id} });
+			const response = await api.get(
+				`/calendar/meetings/list/`,
+				{
+					params:
+					{
+						calendar_id
+					},
+					headers:
+					{
+						"Content-Type": "application/json",
+						"X-CSRFToken": getCookie("csrftoken")
+					}
+				}
+					
+				);
 			return response.data;
 		}
 	}
@@ -169,10 +234,20 @@ export async function update_meeting(meeting_id, description)
 		}
 		else 
 		{
-			const response = await api.post(`/calendar/meetings/update/`, {
-			meet_id : meeting_id,
-			desc : description
-			});
+			const response = await api.post(
+				`/calendar/meetings/update/`,
+				{
+				meet_id : meeting_id,
+				desc : description
+				},
+				{
+					headers:
+					{
+						"Content-Type": "application/json",
+						"X-CSRFToken": getCookie("csrftoken")
+					}
+				}
+			);
 			return response.data;
 		}
 	}
@@ -194,9 +269,19 @@ export async function delete_meeting(meeting_id)
 		}
 		else 
 		{
-			const response = await api.post(`/calendar/meetings/create`, {
-			meet_id : meeting_id
-			});
+			const response = await api.post(
+				`/calendar/meetings/create`,
+				{
+				meet_id : meeting_id
+				},
+				{
+					headers:
+					{
+						"Content-Type": "application/json",
+						"X-CSRFToken": getCookie("csrftoken")
+					}
+				}
+			);
 			return response.data;
 		}
 	}

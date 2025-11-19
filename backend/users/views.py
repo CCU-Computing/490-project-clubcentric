@@ -18,8 +18,6 @@ def is_member(user: User, club: Club, role='default'):
         qs = qs.filter(role=role)
     return qs.exists()
 
-
-@csrf_exempt
 @require_POST
 def login_user(request):
     username = request.POST.get('username')
@@ -36,8 +34,6 @@ def login_user(request):
     else:
         return JsonResponse({'error': 'Invalid credentials'}, status=401)
 
-
-@csrf_exempt
 @login_required
 @require_POST
 def logout_user(request):
@@ -45,7 +41,6 @@ def logout_user(request):
     return JsonResponse({"status": True})
 ''' CRUD for user '''
 
-@csrf_exempt
 @require_POST
 def create_user(request):
     ''' Create a new user '''
@@ -113,7 +108,6 @@ def get_user_data(request):
         }
         return JsonResponse(response)
 
-@csrf_exempt
 @require_POST
 @login_required
 def update_user(request):
@@ -161,7 +155,6 @@ def update_user(request):
     request.user.save()
     return JsonResponse({"status" : True})
 
-@csrf_exempt
 @require_POST
 @login_required
 def update_password(request):
@@ -178,7 +171,6 @@ def update_password(request):
 
     return JsonResponse({"status": True})
 
-@csrf_exempt
 @require_POST
 @login_required
 def delete_user(request):

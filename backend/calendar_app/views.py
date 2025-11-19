@@ -3,7 +3,6 @@ from django.http import JsonResponse
 from calendar_app.models import Calendar, Meeting
 from clubs.models import Club, Membership
 from django.utils.dateparse import parse_datetime
-from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from django.views.decorators.http import require_POST, require_GET, require_http_methods
 from urllib.parse import parse_qs
@@ -12,10 +11,9 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.decorators import login_required
 from users.views import is_member
+
 '''CALENDARS'''
 
-
-@csrf_exempt
 @require_POST
 @login_required
 def create_calendar(request):
@@ -49,7 +47,6 @@ def create_calendar(request):
         return JsonResponse({"status" : True, "id": calendar.id})
 
 @login_required
-@csrf_exempt
 def calendars_list(request):
     '''List calendars for a user or a club'''
     club_id = request.GET.get("club_id")
@@ -90,7 +87,6 @@ def calendars_list(request):
   
 @login_required
 @require_POST
-@csrf_exempt
 def update_calendar(request):
     cal_id = request.POST.get("cal_id")
     cal_name = request.POST.get("cal_name")
@@ -129,7 +125,6 @@ def update_calendar(request):
     
     return JsonResponse({"error": "club fields error"}, status=400)
 
-@csrf_exempt
 @login_required
 @require_POST
 def delete_calendar(request):
@@ -160,7 +155,6 @@ def delete_calendar(request):
 
 '''MEETINGS '''
 
-@csrf_exempt
 @require_POST
 @login_required
 def create_meeting(request):
@@ -208,7 +202,6 @@ def create_meeting(request):
         return JsonResponse({"status" : True, "meet_id": meeting.id})
 
 @login_required
-@csrf_exempt
 def meetings_list(request):
     '''List meetings for a calendar'''
     calendar_id = request.GET.get("calendar_id")
@@ -232,7 +225,6 @@ def meetings_list(request):
             })
     return JsonResponse(allMeets, safe=False)
  
-@csrf_exempt
 @login_required
 @require_POST
 def update_meeting(request):
@@ -266,7 +258,6 @@ def update_meeting(request):
     
     return JsonResponse({"status" : False})
 
-@csrf_exempt
 @login_required
 @require_POST
 def delete_meeting(request):

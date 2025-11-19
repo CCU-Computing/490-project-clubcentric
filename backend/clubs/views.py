@@ -18,7 +18,6 @@ import json
 
 ''' CLUB CRUD '''
 
-@csrf_exempt
 @require_POST
 @login_required
 def create_club(request):
@@ -34,8 +33,7 @@ def create_club(request):
     club = Club.objects.create(name=club_name, description=club_description)
     Membership.objects.create(user=request.user, club=club, role="organizer")
     return JsonResponse({"status": True, "id" : club.id})
-
-@csrf_exempt  
+  
 def view_clubs(request):
     club_id = request.GET.get("club_id")
     # If no id provided, return all clubs
@@ -63,7 +61,6 @@ def view_clubs(request):
     return JsonResponse(data)
 
 @login_required
-@csrf_exempt
 @require_POST
 def update_club(request):
     club_id = request.POST.get("club_id")
@@ -104,7 +101,6 @@ def update_club(request):
     club.save()
     return JsonResponse(updated, safe=False)
 
-@csrf_exempt
 @require_POST
 @login_required
 def delete_club(request):
@@ -149,7 +145,6 @@ def delete_club(request):
 
 ''' MEMBERSHIP CRUD '''
 
-@csrf_exempt
 @login_required
 @require_POST
 def join_club(request):
@@ -172,8 +167,7 @@ def join_club(request):
     )
     
     return JsonResponse({"status": True})
-
-@csrf_exempt   
+  
 @login_required
 def get_club_membership(request):
     ''' Return membership status of a club '''
@@ -228,7 +222,6 @@ def get_club_membership(request):
 
 @login_required
 @require_POST
-@csrf_exempt
 def update_membership(request):
     user_id = request.POST.get("user_id")
     club_id = request.POST.get("club_id")
@@ -270,7 +263,6 @@ def update_membership(request):
 
 @login_required
 @require_POST
-@csrf_exempt
 def delete_membership(request):
     club_id = request.POST.get("club_id")
     user_id = request.POST.get("user_id")
@@ -321,7 +313,6 @@ def delete_membership(request):
 ''' MERGE REQUEST CRUD '''
 @login_required
 @require_POST
-@csrf_exempt
 def create_merge_request(request):
     club_id_1 = request.POST.get("club_id_1")
     club_id_2 = request.POST.get("club_id_2")
@@ -350,7 +341,6 @@ def create_merge_request(request):
         return JsonResponse({"error": "you are not an organizer of this club"}, status=403)
 
 @login_required
-@csrf_exempt
 def view_merge_request(request):
     club_id = request.GET.get("club_id")
 
@@ -389,7 +379,6 @@ def view_merge_request(request):
 
 @login_required
 @require_POST
-@csrf_exempt
 def update_merge_request(request):
     club_id = request.POST.get("club_id")
 
@@ -426,10 +415,8 @@ def update_merge_request(request):
         if not request.accepted_2:
             return JsonResponse({"status": True, "awaiting" : merge_req.club_1.id})
 
-
 @login_required
 @require_POST
-@csrf_exempt
 def delete_merge_request(request):
     club_id = request.POST.get("club_id")
 
@@ -454,4 +441,3 @@ def delete_merge_request(request):
     merge_req.delete()
     
     return JsonResponse({"status": True})
-
