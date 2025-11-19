@@ -19,6 +19,7 @@ def is_member(user: User, club: Club, role='default'):
     return qs.exists()
 
 @require_POST
+@csrf_exempt
 def login_user(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
@@ -42,6 +43,7 @@ def logout_user(request):
 ''' CRUD for user '''
 
 @require_POST
+@csrf_exempt
 def create_user(request):
     ''' Create a new user '''
     

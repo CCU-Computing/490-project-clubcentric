@@ -13,19 +13,18 @@ export async function create_user(username, password, first_name, last_name, ema
         }
         else 
         {
+            const formData = new FormData();
+            formData.append("username", username);
+            formData.append("password", password);
+            formData.append("first_name", first_name);
+            formData.append("last_name", last_name);
+            formData.append("email", email);
             const response = await api.post(
                 `/user/create/`, 
-                {
-                    username : username,
-                    password : password,
-                    first_name : first_name,
-                    last_name : last_name,
-                    email : email
-                },
+                formData,
                 {
                     headers:
                     {
-                        "Content-Type": "application/json",
                         "X-CSRFToken": getCookie("csrftoken")
                     }
                 }
@@ -161,19 +160,13 @@ export async function login_user(username, password)
         }
         else 
         {
+            const formData = new FormData();
+            formData.append("username", username);
+            formData.append("password", password);
+            
             const response = await api.post(
                 `/user/login/`, 
-                {
-                    username : username,
-                    password: password
-                },
-                {
-					headers:
-					{
-						"Content-Type": "application/json",
-						"X-CSRFToken": getCookie("csrftoken")
-					}
-				}
+                formData
             );
             return response.data;
         }
