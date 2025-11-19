@@ -1,6 +1,6 @@
 [
     {
-        "model": "_club.club",
+        "model": "clubs.club",
         "pk": 1,
         "fields": {
             "name": "One Punch Man Club",
@@ -10,7 +10,7 @@
         }
     },
     {
-        "model": "_club.club",
+        "model": "clubs.club",
         "pk": 2,
         "fields": {
             "name": "Pokemon Go Club",
@@ -20,7 +20,7 @@
         }
     },
     {
-        "model": "_club.club",
+        "model": "clubs.club",
         "pk": 3,
         "fields": {
             "name": "Coastal Activities Board (CAB)",
@@ -30,7 +30,7 @@
         }
     },
     {
-        "model": "_club.club",
+        "model": "clubs.club",
         "pk": 4,
         "fields": {
             "name": "International Club",
@@ -40,7 +40,7 @@
         }
     },
     {
-        "model": "_club.club",
+        "model": "clubs.club",
         "pk": 5,
         "fields": {
             "name": "Club Swim",
@@ -50,7 +50,7 @@
         }
     },
     {
-        "model": "_club.club",
+        "model": "clubs.club",
         "pk": 6,
         "fields": {
             "name": "Anthropology and Geography Club",
@@ -60,7 +60,7 @@
         }
     },
     {
-        "model": "_club.club",
+        "model": "clubs.club",
         "pk": 7,
         "fields": {
             "name": "Coastal Sea Turtle Club",
@@ -70,7 +70,7 @@
         }
     },
     {
-        "model": "_club.club",
+        "model": "clubs.club",
         "pk": 8,
         "fields": {
             "name": "The Sustainability Club",
@@ -80,7 +80,7 @@
         }
     },
     {
-        "model": "_club.club",
+        "model": "clubs.club",
         "pk": 9,
         "fields": {
             "name": "Hiking and Trail Explorers",
@@ -90,7 +90,7 @@
         }
     },
     {
-        "model": "_club.club",
+        "model": "clubs.club",
         "pk": 10,
         "fields": {
             "name": "Creative Writing Workshop",
@@ -100,7 +100,7 @@
         }
     },
     {
-        "model": "_club.club",
+        "model": "clubs.club",
         "pk": 11,
         "fields": {
             "name": "Culinary Arts & Tasting Club",
@@ -110,7 +110,7 @@
         }
     },
     {
-        "model": "_club.club",
+        "model": "clubs.club",
         "pk": 12,
         "fields": {
             "name": "Volunteering Outreach Group",

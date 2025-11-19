@@ -5,6 +5,8 @@ from users.models import User
 class Club(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
+    summary = models.TextField(blank=True, default="")
+    videoEmbed = models.TextField(blank=True, default="None")
     display_picture = models.ImageField(upload_to="clubs/", blank=True)
     links = models.JSONField(default=list, blank=True)
     
