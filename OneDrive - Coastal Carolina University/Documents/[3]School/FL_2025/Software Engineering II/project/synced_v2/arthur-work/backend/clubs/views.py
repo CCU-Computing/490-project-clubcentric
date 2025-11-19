@@ -1,0 +1,360 @@
+from .models import Club, Membership, MergeRequest
+from calendar.models import Calendar, Meeting
+from users.models import User
+from document.models import DocumentManager, Document
+from django.http import JsonResponse
+from users.views import is_member
+from django.utils.dateparse import parse_datetime
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from datetime import datetime
+from django.views.decorators.http import require_POST
+from urllib.parse import parse_qs
+from django.utils.text import slugify
+import hashlib
+import json
+
+
+''' CLUB CRUD '''
+
+@csrf_exempt
+@require_POST
+@login_required
+def create_club(request):
+    club_name = request.GET.get("club_name")
+    club_description = request.GET.get("club_description")
+
+    if not club_name or not club_description:
+        return JsonResponse({"error" : "Missing required fields"}, status=400)
+    
+    if Club.objects.filter(name=club_name).exists():
+        return JsonResponse({"error": "Club already exists"}, status=409)
+    
+    club = Club.objects.create(name=club_name, description=club_description)
+    return JsonResponse({"id" : club.id, "name" : club.name})
+    
+def view_clubs(request):
+    club_id = request.GET.get("club_id")
+    # If no id provided, return all clubs
+    if not club_id:
+        allClubs = [
+            {"id" : c.id, "name" : c.name, "description" : c.description} 
+            for c in Club.objects.all()
+            ]
+        return JsonResponse(allClubs, safe=False)
+     
+    # Return club data based on ID
+    try:
+        club = Club.objects.get(id=club_id)
+        data = {"id" : club.id, "name" : club.name, "description" : club.description}
+        return JsonResponse(data)
+    # Club not found
+    except Club.DoesNotExist:
+        return JsonResponse({"error" : "Club not found"}, status=404)
+
+@login_required
+@csrf_exempt
+@require_POST
+def update_club(request):
+    club_id = request.POST.get("club_id")
+    club_name = request.POST.get("club_name")
+    club_description = request.POST.get("club_description")
+    club_picture = request.FILES.get("club_picture")
+    club_links = request.POST.get("club_links")
+
+    if not club_id:
+        return JsonResponse({"error": "Missing required field: club_id"}, status=400)
+
+    try:
+        club = Club.objects.filter(id=club_id)
+    except Club.DoesNotExist:
+        return JsonResponse({"error": "club not found"}, status=404)
+    
+    if not is_member(user=request.user, club=club, role="organizer"):
+        return JsonResponse({"error": "must be an organizer of this club to update data"}, status=409)
+    
+    updated = []
+    
+    if club_name:
+        club.name = club_name
+        updated.append(('club_name', club.name))
+
+    if club_description:
+        club.description = club_description
+        updated.append(('club_description', club.description))
+
+    if club_picture:
+        club.display_picture = club_picture
+        updated.append(('club_picture', club.display_picture.url))
+
+    if club_links:
+        club.links = club_links
+        updated.append(("club_links", club.links))
+
+    return JsonResponse(updated, safe=False)
+
+@csrf_exempt
+@require_POST
+@login_required
+def delete_club(request):
+    club_id = request.POST.get('club_id')
+
+    if not club_id:
+        return JsonResponse({"error" : "Missing required fields"}, status=400)
+    
+    try:
+        club = Club.objects.get(id=club_id)
+    except Club.DoesNotExist:
+        return JsonResponse({"error": "club not found"}, status=404)
+    
+    if not is_member(request.user, club=club, role='organizer'):
+        return JsonResponse({"error": "Permissions"}, status=403)
+    
+    # Memberships
+    memberships = Membership.objects.filter(club=club)
+    for member in memberships:
+        member.delete()
+
+    # Calendars
+    calendars = Calendar.objects.filter(club=club)
+    for cal in calendars:
+        # Meetings
+        meetings = Calendar.objects.filter(club=club)
+        for meet in meetings:
+            meet.delete()
+        cal.delete()
+    
+    # Document Managers
+    document_managers = DocumentManager.objects.filter(club=club)
+    for manager in document_managers:
+        # Documents
+        documents = Document.objects.filter(club=club)
+        for doc in documents:
+            doc.delete()
+        manager.delete()
+
+    club.delete()
+    return JsonResponse({"status": "deleted"})
+
+''' MEMBERSHIP CRUD '''
+
+@login_required
+def join_club(request):
+    club_id = request.GET.get("club_id")
+    if not club_id:
+        return JsonResponse({"error": "missing required fields"}, status=400)
+    try:
+        club = Club.objects.get(id=club_id)
+    except Club.DoesNotExist:
+        return JsonResponse({"error": "club not found"}, status=404)
+    
+    if is_member(user=request.user, club=club):
+        return JsonResponse({'error': "already a member of this club"}, status=409)
+    
+    Membership.objects.create(
+        user = request.user,
+        club=club,
+        role='member'
+    )
+    
+    return JsonResponse({"status": True})
+    
+@login_required
+def get_club_membership(request):
+    ''' Return membership status of a club '''
+    
+    club_id = request.GET.get("club_id")
+    user_id = request.GET.get("user_id")
+    
+    # If provided, find other user
+    if user_id:
+        try:   
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "user not found"}, status=404)
+    # Otherwise, find for user requesting
+    else:
+        user = request.user
+    
+    # Get user's memberships
+    if not club_id:
+        membership = Membership.objects.filter(user=user)
+        response = {
+            m.club: m.role for m in membership
+        }
+        return JsonResponse(response)
+    
+    # Get a club's memberships
+    else:
+        try:
+            club = Club.objects.get(id=club_id)
+        except Club.DoesNotExist:
+            return JsonResponse({"error": "club not found"}, status=404)
+        # User membership in club
+        if user_id:
+            try:
+                member = Membership.objects.get(user=user, club=club)
+            except Membership.DoesNotExist:
+                return JsonResponse({"error": "user not a member of the club"}, status=404)
+
+        # All club memberships
+        else:
+            membership = Membership.objects.filter(club=club)
+            members = {
+                m.user.get_full_name(): m.role for m in membership
+            }
+            
+            if not members:
+                return JsonResponse({"message": "No members in this club"})
+            else:
+                return JsonResponse(members)
+
+@login_required
+@require_POST
+def update_membership(request):
+    user_id = request.POST.get("user_id")
+    club_id = request.POST.get("club_id")
+    new_role = request.POST.get("new_role")
+
+    if not user_id or not club_id or not new_role:
+        return JsonResponse({"error": "missing required fields"}, status=400)
+    
+    if new_role != "member" or new_role != "organizer":
+        return JsonResponse({"error": "invalid new_role entry"}, status=400)
+
+    try:
+        club = Club.objects.get(id=club_id)
+    except Club.DoesNotExist:
+        return JsonResponse({"error": "club not found"}, status=404)
+
+    # Check that caller is an organizer of the club
+    if is_member(user=request.user, club=club, role='organizer'):
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "user not found"}, status=404)
+        
+        if user.id == request.user.id:
+            return JsonResponse({"error": "cannot update your own membership"}, status=403)
+        
+        # Check that recipient is in the club
+        if is_member(user=user, club=club):
+            membership = Membership.objects.get(user=user, club=club)
+            membership.role = new_role
+            membership.save()
+            return JsonResponse({"success": True})
+
+        else:
+            return JsonResponse({"error": "user not a member of requested club"}, status=403)
+
+    else:
+        return JsonResponse({"error": "you are not an organizer of this club"}, status=403)
+
+@login_required
+@require_POST
+def delete_membership(request):
+    club_id = request.POST.get("club_id")
+    user_id = request.POST.get("user_id")
+
+    if not club_id:
+        return JsonResponse({"error": "missing required fields"}, status=400)
+    
+    # Get club
+    try:
+        club = Club.objects.get(id=club_id)
+    except Club.DoesNotExist:
+        return JsonResponse({"error": "club not found"}, status=404)
+    
+    # Organizer removing a member
+    if user_id:
+        # Is organizer
+        if is_member(user=request.user, club=club, role='organizer'):
+            try:
+                user = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                return JsonResponse({"error": "user not found"}, status=404)
+            
+            # Recipient is member
+            if is_member(user=user, club=club, role='member'):
+                member = Membership.objects.get(user=user, club=club, role='member')
+                member.delete()
+                return JsonResponse({"success": True})
+
+            elif is_member(user=user, club=club, role='organizer'):
+                return JsonResponse({"error": "cannot remove fellow organizer"}, status=403)
+            
+            else:
+                return JsonResponse({"error": "user is not a member of this club"}, status=404)
+        
+        else:
+            return JsonResponse({"error": "you are not an organizer of this club"}, status=403)
+
+    # User leaving a club
+    else:
+        if is_member(user=request.user, club=club):
+            member = Membership.objects.get(user=request.user, club=club)
+            member.delete()
+            return JsonResponse({"success": True})
+        
+        else:
+            return JsonResponse({"error": "you are not a member of this club"}, status=404)
+
+''' MERGE REQUEST CRUD '''
+@login_required
+def create_merge_request(request):
+    club_id_1 = request.POST.get("club_id_1")
+    club_id_2 = request.POST.get("club_id_2")
+
+    if not club_id_1 or not club_id_2:
+        return JsonResponse({"error": "missing required fields"}, status=400)
+
+    try:
+        club_1 = Club.objects.get(id=club_id_1)
+        club_2 = Club.objects.get(id=club_id_2)
+    except Club.DoesNotExist:
+        return JsonResponse({"error": "club(s) not found"}, status=404)
+
+    if is_member(user=request.user, club=club_1, role='organizer'):
+        # If either club is a product of a previous merge
+        if MergeRequest.objects.filter(merged_club=club_1).exists() or MergeRequest.objects.filter(merged_club=club_2).exists():
+            return JsonResponse({"error": "one or both of the clubs are products of previous merges"}, status=409)
+    
+        # Check for existing request
+        if MergeRequest.objects.filter(club_1=club_1, club_2=club_2).exists() or MergeRequest.objects.filter(club_1=club_2, club_2=club_1).exists():
+            return JsonResponse({"error": "request already exists"}, status=409)
+        
+        request = MergeRequest.objects.create(club_1=club_1, )
+
+
+@login_required
+def view_merge_status(request):
+    club_id = request.GET.get("club_id")
+
+    if not club_id:
+        return JsonResponse({"error": "missing required fields"}, status=400)
+    
+    try:
+        club = Club.objects.get(id=club_id)
+    except Club.DoesNotExist:
+        return JsonResponse({"error": "club not found"}, status=404)
+    
+    request = MergeRequest.objects.filter(club_1=club)
+    if not request.exists():
+        request = MergeRequest.objects.filter(club_2=club)
+        if not request.exists():
+            return JsonResponse({"error": "merge request for this club does not exist"}, status=404)
+
+@login_required
+def update_merge_status(request):
+    pass
+
+@login_required
+def delete_merge_request(request):
+    pass
+
+@login_required
+def merge_club(request):
+    ''' Merge two clubs '''
+
+
+

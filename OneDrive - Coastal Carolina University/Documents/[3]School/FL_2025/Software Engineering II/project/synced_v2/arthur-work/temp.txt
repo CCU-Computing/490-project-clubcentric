@@ -1,0 +1,66 @@
+Checklist: Backend
+
+Models: (views +)
+    User
+        - username
+        - first_name
+        - last_name
+        - email
+        - password
+        - is_staff
+        - is_active
+        - is_superuser
+        - last_login
+        - date_joined
+        - groups (many-to-many)
+        - user_permissions (many-to-many)
+        - bio
+        - profile_picture
+
+        + is_member
+        + login_user
+        + update_password
+        + create_user       C
+        + get_user_data     R
+        + update_user       U
+        + delete_user       D
+
+    Club
+        - name
+        - description
+        - display_picture
+        - links
+        
+        Membership
+            - user
+            - club
+            - role
+            - date_joined
+
+            + merge_club
+            + get_club_membership
+            + update_membership
+            + create_club       C
+            + view_clubs        R
+            + update_club       U
+            + delete_club       D
+            
+    Calendar
+        - name
+        - club OR user
+
+        Meeting
+            - calendar
+            - date
+            - description
+    
+    DocumentManager
+        - name
+        - club OR user
+
+        Document
+            - title
+            - file
+            - uploaded_at
+            - document manager
+

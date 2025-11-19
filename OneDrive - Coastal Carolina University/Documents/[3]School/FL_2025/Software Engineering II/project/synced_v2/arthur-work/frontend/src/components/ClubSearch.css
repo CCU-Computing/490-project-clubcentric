@@ -1,0 +1,224 @@
+/* Global and Base Styles */
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    margin: 0;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.club-search-container {
+    padding: 20px;
+}
+
+/* Background - Using Gradient for stability (instead of BGImage.jpg) */
+.club-search-container::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../assets/images/BGImage.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+}
+
+.club-search-container {
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+/* Home screen */
+.home-screen {
+    text-align: center;
+    margin: 40px 0;
+}
+
+/* Layout */
+.layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.welcome-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    padding: 5px 12px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    margin: 30px auto;
+    width: fit-content;
+    text-align: center;
+}
+
+/* Search Bar */
+.search-bar {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    box-sizing: border-box;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    outline: none;
+    /* FIX: Explicitly set text color to black */
+    color: #000000;
+}
+.search-bar input:focus {
+    border-color: #006F71;
+    box-shadow: 0 2px 5px rgba(0,111,113,0.3);
+}
+
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --------------------------------- */
+/* --- CLUB CARD EXPANSION STYLES --- */
+/* --------------------------------- */
+.club {
+    background: white;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    
+    max-height: 110px; 
+    overflow: hidden; 
+    position: relative; 
+
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+    
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    cursor: pointer;
+}
+
+.club:hover {
+    max-height: 1000px; 
+    
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    transform: translateY(-5px) scale(1.01); 
+}
+
+.club h3 {
+    color: #006F71;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+/* Hiding Description (p) initially using max-height and opacity */
+.club p {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    text-overflow: ellipsis; 
+}
+
+/* Show Description on hover */
+.club:hover p {
+    max-height: 300px; 
+    opacity: 1;
+    margin-top: 10px;
+    margin-bottom: 15px; 
+}
+
+/* NEW VIDEO STYLES (iframe) */
+.club iframe {
+    max-width: 100%;
+    width: 1000px;
+    height: 562px; 
+    margin-top: 15px;
+    margin-bottom: 15px;
+
+    /* Initially hide the video */
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Show the video on hover */
+.club:hover iframe {
+    max-height: 600px; 
+    opacity: 1;
+}
+
+/* --------------------------------- */
+
+/* The tags div is always visible now */
+.tags {
+    margin-top: 5px;
+    padding-top: 5px; 
+    border-top: 1px solid #f0f0f0;
+}
+
+.tag {
+    display: inline-block;
+    background: #e9ecef;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Hiding Link (a) initially using max-height and opacity */
+.club a {
+    display: inline-block;
+    position: relative;
+    bottom: initial;
+    right: initial;
+    
+    /* Hiding part */
+    max-height: 0;
+    opacity: 0;
+    padding: 0 16px; 
+    margin-top: 0;
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+    /* Original styling */
+    background-color: #006F71; 
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+/* Show Link on hover */
+.club:hover a {
+    max-height: 50px;
+    opacity: 1;
+    padding: 8px 16px; 
+    margin-top: 15px;
+}
+
+.club a:hover {
+    background-color: #005B5D;
+}
+
+.no-clubs {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    text-align: center;
+}
