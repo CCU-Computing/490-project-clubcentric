@@ -14,6 +14,8 @@ import json
 def create_club(request):
     club_name = request.GET.get("club_name")
     club_description = request.GET.get("club_description")
+    club_summary = request.GET.get("club_summary")
+    club_videoEmbed = request.GET.get("club_videoEmbed")
 
     if not club_name or not club_description:
         return JsonResponse({"error" : "Missing required fields"}, status=400)
@@ -21,7 +23,7 @@ def create_club(request):
     if Club.objects.filter(name=club_name).exists():
         return JsonResponse({"error": "Club already exists"}, status=409)
     
-    club = Club.objects.create(name=club_name, description=club_description)
+    club = Club.objects.create(name=club_name, description=club_description, summary=club_summary, videoEmbed = club_videoEmbed)
     return JsonResponse({"id" : club.id, "name" : club.name})
     
 def view_clubs(request):
@@ -29,7 +31,7 @@ def view_clubs(request):
     # If no id provided, return all clubs
     if not club_id:
         allClubs = [
-            {"id" : c.id, "name" : c.name, "description" : c.description} 
+            {"id" : c.id, "name" : c.name, "description" : c.description, "summary" : c.summary, "videoEmbed" : c.videoEmbed} 
             for c in Club.objects.all()
             ]
         return JsonResponse(allClubs, safe=False)
@@ -37,7 +39,7 @@ def view_clubs(request):
     # Return club data based on ID
     try:
         club = Club.objects.get(id=club_id)
-        data = {"id" : club.id, "name" : club.name, "description" : club.description}
+        data = {"id" : club.id, "name" : club.name, "description" : club.description, "summary" : club.summary, "videoEmbed" : club.videoEmbed}
         return JsonResponse(data)
     # Club not found
     except Club.DoesNotExist:

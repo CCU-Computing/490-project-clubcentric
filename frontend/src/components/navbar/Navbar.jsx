@@ -5,9 +5,7 @@ import logo from '../../assets/images/Chants_Logo.png';
 import { Link, useLocation } from 'react-router';
 
 import { Box, AppBar, Toolbar, IconButton, Typography, Drawer, CssBaseline, List, ListItemButton, ListItemIcon, ListItemText, Collapse } from '@mui/material';
-import { Menu as MenuIcon, MenuOpen as MenuOpenIcon, ExpandLess, ExpandMore, Groups2 as Groups2Icon, Person as PersonIcon, Home as HomeIcon, CalendarMonth as EventIcon } from '@mui/icons-material';
-import { ContentPaste as ClipboardIcon } from '@mui/icons-material';
-
+import { Menu as MenuIcon, MenuOpen as MenuOpenIcon, ExpandLess, ExpandMore, Groups2 as Groups2Icon, Person as PersonIcon, Home as HomeIcon, CalendarMonth as EventIcon, Search as SearchIcon } from '@mui/icons-material';
 
 const drawerWidth = 240;
 const shortDrawerWidth = 80;
@@ -17,7 +15,8 @@ const menuItems = [
   { label: 'Profile', to: '/profile', icon: <PersonIcon /> },
   { label: 'Clubs', to: '/clubs', icon: <Groups2Icon /> },
   { label: 'Events', to: '/events', icon: <EventIcon /> },
-  { label: 'Documents', to: '/documents', icon: <ClipboardIcon /> }
+  { label: 'Documents', to: '/documents', icon: <ClipboardIcon /> },
+  { label: 'Club Search', to: '/club_search', icon: <SearchIcon /> }
 ];
 
 export default function Navbar({ content }) {
