@@ -14,9 +14,10 @@ import {
 
 import {
   uploadDocument,
-  getDocument,
-  getManagers
+  getDocument
 } from "../services/documentService";
+
+import "../components/DocumentsPage.css";
 
 export default function DocumentsPage({ managerId }) {
   const [documents, setDocuments] = useState([]);
@@ -25,9 +26,6 @@ export default function DocumentsPage({ managerId }) {
   const [title, setTitle] = useState("");
   const [file, setFile] = useState(null);
 
-  // -------------------------------
-  // Load documents for the manager
-  // -------------------------------
   const loadDocuments = async () => {
     const result = await getDocument(null, managerId);
     if (result) {
@@ -39,9 +37,6 @@ export default function DocumentsPage({ managerId }) {
     loadDocuments();
   }, [managerId]);
 
-  // -------------------------------
-  // Document Upload
-  // -------------------------------
   const handleUpload = async () => {
     if (!title || !file) return;
 
@@ -57,61 +52,43 @@ export default function DocumentsPage({ managerId }) {
   };
 
   return (
-    <Box sx={{ bgcolor: "grey.50", minHeight: "100vh", py: 4 }}>
+    <div className="documents-page">
       <Container maxWidth="md">
+        
         {/* Page Title */}
-        <Typography
-          variant="h3"
-          component="h1"
-          gutterBottom
-          sx={{ textAlign: "center", fontWeight: 700, mb: 4 }}
-        >
+        <Typography className="documents-title">
           Documents
         </Typography>
 
         {/* Upload Button */}
-        <Box sx={{ textAlign: "center", mb: 4 }}>
+        <div className="upload-section">
           <Button variant="contained" onClick={() => setIsModalOpen(true)}>
             Upload Document
           </Button>
-        </Box>
+        </div>
 
         {/* Documents Grid */}
         <Grid container spacing={3}>
           {documents.length > 0 ? (
             documents.map((doc) => (
               <Grid item xs={12} sm={6} md={4} key={doc.id}>
-                <Box
-                  sx={{
-                    background: "white",
-                    p: 2,
-                    borderRadius: 2,
-                    boxShadow: 2,
-                    height: "100%",
-                    textAlign: "center"
-                  }}
-                >
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                <div className="document-card">
+                  <Typography className="document-title">
                     {doc.title}
                   </Typography>
 
                   <Button
                     variant="outlined"
-                    sx={{ mt: 2 }}
                     onClick={() => window.open(doc.file_url, "_blank")}
                   >
                     View
                   </Button>
-                </Box>
+                </div>
               </Grid>
             ))
           ) : (
             <Grid item xs={12}>
-              <Typography
-                textAlign="center"
-                variant="body1"
-                color="text.secondary"
-              >
+              <Typography className="no-documents">
                 No documents found.
               </Typography>
             </Grid>
@@ -122,7 +99,7 @@ export default function DocumentsPage({ managerId }) {
         <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
           <DialogTitle>Upload Document</DialogTitle>
 
-          <DialogContent sx={{ mt: 2 }}>
+          <DialogContent>
             <TextField
               fullWidth
               label="Document Title"
@@ -141,7 +118,7 @@ export default function DocumentsPage({ managerId }) {
             </Button>
 
             {file && (
-              <Typography sx={{ mt: 1, fontStyle: "italic" }}>
+              <Typography className="modal-file-name">
                 Selected: {file.name}
               </Typography>
             )}
@@ -157,6 +134,6 @@ export default function DocumentsPage({ managerId }) {
           </DialogActions>
         </Dialog>
       </Container>
-    </Box>
+    </div>
   );
 }
