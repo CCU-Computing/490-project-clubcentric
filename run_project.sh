@@ -30,7 +30,7 @@ python3 manage.py migrate
 # 2. Optional: Load Data if argument is provided
 if [[ "$1" == "--load-data" ]]; then
     echo "[Backend] Loading sample data..."
-    python3 manage.py loaddata sample
+    python3 manage.py loaddata sampleClubs
 fi
 
 # 3. Start the Backend (Django)
