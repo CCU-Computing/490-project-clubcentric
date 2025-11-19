@@ -1,10 +1,10 @@
 // frontend/src/pages/ProfilePage.jsx
 
-import React, { useState, useEffect } from 'react'; // Import useEffect
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/navbar/Navbar';
 import UserInfoBlock from '../components/profile/UserInfoBlock';
 import UserClubsList from '../components/profile/UserClubsList';
-import { get_user } from '../services/userService'; // Import get_user service
+import { get_user, update_user } from '../services/userService'; // Import get_user and update_user service
 import anonProfilePic from '../assets/images/anon_profile_pic.png';
 
 // Mock data for the clubs list (Keep this for now, until club data is also fetched)
@@ -15,35 +15,92 @@ const mockClubs = [
 ];
 // ------------------------------------------
 
+// Utility for notification styles
+const getStatusMessageStyles = (type) => {
+    switch (type) {
+        case 'success':
+            return "p-3 mb-4 rounded-lg text-center bg-green-100 text-green-700";
+        case 'error':
+            // Required style: light red background (bg-red-100) and centered text (text-red-700, text-center)
+            return "p-3 mb-4 rounded-lg text-center bg-red-100 text-red-700"; 
+        default:
+            return "hidden";
+    }
+};
+
 const ProfilePage = () => {
-    // Initialize user state to null and add a loading state
+    // Initial State
     const [user, setUser] = useState(null); 
     const [clubs, setClubs] = useState(mockClubs);
     const [isLoading, setIsLoading] = useState(true);
+    
+    // New states for editing mode and status messages
+    const [isEditing, setIsEditing] = useState(false);
+    const [statusMessage, setStatusMessage] = useState({ message: '', type: '' });
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            setIsLoading(true);
-            try {
-                // Call get_user with null to fetch the currently logged-in user's data
-                const userData = await get_user(null);
-                
-                if (userData) {
-                    // Assuming userData is the user object directly.
-                    setUser(userData);
-                    // If the backend also returned club data, you would setClubs(userData.clubs) here.
-                } else {
-                    console.error("Failed to fetch user data or user is not logged in.");
-                }
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-            } finally {
-                setIsLoading(false);
+    // Function to fetch user data (reusable)
+    const fetchUserData = async () => {
+        setIsLoading(true);
+        try {
+            const userData = await get_user(null);
+            
+            if (userData) {
+                setUser(userData);
+            } else {
+                setUser(null);
             }
-        };
-
+        } catch (error) {
+            console.error("Error fetching user data:", error);
+            setUser(null);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
+    // Initial fetch on component mount
+    useEffect(() => {
         fetchUserData();
-    }, []); // Empty dependency array runs once on mount
+    }, []);
+
+    /**
+     * Handles the update logic when the EditProfileForm submits.
+     * Calls the userService and handles status messages.
+     * @param {object} updatedData - Object containing {first_name, last_name, bio}.
+     */
+    const handleUpdate = async (updatedData) => {
+        setStatusMessage({ message: 'Updating profile...', type: 'pending' });
+        
+        try {
+            // Call the service with only the fields we are updating.
+            // Pass null for username, email, and profile_picture (for now) so the service ignores them.
+            const responseData = await update_user(
+                null, // username
+                updatedData.first_name, 
+                updatedData.last_name, 
+                null, // email
+                updatedData.bio,
+                null // profile_picture
+            );
+
+            if (responseData && responseData.message === "User updated successfully") {
+                // Re-fetch user data to ensure all components have the latest state
+                await fetchUserData();
+
+                setStatusMessage({ message: 'Profile updated successfully!', type: 'success' });
+                setIsEditing(false); // Exit editing mode
+            } else {
+                const errorMessage = responseData?.message || "Failed to update profile. Please try again.";
+                setStatusMessage({ message: errorMessage, type: 'error' });
+            }
+        } catch (error) {
+            console.error("Error during profile update:", error);
+            setStatusMessage({ message: 'An unexpected error occurred during update.', type: 'error' });
+        }
+        
+        // Clear the status message after 5 seconds
+        setTimeout(() => setStatusMessage({ message: '', type: '' }), 5000);
+    };
+
 
     // --- Loading and Error Handling ---
 
@@ -69,10 +126,10 @@ const ProfilePage = () => {
         );
     }
 
-    // Prepare the user object for the UserInfoBlock, ensuring a profile_picture is present
+    // Prepare the user object for the UserInfoBlock
     const userForDisplay = {
         ...user,
-        // Fallback to the default anonymous picture if the fetched data is missing one
+        // Fallback to the default anonymous picture: anon_profile_pic.png
         profile_picture: user.profile_picture || anonProfilePic 
     };
 
@@ -83,9 +140,23 @@ const ProfilePage = () => {
                 <h1 className="text-4xl font-bold text-gray-800 mb-6 border-b pb-2">
                     Your Profile
                 </h1>
+                
+                {/* Persistent Notification Bar */}
+                {statusMessage.message && (
+                    <div className={getStatusMessageStyles(statusMessage.type)}>
+                        <p>{statusMessage.message}</p>
+                    </div>
+                )}
 
-                <UserInfoBlock user={userForDisplay} />
-                <UserClubsList clubs={clubs} />
+                <UserInfoBlock 
+                    user={userForDisplay} 
+                    isEditing={isEditing}
+                    setIsEditing={setIsEditing}
+                    handleUpdate={handleUpdate} // Pass the update handler
+                />
+                
+                {/* Only display clubs list if not editing */}
+                {!isEditing && <UserClubsList clubs={clubs} />}
             </div>
         </div>
     );
