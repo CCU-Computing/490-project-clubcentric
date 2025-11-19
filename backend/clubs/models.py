@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import User
+from django.contrib.postgres.fields import ArrayField
 
 # Club model
 class Club(models.Model):
@@ -9,6 +10,12 @@ class Club(models.Model):
     videoEmbed = models.TextField(blank=True, default="None")
     display_picture = models.ImageField(upload_to="clubs/", blank=True)
     links = models.JSONField(default=list, blank=True)
+    tags = ArrayField(
+        models.CharField(max_length=20),
+        default=list,
+        blank=True
+    )
+    lastMeetingDate = models.DateField(null=True, blank=True)
     
     def __str__(self):
         return f"Club: {self.name}"

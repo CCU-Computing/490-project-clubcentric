@@ -95,7 +95,11 @@ export async function update_club(club_id, name, description, picture, links)
 					club_name : name,
 					club_description : description,
 					club_picture : display,
-					club_links : links
+					club_links : links,
+          club_summary : summary,
+          club_videoEmbed : videoEmbed,
+          club_tags : tags,
+          club_lastMeetingDate : lastMeetingDate
 				},
 				{
 					headers:
