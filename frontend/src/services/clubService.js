@@ -31,15 +31,20 @@ export async function get_club(club_id)
 	{
 		if (club_id == null) 
 		{
-			const response = await api.post(`/clubs/create/`);
+			const response = await api.get(
+				`/clubs/get/`
+			);
 			return response.data;
 		}
 		else
 		{
-			const response = await api.post(
-				`/clubs/create/`,
+			const response = await api.get(
+				`/clubs/get/`,
 				{
-					club_id : club_id
+					params:
+					{
+						club_id : club_id
+					}
 				}
 			);
 			return response.data;

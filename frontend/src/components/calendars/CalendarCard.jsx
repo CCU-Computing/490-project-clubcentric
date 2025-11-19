@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { listMeetings } from "../../services/calendarService";
+import { get_meetings } from "../../services/calendarService";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -10,7 +10,7 @@ export default function CalendarCard({ calendar }) {
   useEffect(() => {
     async function fetchMeetings() {
       console.log(calendar)
-      const data = await listMeetings(calendar.id, null);
+      const data = await get_meetings(calendar.id, null);
       if (data) {
         setEvents(
           data.map((m) => ({

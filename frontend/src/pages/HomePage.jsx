@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getClubs } from "../services/clubService";
+import { get_club } from "../services/clubService";
 import "../components/HomePage.css";
 
 export default function HomePage() {
@@ -9,7 +9,7 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getClubs().then((data) => {
+    get_club().then((data) => {
       if (data) setClubs(data);
     });
   }, []);

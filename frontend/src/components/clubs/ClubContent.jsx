@@ -1,9 +1,9 @@
 // components/ClubContent.jsx
 import { useEffect, useState } from "react";
-import { getClubs } from "../../services/clubService";
+import { get_club } from "../../services/clubService";
 import CalendarCard from "../calendars/CalendarCard";
 import DocumentBlock from "../documents/DocumentBlock";
-import { listCalendars } from "../../services/calendarService";
+import { get_calendars } from "../../services/calendarService";
 
 export default function ClubContent({ clubId }) {
   const [club, setClub] = useState(null);
@@ -11,11 +11,11 @@ export default function ClubContent({ clubId }) {
   
 
   useEffect(() => {
-    getClubs(clubId).then((data) => setClub(data));
+    get_club(clubId).then((data) => setClub(data));
   }, [clubId]);
 
   useEffect(() => {
-    listCalendars(clubId).then((data) => {
+    get_calendars(clubId).then((data) => {
       if (data) setCalendars(data);
     });
   }, [clubId]);

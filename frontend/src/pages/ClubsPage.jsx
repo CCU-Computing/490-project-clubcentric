@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getClubs, newClub } from "../services/clubService";
+import { get_club, create_club } from "../services/clubService";
 import ClubCard from "../components/clubs/ClubCard";
 import CreateClubCard from "../components/clubs/CreateClubCard";
 import CreateClubModal from "../components/clubs/CreateClubModal";
@@ -19,7 +19,7 @@ export default function ClubsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    getClubs().then(data => {
+    get_club().then(data => {
       if (data) setClubs(data);
     });
   }, []);
@@ -43,10 +43,10 @@ export default function ClubsPage() {
   };
 
   const handleCreateClub = async (clubData) => {
-    const result = await newClub(clubData.name, clubData.description, clubData.summary, clubData.videoEmbed);
+    const result = await create_club(clubData.name, clubData.description, clubData.summary, clubData.videoEmbed);
     if (result) {
       // refresh the clubs list
-      const updatedClubs = await getClubs();
+      const updatedClubs = await get_club();
       if (updatedClubs) setClubs(updatedClubs);
     }
   };

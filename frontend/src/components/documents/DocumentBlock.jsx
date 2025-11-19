@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getManagers, getDocument } from "../../services/documentService";
+import { get_managers, get_document } from "../../services/documentService";
 import DocumentManagerList from "./DocumentManagerList";
 
 export default function DocumentBlock({ club_id }) {
@@ -10,12 +10,12 @@ export default function DocumentBlock({ club_id }) {
       if (!club_id) return;
 
       try {
-        const managers = await getManagers(club_id);
+        const managers = await get_managers(club_id);
         if (!managers) return;
 
         const docsByManager = await Promise.all(
           managers.map(async (manager) => {
-            const docs = await getDocument(null, manager.id);
+            const docs = await get_document(null, manager.id);
             return { manager, docs };
           })
         );

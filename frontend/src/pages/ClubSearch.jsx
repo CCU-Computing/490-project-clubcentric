@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getClubs } from '../services/clubService';
+import { get_club } from '../services/clubService';
 import '../components/ClubSearch.css';
 
 function ClubSearch() {
@@ -7,7 +7,7 @@ function ClubSearch() {
     const [search, setSearch] = useState("");
 
     useEffect(() => {
-        getClubs().then(data => {
+        get_club().then(data => {
             if (data) setClubs(data);
         });
     }, []);
