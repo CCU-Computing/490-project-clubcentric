@@ -1,36 +1,35 @@
 import api from "./api"
 import { getCookie } from "../utils/cookies";
 
-export async function create_club(name, description) 
-{
-	try 
-	{
-		if (name == null || description == null) 
-		{
-			console.error("Missing fields.");
-			return null;
-		}
-		const response = await api.post(
-			`/clubs/create/`,
-			{
-				club_name : name,
-				club_description : description
-			},
-			{
-				headers:
-				{
-					"Content-Type": "application/json",
-					"X-CSRFToken": getCookie("csrftoken")
-				}
-			}
-		);
-		return response.data;
-	}
-	catch (error)
-	{
-		console.error("Create club failed:", error);
-		throw error;
-	}
+export async function create_club(name, description) {
+  try {
+    if (!name || !description) {
+      console.error("Missing fields.");
+      return null;
+    }
+
+    // Form-encoded data instead of JSON
+    const formData = new URLSearchParams();
+    formData.append("club_name", name);
+    formData.append("club_description", description);
+
+    const response = await api.post(
+      "/clubs/create/",
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+        withCredentials: true, // ensures cookies are sent
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Create club failed:", error);
+    throw error;
+  }
 }
 
 export async function getClubs() {
