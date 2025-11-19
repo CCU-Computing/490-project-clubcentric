@@ -1,6 +1,6 @@
 import api from "./api"
 
-export async function createCalendar(club_id, calendar_name) 
+export async function create_calendar(club_id, calendar_name) 
 {
   try 
   {
@@ -14,7 +14,7 @@ export async function createCalendar(club_id, calendar_name)
       // Making user calendar
       if (club_id == null)
       {
-        const response = await api.post(`/clubs/calendar/create/`, {
+        const response = await api.post(`calendar/create/`, {
           calendar_name : calendar_name
         });
         return response.data;
@@ -22,7 +22,7 @@ export async function createCalendar(club_id, calendar_name)
       // Club calendar
       else
       {
-        const response = await api.post(`/clubs/calendar/create/`, {
+        const response = await api.post(`calendar/create/`, {
           club_id : club_id,
           calendar_name : calendar_name
         });
@@ -37,14 +37,14 @@ export async function createCalendar(club_id, calendar_name)
   }
 }
 
-export async function listCalendars(club_id) 
+export async function get_calendars(club_id) 
 {
   try 
   {
     // Get user's calendars
     if (club_id == null) 
     {
-      const response = await api.get(`/calendar/create/`);
+      const response = await api.get(`/calendar/get/`);
       return response.data;
     }
     // Club's calendars
@@ -56,54 +56,153 @@ export async function listCalendars(club_id)
   }
   catch (error)
   {
-    console.error("Get clubs failed:", error);
+    console.error("Get calendar failed:", error);
     return null;
   }
 }
 
-export async function createMeeting(calendar_id, datetime_str) 
+export async function update_calendar(calendar_id, calendar_name) 
 {
-  try 
-  {
-    if (calendar_id == null || datetime_str == null) 
-    {
-      console.error("Missing fields.");
-      return null;
-    }
-    else 
-    {
-      const response = await api.post(`/clubs/calendars/meetings/new`, {
-        calendar_id: calendar_id,
-        datetime_str: datetime_str
-      });
-      return response.data;
-    }
-  }
-  catch (error)
-  {
-    console.error("Get clubs failed:", error);
-    return null;
-  }
+	try 
+	{
+		if (calendar_id == null || calendar_name == null) 
+		{
+			console.error("Missing fields.");
+			return null;
+		}
+		else 
+		{
+			const response = await api.post(`calendar/update/`, {
+			cal_id : calendar_id,
+			calendar_name : calendar_name
+			});
+			return response.data;
+		}
+	}
+	catch (error)
+	{
+		console.error("Update calendar failed:", error);
+		return null;
+	}
 }
 
-export async function listMeetings(calendar_id, meeting_id) 
+export async function delete_calendar(calendar_id) 
 {
-  try 
-  {
-    if (calendar_id == null && meeting_id == null) 
-    {
-      console.error("Missing fields.");
-      return null;
-    }
-    else 
-    {
-      const response = await api.get(`/clubs/calendars/meetings/`, { params: {calendar_id, meeting_id} });
-      return response.data;
-    }
-  }
-  catch (error)
-  {
-    console.error("List meetings failed:", error);
-    return null;
-  }
+	try 
+	{
+		if (calendar_id == null) 
+		{
+			console.error("Missing fields.");
+			return null;
+		}
+		else 
+		{
+			const response = await api.post(`calendar/delete/`, {
+			cal_id : calendar_id,
+			});
+			return response.data;
+		}
+	}
+	catch (error)
+	{
+		console.error("Delete calendar failed: ", error);
+		return null;
+	}
+}
+
+export async function create_meeting(calendar_id, datetime_str, description) 
+{
+	try 
+	{
+		if (calendar_id == null || datetime_str == null || description == null) 
+		{
+			console.error("Missing fields.");
+			return null;
+		}
+		else 
+		{
+			const response = await api.post(`/calendar/meetings/create`, {
+			calendar_id: calendar_id,
+			datetime_str: datetime_str,
+			description : description
+			});
+			return response.data;
+		}
+	}
+	catch (error)
+	{
+		console.error("Get clubs failed:", error);
+		return null;
+	}
+}
+
+export async function get_meetings(calendar_id) 
+{
+	try 
+	{
+		if (calendar_id == null) 
+		{
+			console.error("Missing fields.");
+			return null;
+		}
+		else 
+		{
+			const response = await api.get(`/calendar/meetings/list/`, { params: {calendar_id} });
+			return response.data;
+		}
+	}
+	catch (error)
+	{
+		console.error("Get meetings failed:", error);
+		return null;
+	}
+}
+
+export async function update_meeting(meeting_id, description) 
+{
+	try 
+	{
+		if (meeting_id == null || description == null) 
+		{
+			console.error("Missing fields.");
+			return null;
+		}
+		else 
+		{
+			const response = await api.post(`/calendar/meetings/update/`, {
+			meet_id : meeting_id,
+			desc : description
+			});
+			return response.data;
+		}
+	}
+	catch (error)
+	{
+		console.error("Update meeting failed:", error);
+		return null;
+	}
+}
+
+export async function delete_meeting(meeting_id) 
+{
+	try 
+	{
+		if (meeting_id == null) 
+		{
+			console.error("Missing fields.");
+			return null;
+		}
+		else 
+		{
+			const response = await api.post(`/calendar/meetings/create`, {
+			meet_id : meeting_id
+			});
+			return response.data;
+		}
+	}
+	catch (error)
+	{
+		console.error("Delete meeting failed:", error);
+		return null;
+	}
 }
