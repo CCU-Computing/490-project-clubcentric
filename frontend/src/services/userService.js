@@ -110,7 +110,6 @@ export async function update_user(username, first_name, last_name, email, bio, p
                 {
 					headers:
 					{
-						"Content-Type": "multipart/form-data",
 						"X-CSRFToken": getCookie("csrftoken")
 					}
 				}
@@ -134,7 +133,6 @@ export async function delete_user()
             {
                 headers:
                 {
-                    "Content-Type": "application/json",
                     "X-CSRFToken": getCookie("csrftoken")
                 }
             }
@@ -187,7 +185,6 @@ export async function logout_user()
             {
                 headers:
                 {
-                    "Content-Type": "application/json",
                     "X-CSRFToken": getCookie("csrftoken")
                 }
             }
@@ -221,7 +218,6 @@ export async function change_password(password)
                 {
 					headers:
 					{
-						"Content-Type": "application/json",
 						"X-CSRFToken": getCookie("csrftoken")
 					}
 				}

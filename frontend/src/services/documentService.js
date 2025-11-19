@@ -18,7 +18,6 @@ export async function create_manager(name, club_id) {
             {
                 headers:
                 {
-                    "Content-Type": "application/json",
                     "X-CSRFToken": getCookie("csrftoken")
                 }
             }
@@ -92,7 +91,6 @@ export async function update_manager(manager_id, name)
             {
                 headers:
                 {
-                    "Content-Type": "application/json",
                     "X-CSRFToken": getCookie("csrftoken")
                 }
             }
@@ -123,7 +121,6 @@ export async function delete_manager(manager_id)
             {
                 headers:
                 {
-                    "Content-Type": "application/json",
                     "X-CSRFToken": getCookie("csrftoken")
                 }
             }
@@ -157,7 +154,6 @@ export async function upload_document(title, manager_id, uploaded_file)
             {
                 headers:
                 {
-                    "Content-Type": "multipart/form-data",
                     "X-CSRFToken": getCookie("csrftoken")
                 }
             }
@@ -245,7 +241,6 @@ export async function delete_document(document_id)
             {
                 headers:
                 {
-                    "Content-Type": "application/json",
                     "X-CSRFToken": getCookie("csrftoken")
                 }
             }
