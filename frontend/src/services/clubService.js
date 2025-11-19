@@ -33,24 +33,30 @@ export async function create_club(name, description)
 	}
 }
 
-export async function getClubs() 
-{
-    try 
-    {
+export async function getClubs() {
+    try {
         const response = await api.get(
             `/clubs/get/`,
             {
-                headers:
-                {
+                headers: {
                     "X-CSRFToken": getCookie("csrftoken")
                 }
             }
         );
-        // This relies on your backend returning all clubs when club_id is missing/null
-        return response.data;
+
+        const clubs = response.data;
+
+        // Fetch full club details for consistency
+        const fullClubs = await Promise.all(
+            clubs.map(async (club) => {
+                const full = await get_club(club.id);
+                return full;
+            })
+        );
+
+        return fullClubs;
     }
-    catch (error)
-    {
+    catch (error) {
         console.error("get clubs failed:", error);
         throw error;
     }
