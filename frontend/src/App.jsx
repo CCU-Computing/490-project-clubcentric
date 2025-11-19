@@ -72,8 +72,18 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
+              <Route 
+                path="/documents" 
+                element=
+                {
+                  <ProtectedRoute>
+                    {<DocumentsPage/>}
+                  </ProtectedRoute>
+                }
+              />
+
               <Route path="*" element={<Navigate to="/login" replace />} />
-              <Route path="/documents" element={<DocumentsPage managerId={1} />} />
             </Routes>
           }
       />
