@@ -57,7 +57,10 @@ const UserInfoBlock = ({ user, isEditing, setIsEditing, handleUpdate }) => {
                     }}
                 />
 
-                <Box sx={{ flexGrow: 1 }}>
+                <Box sx={{ 
+                    flexGrow: 1,
+                    minWidth: 0,
+                    }}>
 
                     <Box sx={{ mb: 2 }}>
 
@@ -95,7 +98,12 @@ const UserInfoBlock = ({ user, isEditing, setIsEditing, handleUpdate }) => {
                                 variant="h6"
                                 component="h3"
                                 color="text.primary"
-                                sx={{ fontWeight: 500 }}
+                                sx={{ 
+                                    mt: 1,
+                                    wordWrap: 'break-word',
+                                    whiteSpace: 'pre-wrap',
+                                    // fontWeight: 500
+                                }}
                             >
                                 Bio
                             </Typography>
