@@ -60,7 +60,7 @@ html, body {
   background-attachment: fixed;
   background-size: cover;
   
-  filter: blur(2px) brightness(0.8); 
+  filter: blur(2px);
   
   z-index: -1; /* FIX: properly behind content but above body */
 }
