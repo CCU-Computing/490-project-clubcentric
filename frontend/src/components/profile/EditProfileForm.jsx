@@ -6,6 +6,9 @@ import { Box, TextField, Button, Grid, Paper, Typography } from '@mui/material';
  */
 const EditProfileForm = ({ user, onUpdate, onCancel }) => {
     
+    // Define the maximum character limit for the bio
+    const MAX_BIO_LENGTH = 255; // ADDED LINE
+    
     // Initialize state with current user data, defaulting to empty string
     const [formData, setFormData] = useState({
         first_name: user.first_name || '',
@@ -15,6 +18,8 @@ const EditProfileForm = ({ user, onUpdate, onCancel }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        // The HTML maxLength attribute (set via inputProps below)
+        // automatically restricts input, so we just update the state.
         setFormData(prevData => ({
             ...prevData,
             [name]: value,
@@ -70,6 +75,8 @@ const EditProfileForm = ({ user, onUpdate, onCancel }) => {
                             margin="normal"
                             multiline
                             rows={4}
+                            inputProps={{ maxLength: MAX_BIO_LENGTH }}
+                            helperText={`${formData.bio.length}/${MAX_BIO_LENGTH} characters`}
                         />
                     </Grid>
                     
