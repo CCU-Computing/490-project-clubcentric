@@ -82,7 +82,7 @@ const ProfilePage = () => {
                 null // profile_picture
             );
 
-            if (responseData && responseData.message === "User updated successfully") {
+            if (responseData && responseData.status === true) {
                 // Re-fetch user data to ensure all components have the latest state
                 await fetchUserData();
 
