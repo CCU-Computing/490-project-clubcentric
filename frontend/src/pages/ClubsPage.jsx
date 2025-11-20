@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getClubs, newClub } from "../services/clubService";
-import ClubCard from "../components/clubs/ClubCard";
+import { get_club, create_club } from "../services/clubService";
+import ClubCard from "../components/cards/ClubCard";
 import CreateClubCard from "../components/clubs/CreateClubCard";
 import CreateClubModal from "../components/clubs/CreateClubModal";
 import { 
@@ -19,16 +19,37 @@ export default function ClubsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    getClubs().then(data => {
+    get_club().then(data => {
       if (data) setClubs(data);
+
+
     });
   }, []);
 
-  // Filter clubs based on search query
-  const filteredClubs = clubs.filter(club => 
-    club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    club.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filter clubs based on search query, name, description, and tags.
+  // Supports multiple keywords separated by a comma or a space.
+  const filteredClubs = clubs.filter(club => {
+    // If search is empty, show all clubs
+    if (!searchQuery.trim()) return true;
+
+    const normalizedQuery = searchQuery.toLowerCase().trim();
+    
+    const keywords = normalizedQuery.split(/[\s,]+/)
+      .filter(keyword => keyword.length > 0);
+
+    if (keywords.length === 0) return true;
+
+    // Check if any keyword is included in the club's name or tags
+    return keywords.some(keyword => {
+      const nameMatch = club.name.toLowerCase().includes(keyword);
+      const clubTagsString = club.tags 
+        ? (Array.isArray(club.tags) ? club.tags.join(' ') : club.tags).toLowerCase() 
+        : '';
+      const tagsMatch = clubTagsString.includes(keyword);
+
+      return nameMatch || tagsMatch;
+    });
+  });
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -43,10 +64,10 @@ export default function ClubsPage() {
   };
 
   const handleCreateClub = async (clubData) => {
-    const result = await newClub(clubData.name, clubData.description, clubData.summary, clubData.videoEmbed);
+    const result = await create_club(clubData.name, clubData.description, clubData.summary, clubData.videoEmbed);
     if (result) {
       // refresh the clubs list
-      const updatedClubs = await getClubs();
+      const updatedClubs = await get_club();
       if (updatedClubs) setClubs(updatedClubs);
     }
   };
@@ -69,7 +90,8 @@ export default function ClubsPage() {
           <TextField
             fullWidth
             variant="outlined"
-            placeholder="Search clubs by name or description..."
+            // Updated placeholder for new search functionality
+            placeholder="Search clubs by name or tags (use comma or space for multiple keywords)..."
             value={searchQuery}
             onChange={handleSearchChange}
             sx={{ maxWidth: 600 }}

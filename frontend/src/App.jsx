@@ -5,17 +5,33 @@ import { Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ClubsPage from './pages/ClubsPage';
 import ClubPage from "./pages/club/ClubPage";
-import LoginPage from "./pages/LoginPage";
+import LoginPage from "./pages/auth/LoginPage";
+import SignUpPage from './pages/auth/SignUpPage';
 import ProfilePage from "./pages/ProfilePage";
 import Navbar from './components/navbar/Navbar' // Navigation Bar
 import ClubSearch from './pages/ClubSearch'
 import DocumentsPage from "./pages/Documents";
 import ProtectedRoute from './components/auth/AuthProvider';
-
+import { useAuth } from './hooks/useAuth';
 
 function App() {
 
-  return (
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated)
+  {
+    return (
+            <Routes>
+                <Route path="/login" element={<LoginPage/>} />
+                <Route path="/signup" element={<SignUpPage/>} />
+                <Route path="*" element={<Navigate to="/login" replace />} />
+            </Routes>
+        );
+  }
+  
+  else
+  {
+    return (
     <>
       <Navbar
           content={
@@ -23,6 +39,13 @@ function App() {
             <Routes>
               {/* To see a page with a :id in the url, add in an id parameter. For example: http://localhost:5173/edit/1 */}
               <Route path="/login" element={<LoginPage/>}/>
+              <Route 
+                path="/signup" 
+                element=
+                {
+                    <SignUpPage/>
+                }
+              />
               <Route 
                 path="/home" 
                 element=
@@ -88,7 +111,10 @@ function App() {
           }
       />
     </>
-  )  
+  )
+  }
+
+
 }
 
 <Router>
