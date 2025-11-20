@@ -11,11 +11,26 @@ import ProfilePage from "./pages/ProfilePage";
 import Navbar from './components/navbar/Navbar' // Navigation Bar
 import ClubSearch from './pages/ClubSearch'
 import ProtectedRoute from './components/auth/ProtectedRoute';
-
+import { useAuth } from './hooks/useAuth';
 
 function App() {
 
-  return (
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated)
+  {
+    return (
+            <Routes>
+                <Route path="/login" element={<LoginPage/>} />
+                <Route path="/signup" element={<SignUpPage/>} />
+                <Route path="*" element={<Navigate to="/login" replace />} />
+            </Routes>
+        );
+  }
+  
+  else
+  {
+    return (
     <>
       <Navbar
           content={
@@ -85,7 +100,10 @@ function App() {
       />
 
     </>
-  )  
+  )
+  }
+
+
 }
 
 <Router>

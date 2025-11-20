@@ -175,7 +175,6 @@ export async function delete_club(club_id)
 				{
 					headers:
 					{
-						"Content-Type": "application/json",
 						"X-CSRFToken": getCookie("csrftoken")
 					}
 				}
@@ -207,7 +206,6 @@ export async function join_club(club_id)
 			{
 				headers:
 				{
-					"Content-Type": "application/json",
 					"X-CSRFToken": getCookie("csrftoken")
 				}
 			}
@@ -270,7 +268,6 @@ export async function update_membership(user_id, club_id, role)
 				{
 					headers:
 					{
-						"Content-Type": "application/json",
 						"X-CSRFToken": getCookie("csrftoken")
 					}
 				}
@@ -305,7 +302,6 @@ export async function remove_membership(club_id, user_id)
 				{
 					headers:
 					{
-						"Content-Type": "application/json",
 						"X-CSRFToken": getCookie("csrftoken")
 					}
 				}
@@ -338,7 +334,6 @@ export async function create_merge(club_id_1, club_id_2)
 			{
 				headers:
 				{
-					"Content-Type": "application/json",
 					"X-CSRFToken": getCookie("csrftoken")
 				}
 			}
@@ -397,7 +392,6 @@ export async function update_merge(club_id)
 				{
 					headers:
 					{
-						"Content-Type": "application/json",
 						"X-CSRFToken": getCookie("csrftoken")
 					}
 				}
@@ -431,7 +425,6 @@ export async function delete_merge(club_id)
 				{
 					headers:
 					{
-						"Content-Type": "application/json",
 						"X-CSRFToken": getCookie("csrftoken")
 					}
 				}

@@ -6,7 +6,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children })
 {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+    
     const login = async (username, password) => 
     {
         const result = await login_user(username, password);

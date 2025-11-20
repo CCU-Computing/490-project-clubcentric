@@ -23,7 +23,6 @@ export async function create_calendar(club_id, calendar_name)
 			{
 				headers:
 				{
-					"Content-Type": "application/json",
 					"X-CSRFToken": getCookie("csrftoken")
 				}
     		}
@@ -42,7 +41,6 @@ export async function create_calendar(club_id, calendar_name)
 			{
 				headers:
 				{
-					"Content-Type": "application/json",
 					"X-CSRFToken": getCookie("csrftoken")
 				}
     		}
@@ -122,7 +120,6 @@ export async function update_calendar(calendar_id, calendar_name)
 				{
 					headers:
 					{
-						"Content-Type": "application/json",
 						"X-CSRFToken": getCookie("csrftoken")
 					}
 				}
@@ -156,7 +153,6 @@ export async function delete_calendar(calendar_id)
 				{
 					headers:
 					{
-						"Content-Type": "application/json",
 						"X-CSRFToken": getCookie("csrftoken")
 					}
 				}
@@ -192,7 +188,6 @@ export async function create_meeting(calendar_id, datetime_str, description)
 				{
 					headers:
 					{
-						"Content-Type": "application/json",
 						"X-CSRFToken": getCookie("csrftoken")
 					}
 				}
@@ -261,7 +256,6 @@ export async function update_meeting(meeting_id, description)
 				{
 					headers:
 					{
-						"Content-Type": "application/json",
 						"X-CSRFToken": getCookie("csrftoken")
 					}
 				}
@@ -295,7 +289,6 @@ export async function delete_meeting(meeting_id)
 				{
 					headers:
 					{
-						"Content-Type": "application/json",
 						"X-CSRFToken": getCookie("csrftoken")
 					}
 				}
