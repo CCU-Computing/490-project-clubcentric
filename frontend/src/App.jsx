@@ -10,7 +10,8 @@ import SignUpPage from './pages/auth/SignUpPage';
 import ProfilePage from "./pages/ProfilePage";
 import Navbar from './components/navbar/Navbar' // Navigation Bar
 import ClubSearch from './pages/ClubSearch'
-import ProtectedRoute from './components/auth/ProtectedRoute';
+import DocumentsPage from "./pages/Documents";
+import ProtectedRoute from './components/auth/AuthProvider';
 import { useAuth } from './hooks/useAuth';
 
 function App() {
@@ -94,11 +95,21 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
+              <Route 
+                path="/documents" 
+                element=
+                {
+                  <ProtectedRoute>
+                    {<DocumentsPage/>}
+                  </ProtectedRoute>
+                }
+              />
+
               <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
           }
       />
-
     </>
   )
   }
