@@ -1,5 +1,5 @@
 import api from "./api"
-import getCookie from "../utils/cookies"
+import { getCookie } from "../utils/cookies"
 
 export async function create_calendar(club_id, calendar_name) 
 {
