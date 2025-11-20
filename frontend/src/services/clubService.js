@@ -1,36 +1,35 @@
 import api from "./api"
 import { getCookie } from "../utils/cookies";
 
-export async function create_club(name, description) 
-{
-	try 
-	{
-		if (name == null || description == null) 
-		{
-			console.error("Missing fields.");
-			return null;
-		}
-		const response = await api.post(
-			`/clubs/create/`,
-			{
-				club_name : name,
-				club_description : description
-			},
-			{
-				headers:
-				{
-					"Content-Type": "application/json",
-					"X-CSRFToken": getCookie("csrftoken")
-				}
-			}
-		);
-		return response.data;
-	}
-	catch (error)
-	{
-		console.error("Create club failed:", error);
-		throw error;
-	}
+export async function create_club(name, description) {
+  try {
+    if (!name || !description) {
+      console.error("Missing fields.");
+      return null;
+    }
+
+    // Form-encoded data instead of JSON
+    const formData = new URLSearchParams();
+    formData.append("club_name", name);
+    formData.append("club_description", description);
+
+    const response = await api.post(
+      "/clubs/create/",
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+        withCredentials: true, // ensures cookies are sent
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Create club failed:", error);
+    throw error;
+  }
 }
 
 export async function getClubs() {
@@ -107,48 +106,54 @@ export async function get_club(club_id)
 	}
 }
 
-export async function update_club(club_id, name, description, picture, links) 
+export async function update_club(club_id, name, description, picture, links, summary, videoEmbed, tags, lastMeetingDate) 
 {
-	try 
-	{
-		if (club_id == null || (name == null && description && picture && links))
-		{
-			console.error("Missing fields.");
-			return null;
-		}
-		else
-		{
-			const display = new FormData();
-            display.append("image", picture);
-			const response = await api.post(
-				`/clubs/update/`,
-				{
-					club_id : club_id,
-					club_name : name,
-					club_description : description,
-					club_picture : display,
-					club_links : links,
-          club_summary : summary,
-          club_videoEmbed : videoEmbed,
-          club_tags : tags,
-          club_lastMeetingDate : lastMeetingDate
-				},
-				{
-					headers:
-					{
-						"Content-Type": "application/json",
-						"X-CSRFToken": getCookie("csrftoken")
-					}
-				}
-			);
-			return response.data;
-		}
-	}
-	catch (error)
-	{
-		console.error("update club failed:", error);
-		throw error;
-	}
+    try 
+    {
+        if (club_id == null)
+        {
+            console.error("Missing club_id field.");
+            return null;
+        }
+        
+        // Use FormData for file uploads and other data
+        const display = new FormData();
+        
+        // Append all fields to FormData
+        display.append("club_id", club_id);
+        
+        if (name) display.append("club_name", name);
+        if (description) display.append("club_description", description);
+        if (summary) display.append("club_summary", summary);
+        if (videoEmbed) display.append("club_videoEmbed", videoEmbed);
+        if (picture) display.append("club_picture", picture);
+        
+        // ArrayField (tags) must be JSON stringified
+        display.append("club_tags", JSON.stringify(tags || [])); 
+
+        // JSONField (links) must be JSON stringified
+        display.append("club_links", JSON.stringify(links || [])); 
+
+        // Send date
+        display.append("club_lastMeetingDate", lastMeetingDate || "");
+
+        const response = await api.post(
+            `/clubs/update/`,
+            display,
+            {
+                headers:
+                {
+                    "X-CSRFToken": getCookie("csrftoken")
+                }
+            }
+        );
+        return response.data;
+    }
+    catch (error)
+    {
+        console.error("update club failed:", error);
+        throw error;
+    }
 }
 
 export async function delete_club(club_id) 

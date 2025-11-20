@@ -1,0 +1,99 @@
+/* Page wrapper */
+.login-page {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("../../assets/images/loginBG.jpg");
+  background-size: cover;
+  /*filter: blur(2px); MAKING THIS OPTIONAL FOR NOW SINCE IT ISN'T WORKING RIGHT*/
+}
+
+/* Overlay box */
+.login-overlay {
+  background-color: rgba(0, 0, 0, 0.55);
+  padding: 40px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  width: 350px;
+  z-index: 1; /* above background */
+  position: relative;
+  color: white; /* text color */
+}
+
+/* Title */
+.login-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 20px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Form layout */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Inputs */
+.login-input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+}
+
+/* Sign-in button */
+.login-button {
+  background-color: #006f71;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.login-button:hover {
+  background-color: #005c5e;
+}
+
+/* Error message */
+.login-error {
+  color: #ff7070;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: -5px;
+}
+
+/* Footer */
+.login-footer {
+  margin-top: 15px;
+  text-align: center;
+  color: white;
+  font-size: 0.95rem;
+}
+
+.login-footer a {
+  color: #A27752;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-footer a:hover {
+  text-decoration: underline;
+}
