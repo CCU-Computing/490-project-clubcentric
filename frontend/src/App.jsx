@@ -12,6 +12,9 @@ import Navbar from './components/navbar/Navbar' // Navigation Bar
 import ClubSearch from './pages/ClubSearch'
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
+import DocumentsPage from "./pages/Documents";
+//import ProtectedRoute from './components/auth/AuthProvider'; //FIXME: check if this line is still needed
+
 
 function App() {
 
@@ -94,11 +97,21 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
+              <Route 
+                path="/documents" 
+                element=
+                {
+                  <ProtectedRoute>
+                    {<DocumentsPage/>}
+                  </ProtectedRoute>
+                }
+              />
+
               <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
           }
       />
-
     </>
   )
   }
