@@ -39,7 +39,7 @@ def view_clubs(request):
     # If no id provided, return all clubs
     if not club_id:
         allClubs = [
-            {"id" : c.id, "name" : c.name, "description" : c.description} 
+            {"id" : c.id, "name" : c.name, "description" : c.description, "tags" : c.tags} 
             for c in Club.objects.all()
             ]
         return JsonResponse(allClubs, safe=False)

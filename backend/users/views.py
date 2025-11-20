@@ -72,91 +72,92 @@ def create_user(request):
     new_user.save()
     return JsonResponse({"status" : True, "user_id": new_user.id})
 
+
 @require_GET
 @login_required
 def get_user_data(request):
     user_id = request.GET.get("user_id")
     
-    # Get own data
-    if not user_id:
-        response = {
-            "id": request.user.id,
-            "username": request.user.username,
-            "first_name": request.user.first_name,
-            "last_name": request.user.last_name,
-            "email": request.user.email,
-            "bio": request.user.bio or "",
-            "profile_picture": request.user.profile_picture.url if request.user.profile_picture else None
-        }
-        return JsonResponse(response)
-    
-    # Get someone else's data
-    else:
+    # Determine which user we are looking for
+    target_user = request.user
+    if user_id:
         try:
-            user = User.objects.get(id=user_id)
+            target_user = User.objects.get(id=user_id)
         except User.DoesNotExist:
             return JsonResponse({"error": "user not found"}, status=404)
-        
-        bio = user.bio or None
-        profile_picture = user.profile_picture.url or None
+    
+    # --- NEW LOGIC: Fetch Clubs ---
+    # Get all memberships for this user
+    memberships = Membership.objects.filter(user=target_user)
+    clubs_list = []
 
-        response = {
-            "id": user.id,
-            "username": user.username,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "email": user.email,
-            "bio": bio,
-            "profile_picture": profile_picture
-        }
-        return JsonResponse(response)
+    for m in memberships:
+        clubs_list.append({
+            "id": m.club.id,
+            "name": m.club.name,
+            "description": m.club.description,
+            "tags": m.club.tags,
+            "role": m.role, # Useful to know if they are admin/organizer
+            "summary": m.club.summary # Including this just in case
+        })
+    # ------------------------------
+
+    # Construct the response
+    response = {
+        "id": target_user.id,
+        "username": target_user.username,
+        "first_name": target_user.first_name,
+        "last_name": target_user.last_name,
+        "email": target_user.email,
+        "bio": target_user.bio or "",
+        "profile_picture": target_user.profile_picture.url if target_user.profile_picture else None,
+        "clubs": clubs_list # <--- Send the clubs data to frontend
+    }
+    
+    return JsonResponse(response)
+
 
 @require_POST
 @login_required
 def update_user(request):
-
-    ''' Update non critical user fields '''
-    required = ["username", "first_name", "last_name", "email", "bio", "profile_picture"]
-    
-    if all(not request.POST.get(f) for f in required):
-        return JsonResponse({"error" : "Missing required field(s)"}, status=400)
-
     username = request.POST.get('username')
     first_name = request.POST.get('first_name')
     last_name = request.POST.get('last_name')
     email = request.POST.get('email')
     bio = request.POST.get('bio')
     profile_picture = request.FILES.get('profile_picture')
-    
-    # Update username
-    if username:
-        # Already exists
+
+    if username is not None:
+        if not username.strip():
+            return JsonResponse({'error': 'Username cannot be empty.'}, status=400)
+        
         if User.objects.filter(username=username).exclude(id=request.user.id).exists():
-            return JsonResponse({'error' : 'username already exists.'}, status=409) 
+            return JsonResponse({'error': 'Username already exists.'}, status=409)
         request.user.username = username
-    
-    # Update first name
-    if first_name:
-        request.user.first_name = first_name
 
-    # Update last name
-    if last_name:
-        request.user.last_name = last_name
-
-    # Update email
-    if email:
+    if email is not None:
+        if not email.strip():
+            return JsonResponse({'error': 'Email cannot be empty.'}, status=400)
         request.user.email = email
 
-    # Update bio
-    if bio:
+    if first_name is not None:
+        request.user.first_name = first_name
+
+    if last_name is not None:
+        request.user.last_name = last_name
+
+    if bio is not None:
         request.user.bio = bio
 
-    # Update profile_picture
     if profile_picture:
         request.user.profile_picture = profile_picture
 
-    request.user.save()
-    return JsonResponse({"status" : True})
+    try:
+        request.user.save()
+        return JsonResponse({"status": True})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
 
 @require_POST
 @login_required
