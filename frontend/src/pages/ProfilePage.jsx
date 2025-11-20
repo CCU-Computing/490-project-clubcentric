@@ -4,7 +4,7 @@ import UserInfoBlock from '../components/profile/UserInfoBlock';
 import UserClubsList from '../components/profile/UserClubsList';
 import { get_user, update_user } from '../services/userService';
 import anonProfilePic from '../assets/images/anon_profile_pic.png';
-
+import ClubCalendars from '../components/calendars/ClubCalendars';
 
 // ------------------------------------------
 
