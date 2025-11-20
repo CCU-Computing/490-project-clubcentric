@@ -8,7 +8,7 @@ import {
   Box,
   CardActionArea
 } from '@mui/material';
-import GroupIcon from '@mui/icons-material/Group';
+// import GroupIcon from '@mui/icons-material/Group'; // Unused
 
 export default function ClubCard({ club }) {
   const navigate = useNavigate();
@@ -17,7 +17,8 @@ export default function ClubCard({ club }) {
     navigate(`/club/${club.id}`);
   };
 
-  const clubTags = club.tags || ['Active', 'Social', 'Student-Led'];
+  // FIX: Use live data. If club.tags is null/undefined, fallback to empty array.
+  const clubTags = club.tags || [];
 
   return (
     <Card
@@ -43,22 +44,24 @@ export default function ClubCard({ club }) {
             {club.name}
           </Typography>
 
-          {/* Tags */}
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-            {clubTags.map((tag, index) => (
-              <Chip
-                key={index}
-                label={tag}
-                size="small"
-                color="primary"
-                variant="outlined"
-                sx={{
-                  fontWeight: 600,
-                  fontSize: '0.75rem'
-                }}
-              />
-            ))}
-          </Box>
+          {/* Tags - Only render Box if tags exist */}
+          {clubTags.length > 0 && (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+              {clubTags.map((tag, index) => (
+                <Chip
+                  key={index}
+                  label={tag}
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: '0.75rem'
+                  }}
+                />
+              ))}
+            </Box>
+          )}
 
           {/* Club Description */}
           <Typography
@@ -77,3 +80,12 @@ export default function ClubCard({ club }) {
     </Card>
   );
 }
+
+ClubCard.propTypes = {
+  club: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    name: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    tags: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
+};

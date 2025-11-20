@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { get_club, create_club } from "../services/clubService";
-import ClubCard from "../components/clubs/ClubCard";
+import ClubCard from "../components/cards/ClubCard";
 import CreateClubCard from "../components/clubs/CreateClubCard";
 import CreateClubModal from "../components/clubs/CreateClubModal";
 import { 
