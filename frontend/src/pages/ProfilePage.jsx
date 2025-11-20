@@ -4,8 +4,13 @@ import UserInfoBlock from '../components/profile/UserInfoBlock';
 import UserClubsList from '../components/profile/UserClubsList';
 import { get_user, update_user } from '../services/userService';
 import anonProfilePic from '../assets/images/anon_profile_pic.png';
-
-
+import ClubCalendars from '../components/calendars/ClubCalendars';
+// Mock data for the clubs list (Keep this for now, until club data is also fetched)
+const mockClubs = [
+    { id: 1, name: 'One Punch Man Club', description: 'This club is for people who love exercise and being a hero for fun!' },
+    { id: 7, name: 'The Code Wranglers', description: 'A club for beginner and experienced programmers.' },
+    { id: 12, name: 'Volunteering Outreach Group', description: 'Coordinate and participate in community service.' },
+];
 // ------------------------------------------
 
 // Utility for notification styles
@@ -134,23 +139,9 @@ const ProfilePage = () => {
                 <h1 className="text-4xl font-bold text-gray-800 mb-6 border-b pb-2">
                     Your Profile
                 </h1>
-                
-                {/* Persistent Notification Bar */}
-                {statusMessage.message && (
-                    <div className={getStatusMessageStyles(statusMessage.type)}>
-                        <p>{statusMessage.message}</p>
-                    </div>
-                )}
 
-                <UserInfoBlock 
-                    user={userForDisplay} 
-                    isEditing={isEditing}
-                    setIsEditing={setIsEditing}
-                    handleUpdate={handleUpdate} // Pass the update handler
-                />
-                
-                {/* Only display clubs list if not editing */}
-                {!isEditing && <UserClubsList clubs={clubs} />}
+                <UserInfoBlock user={userForDisplay} />
+                <UserClubsList clubs={clubs} />
             </div>
         </div>
     );
