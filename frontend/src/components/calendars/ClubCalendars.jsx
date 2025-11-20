@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { get_calendars } from "../../services/calendarService";
+import { listCalendars } from "../../services/calendarService";
 import CalendarCard from "./CalendarCard";
 
 export default function ClubCalendars({ club_id }) {
@@ -7,7 +7,7 @@ export default function ClubCalendars({ club_id }) {
 
   useEffect(() => {
     async function fetchCalendars() {
-      const data = await get_calendars(club_id);
+      const data = await listCalendars(club_id);
       if (data) setCalendars(data);
     }
     fetchCalendars();

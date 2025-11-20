@@ -73,6 +73,7 @@ body {
     background: white;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     outline: none;
+    /* FIX: Explicitly set text color to black */
     color: #000000;
 }
 .search-bar input:focus {
@@ -96,16 +97,20 @@ body {
     padding: 20px;
     margin-bottom: 25px;
     border-radius: 12px;
+    
     max-height: 110px; 
     overflow: hidden; 
     position: relative; 
+
     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+    
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     cursor: pointer;
 }
 
 .club:hover {
     max-height: 1000px; 
+    
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     transform: translateY(-5px) scale(1.01); 
 }
