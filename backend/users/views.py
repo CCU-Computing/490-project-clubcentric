@@ -72,44 +72,49 @@ def create_user(request):
     new_user.save()
     return JsonResponse({"status" : True, "user_id": new_user.id})
 
+
 @require_GET
 @login_required
 def get_user_data(request):
     user_id = request.GET.get("user_id")
     
-    # Get own data
-    if not user_id:
-        response = {
-            "id": request.user.id,
-            "username": request.user.username,
-            "first_name": request.user.first_name,
-            "last_name": request.user.last_name,
-            "email": request.user.email,
-            "bio": request.user.bio or "",
-            "profile_picture": request.user.profile_picture.url if request.user.profile_picture else None
-        }
-        return JsonResponse(response)
-    
-    # Get someone else's data
-    else:
+    # Determine which user we are looking for
+    target_user = request.user
+    if user_id:
         try:
-            user = User.objects.get(id=user_id)
+            target_user = User.objects.get(id=user_id)
         except User.DoesNotExist:
             return JsonResponse({"error": "user not found"}, status=404)
-        
-        bio = user.bio or None
-        profile_picture = user.profile_picture.url or None
+    
+    # --- NEW LOGIC: Fetch Clubs ---
+    # Get all memberships for this user
+    memberships = Membership.objects.filter(user=target_user)
+    clubs_list = []
 
-        response = {
-            "id": user.id,
-            "username": user.username,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "email": user.email,
-            "bio": bio,
-            "profile_picture": profile_picture
-        }
-        return JsonResponse(response)
+    for m in memberships:
+        clubs_list.append({
+            "id": m.club.id,
+            "name": m.club.name,
+            "description": m.club.description,
+            "tags": m.club.tags,
+            "role": m.role, # Useful to know if they are admin/organizer
+            "summary": m.club.summary # Including this just in case
+        })
+    # ------------------------------
+
+    # Construct the response
+    response = {
+        "id": target_user.id,
+        "username": target_user.username,
+        "first_name": target_user.first_name,
+        "last_name": target_user.last_name,
+        "email": target_user.email,
+        "bio": target_user.bio or "",
+        "profile_picture": target_user.profile_picture.url if target_user.profile_picture else None,
+        "clubs": clubs_list # <--- Send the clubs data to frontend
+    }
+    
+    return JsonResponse(response)
 
 
 @require_POST

@@ -1,18 +1,11 @@
-// frontend/src/pages/ProfilePage.jsx
-
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/navbar/Navbar';
 import UserInfoBlock from '../components/profile/UserInfoBlock';
 import UserClubsList from '../components/profile/UserClubsList';
-import { get_user, update_user } from '../services/userService'; // Import get_user and update_user service
+import { get_user, update_user } from '../services/userService';
 import anonProfilePic from '../assets/images/anon_profile_pic.png';
 
-// Mock data for the clubs list (Keep this for now, until club data is also fetched)
-const mockClubs = [
-    { id: 1, name: 'One Punch Man Club', description: 'This club is for people who love exercise and being a hero for fun!' },
-    { id: 7, name: 'The Code Wranglers', description: 'A club for beginner and experienced programmers.' },
-    { id: 12, name: 'Volunteering Outreach Group', description: 'Coordinate and participate in community service.' },
-];
+
 // ------------------------------------------
 
 // Utility for notification styles
@@ -31,10 +24,8 @@ const getStatusMessageStyles = (type) => {
 const ProfilePage = () => {
     // Initial State
     const [user, setUser] = useState(null); 
-    const [clubs, setClubs] = useState(mockClubs);
+    const [clubs, setClubs] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    
-    // New states for editing mode and status messages
     const [isEditing, setIsEditing] = useState(false);
     const [statusMessage, setStatusMessage] = useState({ message: '', type: '' });
 
@@ -46,6 +37,9 @@ const ProfilePage = () => {
             
             if (userData) {
                 setUser(userData);
+                if (userData.clubs) {
+                    setClubs(userData.clubs);
+                }
             } else {
                 setUser(null);
             }
