@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { listCalendars } from "../../services/calendarService"; // adjust path if needed
+import { get_calendars } from "../../services/calendarService"; // adjust path if needed
 
 export default function CalendarBlock({ clubId }) {
   const [calendars, setCalendars] = useState([]);
 
   useEffect(() => {
-    listCalendars(clubId).then((data) => {
+    get_calendars(clubId).then((data) => {
       if (data) setCalendars(data);
     });
   }, [clubId]);

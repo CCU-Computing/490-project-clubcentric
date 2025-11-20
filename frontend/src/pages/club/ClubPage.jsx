@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getClubs } from "../../services/clubService"; 
+import { get_club } from "../../services/clubService"; 
 import { useNavigate, useParams } from "react-router-dom";
 import ClubContent from "../../components/clubs/ClubContent";
 
@@ -11,7 +11,7 @@ export default function ClubPage() {
 
   
   useEffect(() => {
-    getClubs(id).then((data) => setClub(data));
+    get_club(id).then((data) => setClub(data));
   }, [id]);
 
 
