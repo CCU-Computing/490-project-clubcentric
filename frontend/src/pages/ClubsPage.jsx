@@ -22,7 +22,7 @@ export default function ClubsPage() {
     get_club().then(data => {
       if (data) setClubs(data);
 
-      
+
     });
   }, []);
 
@@ -91,7 +91,7 @@ export default function ClubsPage() {
             fullWidth
             variant="outlined"
             // Updated placeholder for new search functionality
-            placeholder="Search clubs by name, description, or tags (use comma or space for multiple keywords)..."
+            placeholder="Search clubs by name or tags (use comma or space for multiple keywords)..."
             value={searchQuery}
             onChange={handleSearchChange}
             sx={{ maxWidth: 600 }}
