@@ -111,52 +111,48 @@ def get_user_data(request):
         }
         return JsonResponse(response)
 
+
 @require_POST
 @login_required
 def update_user(request):
-
-    ''' Update non critical user fields '''
-    required = ["username", "first_name", "last_name", "email", "bio", "profile_picture"]
-    
-    if all(not request.POST.get(f) for f in required):
-        return JsonResponse({"error" : "Missing required field(s)"}, status=400)
-
     username = request.POST.get('username')
     first_name = request.POST.get('first_name')
     last_name = request.POST.get('last_name')
     email = request.POST.get('email')
     bio = request.POST.get('bio')
     profile_picture = request.FILES.get('profile_picture')
-    
-    # Update username
-    if username:
-        # Already exists
+
+    if username is not None:
+        if not username.strip():
+            return JsonResponse({'error': 'Username cannot be empty.'}, status=400)
+        
         if User.objects.filter(username=username).exclude(id=request.user.id).exists():
-            return JsonResponse({'error' : 'username already exists.'}, status=409) 
+            return JsonResponse({'error': 'Username already exists.'}, status=409)
         request.user.username = username
-    
-    # Update first name
-    if first_name:
-        request.user.first_name = first_name
 
-    # Update last name
-    if last_name:
-        request.user.last_name = last_name
-
-    # Update email
-    if email:
+    if email is not None:
+        if not email.strip():
+            return JsonResponse({'error': 'Email cannot be empty.'}, status=400)
         request.user.email = email
 
-    # Update bio
-    if bio:
+    if first_name is not None:
+        request.user.first_name = first_name
+
+    if last_name is not None:
+        request.user.last_name = last_name
+
+    if bio is not None:
         request.user.bio = bio
 
-    # Update profile_picture
     if profile_picture:
         request.user.profile_picture = profile_picture
 
-    request.user.save()
-    return JsonResponse({"status" : True})
+    try:
+        request.user.save()
+        return JsonResponse({"status": True})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
 
 @require_POST
 @login_required
