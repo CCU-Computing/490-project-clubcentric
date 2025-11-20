@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { get_club } from '../services/clubService';
+import { getClubs } from '../services/clubService';
 import '../components/ClubSearch.css';
 
 function ClubSearch() {
@@ -7,7 +7,7 @@ function ClubSearch() {
     const [search, setSearch] = useState("");
 
     useEffect(() => {
-        get_club().then(data => {
+        getClubs().then(data => {
             if (data) setClubs(data);
         });
     }, []);
@@ -64,15 +64,9 @@ function ClubSearch() {
                             <div key={index} className="club">
                                 <h3>{club.name}</h3>
                                 <div className="tags">
-                                {/* {club.tags && club.tags.map((tag, i) => (
+                                {club.tags && club.tags.map((tag, i) => (
                                         <span key={i} className="tag">{tag}</span>
-                                    ))} */}
-
-                                    <span className="tag">Active</span>
-                                    <span className="tag">Social</span>
-                                    <span className="tag">Student-Led</span>
-                                    {/* Hardcoded tags for now */}
-
+                                    ))}
                                 </div>
                                 <p>{club.description}</p>
                                 
