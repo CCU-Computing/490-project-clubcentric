@@ -112,7 +112,7 @@ const ProfilePage = () => {
     if (!user) {
         return (
             <div className="profile-page-container min-h-screen bg-gray-100">
-                <Navbar />
+                
                 <div className="container mx-auto p-4 md:p-8 pt-8 text-center text-xl text-red-600">
                     You must be logged in to view this page.
                 </div>
@@ -129,7 +129,7 @@ const ProfilePage = () => {
 
     return (
         <div className="profile-page-container min-h-screen bg-gray-100">
-            <Navbar />
+            
             <div className="container mx-auto p-4 md:p-8 pt-8"> 
                 <h1 className="text-4xl font-bold text-gray-800 mb-6 border-b pb-2">
                     Your Profile
