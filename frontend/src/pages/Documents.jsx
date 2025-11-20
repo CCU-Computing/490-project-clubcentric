@@ -13,8 +13,8 @@ import {
 } from "@mui/material";
 
 import {
-  uploadDocument,
-  getDocument
+  upload_document,
+  get_document
 } from "../services/documentService";
 
 import "../components/DocumentsPage.css";
@@ -27,7 +27,7 @@ export default function DocumentsPage({ managerId }) {
   const [file, setFile] = useState(null);
 
   const loadDocuments = async () => {
-    const result = await getDocument(null, managerId);
+    const result = await get_document(null, managerId);
     if (result) {
       setDocuments(result);
     }
@@ -40,7 +40,7 @@ export default function DocumentsPage({ managerId }) {
   const handleUpload = async () => {
     if (!title || !file) return;
 
-    const result = await uploadDocument(title, file, managerId);
+    const result = await upload_document(title, file, managerId);
 
     if (result) {
       await loadDocuments();
