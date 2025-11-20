@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { get_club } from "../../services/clubService.js";
+import { getClubs } from "../../services/clubService.js";
 
 export default function ClubList() {
   const [clubs, setClubs] = useState([]);
 
   useEffect(() => {
-    get_club().then(data => {
+    getClubs().then(data => {
       if (data) setClubs(data);
     });
   }, []);

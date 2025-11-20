@@ -1,0 +1,122 @@
+[
+    {
+        "model": "_club.club",
+        "pk": 1,
+        "fields": {
+            "name": "One Punch Man Club",
+            "description": "This club is for people who love exercise and being a hero for fun!",
+            "summary": "This is the official club for fans of the *One-Punch Man* series, combining pop culture fandom with real-world activity. It is dedicated to the core philosophy of the hero Saitama: loving exercise and embracing the joy of being a \"hero for fun.\" Join us to discuss the manga/anime, organize fun physical challenges, and motivate each other to be better, more active versions of ourselves, just like the heroes of the Hero Association.",
+            "videoEmbed": "<iframe width=\"1424\" height=\"651\" src=\"https://www.youtube.com/embed/1__SDbGPUQM\" title=\"Saitama vs Genos 4K - One Punch Man S1 EP5\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 2,
+        "fields": {
+            "name": "Pokemon Go Club",
+            "description": "Play and get outside with fellow Pokemon Go players!",
+            "summary": "Go on adventures, exercise, and socialize while playing the popular augmented reality game, Pokémon Go! This club organizes frequent meet-ups and \"pokéwalks\" around campus and the local area to catch Pokémon, battle in raids, claim gyms, and complete special research tasks together. It’s the perfect way to make new friends, get outside, and explore the campus while leveling up your trainer profile and finding rare Pokémon.",
+            "videoEmbed": "<iframe width=\"1424\" height=\"651\" src=\"https://www.youtube.com/embed/ffI2qVI1_8A\" title=\"Pokemon Go Fail Compilation\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 3,
+        "fields": {
+            "name": "Coastal Activities Board (CAB)",
+            "description": "Provides a variety of quality entertainment and leadership opportunities to all Coastal Carolina University students.",
+            "summary": "The Coastal Activities Board is the premier student-run organization responsible for planning, promoting, and executing a wide variety of engaging, quality entertainment and programming for all Coastal Carolina University students. Beyond providing amazing events—from concerts to comedy nights—the CAB offers invaluable leadership opportunities and experience in event planning, budgeting, and marketing for students who want to develop their professional skills.",
+            "videoEmbed": "None"
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 4,
+        "fields": {
+            "name": "International Club",
+            "description": "Creates a warm and welcoming space where everyone feels at home! Dive into vibrant cultures, explore exciting places, and make new friends.",
+            "summary": "The International Club is dedicated to creating a warm, inclusive, and welcoming space where every student, local or international, feels right at home. We celebrate the richness of global diversity through organized cultural exchanges, themed events, food nights, and discussions. Dive into vibrant cultures, explore exciting new places and customs, and make a strong network of new friends from every corner of the world.",
+            "videoEmbed": "None"
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 5,
+        "fields": {
+            "name": "Club Swim",
+            "description": "A place for those who love the water and swimming. We welcome anyone who is willing to work and shares the same passion.",
+            "summary": "Club Swim offers a committed, yet flexible, environment for students who are passionate about swimming. Whether you are a former high school competitor or simply love the water and want to improve, we welcome anyone willing to put in the work. We focus on training, technique improvement, and building strong team camaraderie, often participating in competitive meets with other university club teams.",
+            "videoEmbed": "<iframe width=\"1424\" height=\"651\" src=\"https://www.youtube.com/embed/sMLgr2KYMYc\" title=\"Coastal Now - Club Sports: Swim\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 6,
+        "fields": {
+            "name": "Anthropology and Geography Club",
+            "description": "Hosts activities, lectures, field trips, and events throughout the year, open to all students regardless of major.",
+            "summary": "This club hosts a variety of intellectually stimulating activities, lectures, field trips, and events throughout the year. It provides an excellent opportunity for students to apply classroom knowledge in real-world settings. The club is open to all students, regardless of their major, who have an interest in exploring human cultures, societal structures, geographical landscapes, and the history of our shared planet.",
+            "videoEmbed": "None"
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 7,
+        "fields": {
+            "name": "Coastal Sea Turtle Club",
+            "description": "Involves students in volunteer work and educational activities associated with sea turtle organizations both locally and globally.",
+            "summary": "The Coastal Sea Turtle Club provides meaningful opportunities for students to become directly involved in conservation efforts. We focus on hands-on volunteer work and educational outreach associated with sea turtle organizations, both locally along the coast and globally. Join us to raise awareness about marine ecology, participate in beach clean-ups, and help protect these magnificent and endangered creatures through dedicated service.",
+            "videoEmbed": "<iframe width=\"1424\" height=\"651\" src=\"https://www.youtube.com/embed/LDU_Txk06tM?list=RDLDU_Txk06tM\" title=\"Noisestorm - Crab Rave [Monstercat Release]\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 8,
+        "fields": {
+            "name": "The Sustainability Club",
+            "description": "Creates opportunities for students to proactively engage in service to benefit people, culture, and the environment on and off campus.",
+            "summary": "The Sustainability Club is committed to creating tangible opportunities for students to proactively engage in service that benefits people, culture, and the environment on and off campus. We host initiatives like recycling drives, campus gardening projects, and educational workshops focused on sustainable living. Join us to champion environmental stewardship, promote green practices, and make a lasting, positive impact on our community and beyond.",
+            "videoEmbed": "None"
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 9,
+        "fields": {
+            "name": "Hiking and Trail Explorers",
+            "description": "Organized hikes and outdoor adventures for all fitness levels to explore local trails.",
+            "summary": "This club organizes frequent, safe, and fun guided hikes and outdoor adventures to explore local trails, parks, and natural landmarks in the region. We cater to all fitness levels, from casual walkers to experienced backpackers, ensuring everyone can participate. It's a fantastic way to enjoy the beautiful scenery, get active outdoors, reduce stress, and connect with fellow students who share a love for nature and exploration.",
+            "videoEmbed": "None"
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 10,
+        "fields": {
+            "name": "Creative Writing Workshop",
+            "description": "A supportive environment for writers of all genres to share work, receive feedback, and improve their craft.",
+            "summary": "The Creative Writing Workshop is a dedicated and supportive environment for writers of all genres—fiction, poetry, screenplays, and more. Our primary goal is to foster craft improvement through constructive peer critique and feedback sessions. Members share their work in a safe setting, participate in writing exercises, and attend skill-building workshops to help hone their voices and take their writing to the next level.",
+            "videoEmbed": "None"
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 11,
+        "fields": {
+            "name": "Culinary Arts & Tasting Club",
+            "description": "Explore different cuisines, share recipes, and host monthly cooking and tasting events.",
+            "summary": "Dedicated to exploring the wonderful world of food, the Culinary Arts & Tasting Club is a treat for the senses. We explore different cuisines and cooking techniques, enthusiastically share favorite recipes, and host monthly hands-on cooking demonstrations and food tasting events. This is the perfect club for foodies who want to expand their palate, learn new culinary skills, and bond with others over delicious shared meals.",
+            "videoEmbed": "None"
+        }
+    },
+    {
+        "model": "_club.club",
+        "pk": 12,
+        "fields": {
+            "name": "Volunteering Outreach Group",
+            "description": "Coordinate and participate in various community service projects to make a positive impact.",
+            "summary": "The Volunteering Outreach Group coordinates and participates in a variety of essential community service projects throughout the local area. Our mission is to be a force for good, providing student assistance to local charities, shelters, food banks, and environmental clean-up initiatives. Join us to serve the community, meet students committed to service, and make a significant, positive impact where it's needed most.",
+            "videoEmbed": "None"
+        }
+    }
+]
