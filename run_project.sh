@@ -25,18 +25,18 @@ cd backend
 
 # 1. Apply Migrations (Always run this to keep DB in sync)
 echo "[Backend] Applying migrations..."
-python3 manage.py migrate
+python manage.py migrate
 
 # 2. Optional: Load Data if argument is provided
 if [[ "$1" == "--load-data" ]]; then
     echo "[Backend] Loading sample data..."
-    python3 manage.py loaddata sample
+    python manage.py loaddata sampleClubs
 fi
 
 # 3. Start the Backend (Django)
 echo "[Backend] Starting Django Server..."
 # Using --noreload is optional, but standard runserver is fine.
-python3 manage.py runserver &
+python manage.py runserver &
 BACKEND_PID=$!
 cd .. # Return to root
 
