@@ -1,6 +1,5 @@
 // services/clubService.js
 import api from "./api"
-import { getCookie } from "../utils/cookies"
 
 export async function listCalendars(club_id) 
 {

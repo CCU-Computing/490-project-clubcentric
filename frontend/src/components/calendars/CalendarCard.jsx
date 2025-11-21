@@ -10,11 +10,11 @@ export default function CalendarCard({ calendar }) {
   useEffect(() => {
     async function fetchMeetings() {
       console.log(calendar)
-      const data = await get_meetings(null);
+      const data = await listMeetings(calendar.id, null);
       if (data) {
         setEvents(
           data.map((m) => ({
-            title: m.name || "Meeting",
+            title: m.title || "Meeting",
             date: m.date,
             backgroundColor: "#2f7b21ff", // blue for this calendar
             borderColor: "#1c3050ff",
