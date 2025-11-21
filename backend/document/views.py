@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import DocumentForm
 from rest_framework import viewsets
+from _documents.models import Document, DocumentManager
 from .serializers import DocumentSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
@@ -10,114 +11,25 @@ from django.core.files.base import ContentFile
 from clubs.models import Club
 from datetime import datetime
 import uuid
-from django.contrib.auth.decorators import login_required
-from users.views import is_member
-from .models import DocumentManager, Document
 
+@csrf_exempt
 @require_POST
-@login_required
-def create_manager(request):
+def create_document_manager(request):
     name = request.POST.get("name")
     club_id = request.POST.get("club_id")
 
-    if not name:
+    if not name or not club_id:
         return JsonResponse({"error" : "Missing required fields"}, status=400)
     
-    # Club document manager
-    if club_id:
-        try:
-            club = Club.objects.get(id=club_id)
-        except Club.DoesNotExist:
-            return JsonResponse({"error" : "Club not found"}, status=404)
-        
-        if not is_member(user=request.user, club=club, role="organizer"):
-            return JsonResponse({"error": "you are not an organizer of this club"}, status=403)
-        
-        document_manager = DocumentManager.objects.create(name=name, user=None, club=club)
-        return JsonResponse({"status": True, "id" : document_manager.id})
-    
-    # User doc manager
-    else:
-        doc_manager = DocumentManager.objects.create(name=name, user=request.user, club=None)
-        return JsonResponse({"status": True, "id": doc_manager.id})
-
-@login_required
-def get_managers(request):
-    club_id = request.GET.get("club_id")
-    
-    if club_id:
-        try:
-            club = Club.objects.get(id=club_id)
-        except Club.DoesNotExist:
-            return JsonResponse({"error" : "Club not found"}, status=409)
-        
-        if not is_member(user=request.user, club=club):
-            return JsonResponse({"error": "you are not a member of the associated club"}, status=403)
-        
-        managers = []
-        for manager in club.document_managers.all():
-            managers.append({"id": manager.id, "name" : manager.name})
-        return JsonResponse(managers, safe=False)
-    else:
-        managers = []
-        for manager in DocumentManager.objects.filter(user=request.user):
-            managers.append({"id": manager.id, "name" : manager.name})
-        return JsonResponse(managers, safe=False)
-
-@login_required
-@require_POST
-def update_manager(request):
-    manager_id = request.POST.get("manager_id")
-    name = request.POST.get("name")
-
-    if not manager_id or not name:
-        return JsonResponse({"error": "missing required fields"}, status=400)
-
     try:
-        manager = DocumentManager.objects.get(id=manager_id)
-    except DocumentManager.DoesNotExist:
-        return JsonResponse({"error": "Manager not found"}, status=404)
-
-    if manager.club:
-        if not is_member(user=request.user, club=manager.club, role="organizer"):
-            return JsonResponse({"error": "you are not an organizer of this club"}, status=403)
-
-        if DocumentManager.objects.filter(club=manager.club, name=name).exists():
-            return JsonResponse({"error": "a manager with this name already exists"}, status=409)
-
-    if manager.user:
-        if DocumentManager.objects.filter(user=request.user, name=name).exists():
-            return JsonResponse({"error": "a manager with this name already exists"}, status=409)
+        club = Club.objects.get(id=club_id)
+    except Club.DoesNotExist:
+        return JsonResponse({"error" : "Club not found"}, status=404)
     
-    manager.name = name
-    manager.save()
+    document_manager = DocumentManager.objects.create(name=name, club=club)
+    return JsonResponse({"id" : document_manager.id, "name" : name})
 
-    return JsonResponse({"status": True})
-
-@login_required
-@require_POST
-def delete_manager(request):
-    manager_id = request.POST.get("manager_id")
-
-    if not manager_id:
-        return JsonResponse({"error": "missing required fields"}, status=400)
-
-    try:
-        manager = DocumentManager.objects.get(id=manager_id)
-    except DocumentManager.DoesNotExist:
-        return JsonResponse({"error": "Manager not found"}, status=404)
-
-    if manager.club:
-        if not is_member(user=request.user, club=manager.club, role="organizer"):
-            return JsonResponse({"error": "you are not an organizer of this club"}, status=403)
-
-    for document in manager.documents.all():
-        document.delete()
-    
-    manager.delete()
-    return JsonResponse({"status": True})
-
-@login_required
+@csrf_exempt
 @require_POST
 def upload_document(request):
     title = request.POST.get("title")
@@ -132,20 +44,11 @@ def upload_document(request):
     except DocumentManager.DoesNotExist:
         return JsonResponse({"error" : "Document manager not found"}, status=404)
     
-    if Document.objects.filter(title=title, document_manager=document_manager).exists():
-        return JsonResponse({"error": "document already exists with the same title"}, status=409)
-
+    club_id = document_manager.club.id
     # May be wrong to do uploaded_file.name
-    if document_manager.club:
-        if not is_member(user=request.user, club=document_manager.club, role="organizer"):
-            return JsonResponse({"error": "you are not an organizer of the associated club"}, status=403)
-    
-        store_id = f"club_{document_manager.club.id}"
-    else:
-        store_id = f"user_{request.user.id}"
-    path = f"{store_id}/documents/manager_{manager_id}/{uuid.uuid4().hex[:8]}_{uploaded_file.name}"
+    path = f"{club_id}/documents/manager_{manager_id}/{uuid.uuid4().hex}_{uploaded_file.name}"
 
-    save_path = default_storage.save(path, uploaded_file)
+    save_path = default_storage.save(path, ContentFile(uploaded_file.read()))
 
     doc = Document.objects.create(
         title=title,
@@ -153,55 +56,46 @@ def upload_document(request):
         uploaded_at=datetime.now(),
         document_manager=document_manager
     )
-    doc.save()
-    return JsonResponse({"status": True, "id" : doc.id})
+    return JsonResponse({"id" : doc.id, "file" : doc.file.url})
 
-@login_required
-def get_documents(request):
+def getManagers(request):
+    club_id = request.GET.get("club_id")
+    
+    if not club_id:
+        return JsonResponse({"error" : "Missing required fields"}, status=400)
+
+    try:
+        club = Club.objects.get(id=club_id)
+    except Club.DoesNotExist:
+        return JsonResponse({"error" : "Club not found"}, status=409)
+    managers = []
+    for manager in club.document_managers.all():
+        managers.append({"id": manager.id, "name" : manager.name})
+    return JsonResponse(managers, safe=False)
+
+def getDocumentByID(request):
     doc_id = request.GET.get("doc_id")
     manager_id = request.GET.get("manager_id")
-
-    if not doc_id and not manager_id:
-        return JsonResponse({"error": "Missing required fields"}, status=400)
-
-    if doc_id and manager_id:
-        return JsonResponse({"error": "cannot request a single doc and all for a manager at the same time"}, status=400)
     
-    if doc_id:
+    if not manager_id and not doc_id:
+        return JsonResponse({"error" : "Missing required fields"}, status=400)
+    
+    if not manager_id or manager_id and doc_id:
         try:
             document = Document.objects.get(id=doc_id)
         except Document.DoesNotExist:
-            return JsonResponse({"error" : "document not found"}, status=404)
+            return JsonResponse({"error" : "Document not found"}, status=404)
         
-        manager = document.document_manager
-        if manager.club:
-            if not is_member(user=request.user, club=manager.club):
-                return JsonResponse({"error": "you are not a member of the associated club"}, status=403)
-            
-        if manager.user:
-            if manager.user != request.user:
-                return JsonResponse({"error" : "you are not the owner of this document"}, status=403)
+        return JsonResponse([{
+            "id" : document.id, 
+            "file" : request.build_absolute_uri(document.file.url)
+            }], safe=False)
 
-        return JsonResponse({
-            "id": document.id,
-            "title": document.title,
-            "file": request.build_absolute_uri(document.file.url)
-        })
-
-    if manager_id:
+    if not doc_id:
         try:
             manager = DocumentManager.objects.get(id=manager_id)
         except DocumentManager.DoesNotExist:
-            return JsonResponse({"error": "manager not found"}, status=404)
-        
-        if manager.club:
-            if not is_member(user=request.user, club=manager.club):
-                return JsonResponse({"error": "you are not a member of the associated club"}, status=403)
-            
-        if manager.user:
-            if manager.user != request.user:
-                return JsonResponse({"error" : "you are not the owner of this document"}, status=403)
-        
+            return JsonResponse({"error" : "Manager not found"}, status=409)
         documents = []
         for doc in manager.documents.all():
             documents.append({
@@ -209,31 +103,6 @@ def get_documents(request):
                 "title": doc.title, 
                 "file" : request.build_absolute_uri(doc.file.url)})
         return JsonResponse(documents, safe=False)
-
-@login_required
-@require_POST
-def delete_document(request):
-    doc_id = request.GET.get("doc_id")
-    
-    if not doc_id:
-        return JsonResponse({"error": "missing required fields"}, status=400)
-
-    try:
-        document = Document.objects.get(id=doc_id)
-    except Document.DoesNotExist:
-        return JsonResponse({"error" : "document not found"}, status=404)
-        
-    manager = document.document_manager
-    if manager.club:
-        if not is_member(user=request.user, club=manager.club, role="organizer"):
-            return JsonResponse({"error": "you are not an organizer of the associated club"}, status=403)
-        
-    if manager.user:
-        if manager.user != request.user:
-            return JsonResponse({"error" : "you are not the owner of this document"}, status=403)
-
-    document.delete()
-    return JsonResponse({"status": True})
 
 class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.all()

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { get_meetings } from "../../services/calendarService";
+import { listMeetings } from "../../services/calendarService";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";

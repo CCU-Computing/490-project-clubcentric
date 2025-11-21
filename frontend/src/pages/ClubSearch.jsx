@@ -64,9 +64,15 @@ function ClubSearch() {
                             <div key={index} className="club">
                                 <h3>{club.name}</h3>
                                 <div className="tags">
-                                {club.tags && club.tags.map((tag, i) => (
+                                {/* {club.tags && club.tags.map((tag, i) => (
                                         <span key={i} className="tag">{tag}</span>
-                                    ))}
+                                    ))} */}
+
+                                    <span className="tag">Active</span>
+                                    <span className="tag">Social</span>
+                                    <span className="tag">Student-Led</span>
+                                    {/* Hardcoded tags for now */}
+
                                 </div>
                                 <p>{club.description}</p>
                                 

@@ -9,6 +9,14 @@
 MyWebApp is a full-stack web application for **Main User Story**.
 It enables users to create, edit, and share documents, with live updates and history tracking.
 
+## Roles
+
+- **Lead Architect:** ArthurHenrique Ferreira  
+- **Project Organizer:** Lauren Harman  
+- **User Interface Designer:** Liam McLoughlin  
+- **Quality Assurance Lead:** Marcos Carvajal  
+- **(Unofficial) Backend Developer:** Raymond Pridgen 
+
 **Main User Story:**
 
 > I am a club president, and I want to schedule and plan an event with another club president, so that we can promote inter-club collaboration easier.
