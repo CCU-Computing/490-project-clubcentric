@@ -8,6 +8,8 @@ import ClubPage from "./pages/club/ClubPage";
 import LoginPage from "./pages/auth/LoginPage";
 import SignUpPage from './pages/auth/SignUpPage';
 import ProfilePage from "./pages/ProfilePage";
+import AnalyticsPage from "./pages/AnalyticsPage";
+import NetworkingPage from "./pages/NetworkingPage";
 import Navbar from './components/navbar/Navbar' // Navigation Bar
 import ClubSearch from './pages/ClubSearch'
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -91,6 +93,26 @@ function App() {
                 {
                   <ProtectedRoute>
                     <ClubPage/>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route 
+                path="/analytics" 
+                element=
+                {
+                  <ProtectedRoute>
+                    <AnalyticsPage/>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route 
+                path="/network" 
+                element=
+                {
+                  <ProtectedRoute>
+                    <NetworkingPage/>
                   </ProtectedRoute>
                 }
               />
