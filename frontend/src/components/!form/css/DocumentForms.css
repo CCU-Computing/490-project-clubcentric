@@ -1,0 +1,188 @@
+/* DocumentForms.css */
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+/* Modal Container */
+.modal-container {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 36rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  border: 3px solid #093331;
+}
+
+/* Close Button */
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: #A27752;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.close-button:hover {
+  opacity: 0.8;
+}
+
+/* Modal Header */
+.modal-header {
+  padding: 1.5rem;
+  border-bottom: 2px solid #093331;
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #093331;
+  margin: 0;
+}
+
+/* Modal Body */
+.modal-body {
+  padding: 1.5rem;
+}
+
+/* Error Message */
+.error-message {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background-color: #fee;
+  border: 2px solid #fcc;
+}
+
+.error-message p {
+  color: #c00;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* Form Field */
+.form-field {
+  margin-bottom: 1rem;
+}
+
+/* Form Label */
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #093331;
+  margin-bottom: 0.5rem;
+}
+
+.required {
+  color: #c00;
+  margin-left: 0.25rem;
+}
+
+/* Form Input */
+.form-input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 2px solid #093331;
+  font-size: 1rem;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #A27752;
+  box-shadow: 0 0 0 3px rgba(162, 119, 82, 0.1);
+}
+
+.form-input::placeholder {
+  color: #999;
+}
+
+/* File Name Display */
+.file-name {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #093331;
+  font-style: italic;
+}
+
+/* Button Group */
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 2px solid #093331;
+}
+
+/* Delete Section */
+.delete-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #ddd;
+}
+
+.delete-confirm {
+  padding: 1rem;
+  background-color: #fff5f5;
+  border: 2px solid #fcc;
+  border-radius: 0.5rem;
+}
+
+.delete-warning {
+  color: #c00;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0 0 1rem 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .modal-overlay {
+    padding: 0.5rem;
+  }
+
+  .modal-container {
+    max-height: 95vh;
+  }
+
+  .modal-header,
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .action-button {
+    width: 100%;
+  }
+}

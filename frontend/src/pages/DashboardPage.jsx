@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { get_club } from "../services/clubService";
 import "../components/HomePage.css";
 
-export default function HomePage() {
+export default function DashboardPage() {
   const [clubs, setClubs] = useState([]);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ export default function HomePage() {
           <p>Find student organizations, upcoming events, and ways to engage.</p>
           <button
             className="cta-button"
-            onClick={() => navigate("../club_search")}
+            onClick={() => navigate("/search")}
           >
             Browse Clubs
           </button>
@@ -117,7 +117,7 @@ export default function HomePage() {
         <h2>Want to explore more?</h2>
         <button
           className="secondary-cta"
-          onClick={() => navigate("../club_search")}
+          onClick={() => navigate("/search")}
         >
           Browse Clubs
         </button>

@@ -1,5 +1,5 @@
 import api from "./api";
-import getCookie from "../utils/cookies"
+import { getCookie } from "../utils/cookies"
 
 export async function create_manager(name, club_id) {
     try 
@@ -224,19 +224,19 @@ export async function get_document(document_id, manager_id)
     }
 }
 
-export async function delete_document(document_id) 
+export async function delete_document(document_id)
 {
-    if (document_id == null) 
+    if (document_id == null)
     {
         console.error("Missing fields.");
         return null;
     }
-    try 
+    try
     {
         const response = await api.post(
-            "/documents/upload/",
-            { 
-                doc_id :  document_id 
+            "/documents/delete/",
+            {
+                doc_id :  document_id
             },
             {
                 headers:
@@ -246,10 +246,10 @@ export async function delete_document(document_id)
             }
         );
         return response.data;
-    } 
-    catch (error) 
+    }
+    catch (error)
     {
-        console.error("Document upload failed:", error);
+        console.error("Document delete failed:", error);
         return null;
     }
 }

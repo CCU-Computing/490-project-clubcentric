@@ -1,0 +1,341 @@
+/* Cards.css - Master stylesheet for all card components */
+
+/* Card Container */
+.card {
+  background-color: white;
+  border-radius: 0.5rem;
+  border: 2px solid #093331;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  transition: box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Card Header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #093331;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #093331;
+  margin: 0;
+}
+
+.card-subtitle {
+  font-size: 1rem;
+  color: #A27752;
+  margin: 0.25rem 0 0 0;
+}
+
+/* Card Body */
+.card-body {
+  color: #333;
+  line-height: 1.6;
+}
+
+.card-section {
+  margin-bottom: 1rem;
+}
+
+.card-section:last-child {
+  margin-bottom: 0;
+}
+
+/* Card Info Display */
+.info-row {
+  display: flex;
+  margin-bottom: 0.75rem;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #093331;
+  min-width: 120px;
+  margin-right: 1rem;
+}
+
+.info-value {
+  color: #333;
+  flex: 1;
+}
+
+/* Card List Items */
+.card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card-list-item {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.card-list-item:hover {
+  background-color: #f9f9f9;
+}
+
+.list-item-content {
+  flex: 1;
+}
+
+.list-item-title {
+  font-weight: 600;
+  color: #093331;
+  margin: 0 0 0.25rem 0;
+}
+
+.list-item-subtitle {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+}
+
+.list-item-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #999;
+  font-style: italic;
+}
+
+/* Action Panel */
+.action-panel {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid #ddd;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Card Actions (in header) */
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Badge for roles, status, etc */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-organizer {
+  background-color: #093331;
+  color: white;
+}
+
+.badge-member {
+  background-color: #A27752;
+  color: white;
+}
+
+.badge-owner {
+  background-color: #093331;
+  color: white;
+}
+
+/* Loading State */
+.card-loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #093331;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error State */
+.card-error {
+  background-color: #fff5f5;
+  border: 2px solid #fcc;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  color: #c00;
+  margin-bottom: 1rem;
+}
+
+/* Member List Specific */
+.member-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+}
+
+.member-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.member-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #A27752;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.member-details {
+  flex: 1;
+}
+
+.member-name {
+  font-weight: 600;
+  color: #093331;
+  margin: 0;
+}
+
+.member-email {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+}
+
+.member-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Grid Layout for cards */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card {
+    padding: 1rem;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .card-actions {
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+
+  .action-panel {
+    flex-direction: column;
+  }
+
+  .info-row {
+    flex-direction: column;
+  }
+
+  .info-label {
+    min-width: auto;
+    margin-bottom: 0.25rem;
+  }
+
+  .card-list-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .list-item-actions {
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+
+  .member-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .member-actions {
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* FullCalendar Styles */
+.calendar-container {
+  margin-top: 1rem;
+}
+
+/* Override FullCalendar colors to match our theme */
+.fc .fc-button-primary {
+  background-color: #093331;
+  border-color: #093331;
+}
+
+.fc .fc-button-primary:hover {
+  background-color: #0a4442;
+  border-color: #0a4442;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+  background-color: #0a4442;
+  border-color: #0a4442;
+}
+
+.fc-event {
+  background-color: #A27752;
+  border-color: #A27752;
+  cursor: pointer;
+}
+
+.fc-event:hover {
+  background-color: #8d6745;
+  border-color: #8d6745;
+}

@@ -1,21 +1,38 @@
 import './App.css'
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import './components/!card/css/Cards.css'
+import { Routes, Route } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 // Import Pages
-import HomePage from "./pages/HomePage";
-import ClubsPage from './pages/ClubsPage';
+import DashboardPage from "./pages/DashboardPage";
 import ClubPage from "./pages/club/ClubPage";
 import LoginPage from "./pages/auth/LoginPage";
 import SignUpPage from './pages/auth/SignUpPage';
 import ProfilePage from "./pages/ProfilePage";
-import Navbar from './components/navbar/Navbar' // Navigation Bar
-import ClubSearch from './pages/ClubSearch'
+import ViewUserPage from "./pages/ViewUserPage";
+import ClubSearchPage from './pages/ClubSearchPage';
+import Navbar from './components/navbar/Navbar'; // Navigation Bar
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
 
 function App() {
 
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // Show loading spinner while checking session
+  if (isLoading) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        flexDirection: 'column'
+      }}>
+        <div className="spinner"></div>
+        <p style={{ marginTop: '1rem', color: '#093331' }}>Loading...</p>
+      </div>
+    );
+  }
 
   if (!isAuthenticated)
   {
@@ -27,7 +44,7 @@ function App() {
             </Routes>
         );
   }
-  
+
   else
   {
     return (
@@ -45,18 +62,18 @@ function App() {
                     <SignUpPage/>
                 }
               />
-              <Route 
-                path="/home" 
+              <Route
+                path="/dashboard"
                 element=
                 {
                   <ProtectedRoute>
-                    <HomePage/>
+                    <DashboardPage/>
                   </ProtectedRoute>
                 }
               />
 
-              <Route 
-                path="/profile" 
+              <Route
+                path="/profile"
                 element=
                 {
                   <ProtectedRoute>
@@ -65,28 +82,28 @@ function App() {
                 }
               />
 
-              <Route 
-                path="/clubs" 
+              <Route
+                path="/user/:id"
                 element=
                 {
                   <ProtectedRoute>
-                    <ClubsPage/>
+                    <ViewUserPage/>
                   </ProtectedRoute>
                 }
               />
 
-              <Route 
-                path="/club_search" 
+              <Route
+                path="/search"
                 element=
                 {
                   <ProtectedRoute>
-                    <ClubSearch/>
+                    <ClubSearchPage/>
                   </ProtectedRoute>
                 }
               />
 
-              <Route 
-                path="/club/:id" 
+              <Route
+                path="/club/:id"
                 element=
                 {
                   <ProtectedRoute>
@@ -102,22 +119,6 @@ function App() {
     </>
   )
   }
-
-
 }
 
-<Router>
-      {/* You can style this wrapper */}
-      <div className="min-h-screen flex flex-col">
-        <header className="bg-gray-800 text-white p-4">
-          <h1 className="text-xl text-center font-bold">ClubCentric</h1>
-        </header>
-
-        <main className="flex-1 container mx-auto p-4">
-
-        </main>
-
-        
-      </div>
-    </Router>
 export default App

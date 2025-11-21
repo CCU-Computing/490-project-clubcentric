@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getClubs } from '../services/clubService';
 import '../components/ClubSearch.css';
 
-function ClubSearch() {
+function ClubSearchPage() {
     const [clubs, setClubs] = useState([]);
     const [search, setSearch] = useState("");
 
@@ -97,4 +97,4 @@ function ClubSearch() {
     );
 }
 
-export default ClubSearch;
+export default ClubSearchPage;

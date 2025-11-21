@@ -11,11 +11,9 @@ const drawerWidth = 240;
 const shortDrawerWidth = 80;
 
 const menuItems = [
-  { label: 'Home', to: '/home', icon: <HomeIcon /> },
+  { label: 'Dashboard', to: '/dashboard', icon: <HomeIcon /> },
   { label: 'Profile', to: '/profile', icon: <PersonIcon /> },
-  { label: 'Clubs', to: '/clubs', icon: <Groups2Icon /> },
-  { label: 'Club Search', to: '/club_search', icon: <SearchIcon /> },
-  { label: 'Events', to: '/events', icon: <EventIcon /> }
+  { label: 'Search Clubs', to: '/search', icon: <SearchIcon /> }
 ];
 
 export default function Navbar({ content }) {

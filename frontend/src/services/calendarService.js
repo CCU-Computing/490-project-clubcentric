@@ -115,7 +115,7 @@ export async function update_calendar(calendar_id, calendar_name)
 				`calendar/update/`,
 				{
 				cal_id : calendar_id,
-				calendar_name : calendar_name
+				cal_name : calendar_name
 				},
 				{
 					headers:
@@ -179,7 +179,7 @@ export async function create_meeting(calendar_id, datetime_str, description)
 		else 
 		{
 			const response = await api.post(
-				`/calendar/meetings/create`,
+				`/calendar/meetings/create/`,
 				{
 				calendar_id: calendar_id,
 				datetime_str: datetime_str,
@@ -282,7 +282,7 @@ export async function delete_meeting(meeting_id)
 		else 
 		{
 			const response = await api.post(
-				`/calendar/meetings/create`,
+				`/calendar/meetings/delete/`,
 				{
 				meet_id : meeting_id
 				},
