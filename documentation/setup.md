@@ -1,8 +1,10 @@
+## Node.js
 React by itself is outdated. We need to use Vite, with a React variant + javascript
-IN VENV
+```
+In your virtual environment:
 curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt-get install -y nodejs
-
+```
 ## PostgreSQL Setup
 Install the latest version of PostgreSQL
 (You may or may not be asked to set up with a username/password).
@@ -31,24 +33,26 @@ In clubcentric_db, go down to schemas and expand it. Right click on public, go t
  
  
 Now in VSCode, go to the .env file in the root backend folder and it should look like this (replace with your username and password for the user you created):
- 
-`DEBUG=True`
-`API_URL=api`
+ ```
+DEBUG=True
+API_URL=api
 
-`DB_NAME=clubcentric_db`
-`DB_USER=yourusernamehere`
-`DB_PASSWORD=yourpasswordhere`
-`DB_HOST=localhost`
-`DB_PORT=5432`
+DB_NAME=clubcentric_db
+DB_USER=yourusernamehere
+DB_PASSWORD=yourpasswordhere
+DB_HOST=localhost
+DB_PORT=5432
+```
  
 The .env file should be gitignored and custom to each of us, like our virtual environments.
  
-Now in the terminal in the backend folder, run
-
-`python3 manage.py makemigrations`
-`python3 manage.py migrate`
+Now in the terminal in the backend folder, run:
+```
+python3 manage.py makemigrations
+python3 manage.py migrate
 then run
-`python3 manage.py createsuperuser`
+python3 manage.py createsuperuser
+```
 
 to make an admin profile. Remember the username and password.
 Now run the backend with
