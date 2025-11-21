@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/navbar/Navbar';
 import { UserProfileCard } from '../components/!card/user/UserProfileCard';
 import { UserCalendarCard } from '../components/!card/user/UserCalendarCard';
 import { UserDocumentCard } from '../components/!card/user/UserDocumentCard';
@@ -63,7 +62,6 @@ const ProfilePage = () => {
     if (isLoading) {
         return (
             <div className="profile-page-container min-h-screen bg-gray-100">
-                <Navbar />
                 <div className="container mx-auto p-4 md:p-8 pt-8 text-center text-xl">
                     Loading Profile...
                 </div>
@@ -84,7 +82,6 @@ const ProfilePage = () => {
 
     return (
         <div className="profile-page-container min-h-screen bg-gray-100">
-            <Navbar />
             <div className="container mx-auto p-4 md:p-8 pt-8">
                 <h1 className="text-4xl font-bold text-gray-800 mb-6 border-b pb-2">
                     Your Profile

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Navbar from '../components/navbar/Navbar';
 import { UserProfileCard } from '../components/!card/user/UserProfileCard';
 import { get_user } from '../services/userService';
 import { getClubs } from '../services/clubService';
@@ -48,7 +47,6 @@ const ViewUserPage = () => {
     if (isLoading) {
         return (
             <div className="view-user-page-container min-h-screen bg-gray-100">
-                <Navbar />
                 <div className="container mx-auto p-4 md:p-8 pt-8 text-center text-xl">
                     Loading User Profile...
                 </div>
@@ -59,7 +57,6 @@ const ViewUserPage = () => {
     if (!viewedUser) {
         return (
             <div className="view-user-page-container min-h-screen bg-gray-100">
-                <Navbar />
                 <div className="container mx-auto p-4 md:p-8 pt-8 text-center text-xl text-red-600">
                     User not found.
                 </div>
@@ -75,7 +72,6 @@ const ViewUserPage = () => {
 
     return (
         <div className="view-user-page-container min-h-screen bg-gray-100">
-            <Navbar />
             <div className="container mx-auto p-4 md:p-8 pt-8">
                 {/* Back button */}
                 <button
