@@ -20,6 +20,6 @@
 - As a user, I want to see documents shared from another club so that I can stay updated with my club and the collaborated club. 
 - As a user, I want to be able to upload a profile picture, external links, and a bio to better express myself to my peers 
 - As an organizer, I want to temporarily merge clubs with another club to promote collaboration among students 
-Arthur 
+## Arthur 
 - As a club president, I want to view event analytics (RSVP count, attendance trends, etc.) so that I can improve future events. 
 - As a club president, I want to network with students so that I can look for students with demanding skills, generate a club built to complete a specific task, etc. 
