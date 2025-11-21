@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { ActionButton } from "../../!base/ActionButton";
-import { get_membership } from "../../../services/clubService";
 import { get_calendars, delete_calendar } from "../../../services/calendarService";
 import { CreateCalendarForm } from "../../!form/calendar/CreateCalendar";
 import { UpdateCalendarForm } from "../../!form/calendar/UpdateCalendar";
@@ -8,11 +7,10 @@ import "../css/Cards.css";
 
 export const ClubCalendarCard = ({
   clubId,
-  currentUserId,
+  userRole,
   onSelectCalendar
 }) => {
   const [calendars, setCalendars] = useState([]);
-  const [userRole, setUserRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -21,7 +19,7 @@ export const ClubCalendarCard = ({
 
   useEffect(() => {
     fetchCalendarData();
-  }, [clubId, currentUserId]);
+  }, [clubId]);
 
   const fetchCalendarData = async () => {
     setLoading(true);
@@ -35,12 +33,6 @@ export const ClubCalendarCard = ({
         setCalendars([]);
       } else {
         setCalendars(Array.isArray(calendarData) ? calendarData : [calendarData]);
-      }
-
-      // Get current user's role
-      if (currentUserId) {
-        const membership = await get_membership(clubId, currentUserId);
-        setUserRole(membership?.role || 'member');
       }
     } catch (err) {
       // Handle 404 gracefully - just means no calendars yet

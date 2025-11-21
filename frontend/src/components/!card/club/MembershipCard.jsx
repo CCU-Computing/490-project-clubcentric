@@ -6,9 +6,9 @@ import "../css/Cards.css";
 
 export const MembershipCard = ({
   clubId,
-  currentUserId
+  currentUserId,
+  userRole
 }) => {
-  const [userRole, setUserRole] = useState(null);
   const [memberDetails, setMemberDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -16,19 +16,13 @@ export const MembershipCard = ({
 
   useEffect(() => {
     fetchMembershipData();
-  }, [clubId, currentUserId]);
+  }, [clubId]);
 
   const fetchMembershipData = async () => {
     setLoading(true);
     setError('');
 
     try {
-      // Get current user's role
-      if (currentUserId) {
-        const membership = await get_membership(clubId, currentUserId);
-        setUserRole(membership?.role || 'member');
-      }
-
       // Fetch all members for this club
       const membersData = await get_membership(clubId, null);
 
@@ -174,7 +168,20 @@ export const MembershipCard = ({
                 <div key={user_id} className="member-item">
                   <div className="member-info">
                     <div className="member-avatar">
-                      {initials.toUpperCase()}
+                      {userInfo.profile_picture ? (
+                        <img
+                          src={userInfo.profile_picture}
+                          alt={`${userInfo.first_name} ${userInfo.last_name}`}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            borderRadius: '50%',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      ) : (
+                        initials.toUpperCase()
+                      )}
                     </div>
                     <div className="member-details">
                       <p className="member-name">

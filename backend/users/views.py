@@ -110,10 +110,10 @@ def get_user_data(request):
         "last_name": target_user.last_name,
         "email": target_user.email,
         "bio": target_user.bio or "",
-        "profile_picture": target_user.profile_picture.url if target_user.profile_picture else None,
+        "profile_picture": request.build_absolute_uri(target_user.profile_picture.url) if target_user.profile_picture else None,
         "clubs": clubs_list # <--- Send the clubs data to frontend
     }
-    
+
     return JsonResponse(response)
 
 

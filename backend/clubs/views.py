@@ -150,16 +150,16 @@ def delete_club(request):
     calendars = Calendar.objects.filter(club=club)
     for cal in calendars:
         # Meetings
-        meetings = Calendar.objects.filter(club=club)
+        meetings = Meeting.objects.filter(calendar=cal)
         for meet in meetings:
             meet.delete()
         cal.delete()
-    
+
     # Document Managers
     document_managers = DocumentManager.objects.filter(club=club)
     for manager in document_managers:
         # Documents
-        documents = Document.objects.filter(club=club)
+        documents = Document.objects.filter(manager=manager)
         for doc in documents:
             doc.delete()
         manager.delete()

@@ -104,15 +104,19 @@ export default function ClubPage() {
 
         {/* Club Info Card */}
         <ClubInfoCard
-          clubId={id}
+          club={club}
+          userRole={userRole}
           currentUserId={currentUser?.id}
           onDelete={handleDeleteClub}
+          onClubUpdate={fetchClubData}
+          onMembershipChange={fetchClubData}
         />
 
         {/* Membership Card */}
         <MembershipCard
           clubId={id}
           currentUserId={currentUser?.id}
+          userRole={userRole}
         />
 
         {/* Show calendar detail if one is selected */}
@@ -125,7 +129,7 @@ export default function ClubPage() {
         ) : (
           <ClubCalendarCard
             clubId={id}
-            currentUserId={currentUser?.id}
+            userRole={userRole}
             onSelectCalendar={setSelectedCalendar}
           />
         )}
@@ -140,7 +144,7 @@ export default function ClubPage() {
         ) : (
           <ClubDocumentCard
             clubId={id}
-            currentUserId={currentUser?.id}
+            userRole={userRole}
             onSelectManager={setSelectedManager}
           />
         )}

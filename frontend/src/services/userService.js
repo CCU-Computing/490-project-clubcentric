@@ -224,11 +224,12 @@ export async function change_password(password)
         }
         else
         {
+            const formData = new FormData();
+            formData.append("password", password);
+
             const response = await api.post(
                 `/user/password/`,
-                {
-                    password: password
-                },
+                formData,
                 {
                     headers:
                     {

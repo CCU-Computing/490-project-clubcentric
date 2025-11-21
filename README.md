@@ -29,21 +29,31 @@ Currently, the team is focused on having
 
 ---
 
+## ✨ Latest Updates
+
+- **🐳 Docker Support**: Full containerization with automatic setup
+- **🖼️ Profile Pictures**: Fixed media file serving with absolute URLs
+- **📝 FormData Fixes**: All API endpoints now properly handle file uploads
+- **🔧 Permission Fixes**: Resolved all Docker volume permission issues
+- **📚 Comprehensive Documentation**: Updated guides for Docker and manual setup
+
 ## Table of Contents
 
-1. [Tech Stack](#tech-stack)  
-2. [Prerequisites](#prerequisites)  
-3. [Setup & Installation](#setup--installation)  
-4. [Configuration](#configuration)  
-5. [Running the App](#running-the-app)  
-6. [Testing](#testing)  
-7. [Deployment](#deployment)  
-8. [Architecture / Workflow](#architecture--workflow)  
-9. [Roadmap](#roadmap)  
-10. [Contributing](#contributing)  
-11. [License](#license)  
-12. [Acknowledgments](#acknowledgments)  
-13. [Contact / Support](#contact--support)  
+1. [Tech Stack](#tech-stack)
+2. [Prerequisites](#prerequisites)
+3. [Setup & Installation](#setup--installation)
+4. [Configuration](#configuration)
+5. [Running the Application](#running-the-application)
+   - [Docker (Recommended)](#-docker-recommended)
+   - [Local Development](#-local-development-manual-setup)
+6. [Project Architecture](#project-architecture)
+7. [Testing](#testing)
+8. [Features and Roadmap](#features-and-roadmap)
+9. [Development Workflow](#development-workflow)
+10. [Troubleshooting](#troubleshooting)
+11. [Contributing](#contributing)
+12. [License](#license)
+13. [Team Contact](#team-contact)  
 
 ---
 
@@ -70,11 +80,17 @@ Currently, the team is focused on having
 
 ## Prerequisites
 
-Before you begin, ensure you have the following installed:
+### Option 1: Docker (Recommended)
 
-- Python 3.10 or higher
-- Node.js 16 or higher with npm
-- PostgreSQL 13 or higher
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) (includes Docker Compose)
+- Git
+- A code editor such as VS Code
+
+### Option 2: Manual Setup
+
+- Python 3.12 or higher
+- Node.js 22 or higher with npm
+- PostgreSQL 16 or higher
 - Git
 - A code editor such as VS Code or similar
 
@@ -193,9 +209,38 @@ Modify `backend/myproject/settings.py` to adjust CORS settings for production.
 
 ## Running the Application
 
-### Development Mode
+### 🐳 Docker (Recommended)
 
-Start the backend server:
+The easiest way to run ClubCentric is using Docker, which handles all dependencies and configuration automatically.
+
+**Quick Start:**
+```bash
+docker-compose up --build
+```
+
+**Access the application:**
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:8000
+- Database: PostgreSQL on port 5432
+
+**Full Docker documentation:**
+- **[QUICKSTART.md](QUICKSTART.md)** - Get started in 3 steps
+- **[DOCKER_README.md](DOCKER_README.md)** - Detailed Docker guide
+- Helper scripts available: `./docker-start.sh`, `./docker-stop.sh`, `./docker-reset.sh`
+
+**First-time Docker users:**
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+2. Run `docker-compose up --build`
+3. Wait ~60 seconds for services to initialize
+4. Access http://localhost:5173
+
+---
+
+### 💻 Local Development (Manual Setup)
+
+If you prefer to run without Docker:
+
+#### Start the backend server:
 
 ```bash
 cd backend
@@ -205,7 +250,7 @@ python manage.py runserver
 
 The backend will be available at http://localhost:8000
 
-In a separate terminal, start the frontend development server:
+#### In a separate terminal, start the frontend:
 
 ```bash
 cd frontend
@@ -214,7 +259,7 @@ npm run dev
 
 The frontend will be available at http://localhost:5173
 
-### Accessing the Application
+#### Accessing the Application
 
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:8000
@@ -453,35 +498,63 @@ Frontend (JavaScript/React):
 
 ## Troubleshooting
 
-### Common Issues
+### Docker Issues
+
+For Docker-related problems, see **[QUICKSTART.md](QUICKSTART.md)** for detailed troubleshooting, including:
+- Port conflicts
+- Permission errors
+- Frontend dependency issues
+- Database connection problems
+
+**Quick Docker fixes:**
+```bash
+# Reset everything
+docker-compose down -v
+docker-compose up --build
+
+# View logs
+docker-compose logs -f
+
+# Check service status
+docker-compose ps
+```
+
+### Manual Setup Issues
 
 #### Database Connection Error
 
 If you encounter database connection errors:
-- Verify PostgreSQL is running: sudo service postgresql status
-- Check database credentials in .env file
-- Ensure the database exists: psql -U postgres -l
+- Verify PostgreSQL is running: `sudo service postgresql status`
+- Check database credentials in `.env` file
+- Ensure the database exists: `psql -U postgres -l`
 
 #### CORS Errors
 
 If the frontend cannot connect to the backend:
-- Verify CORS_ALLOWED_ORIGINS in backend/myproject/settings.py
-- Check that VITE_API_URL in frontend/.env matches the backend URL
+- Verify `CORS_ALLOWED_ORIGINS` in `backend/myproject/settings.py`
+- Check that `VITE_API_URL` in `frontend/.env` matches the backend URL
 - Ensure both servers are running
 
 #### Migration Errors
 
 If migrations fail:
-- Delete all migration files except __init__.py in each app's migrations folder
+- Delete all migration files except `__init__.py` in each app's migrations folder
 - Drop and recreate the database
-- Run python manage.py makemigrations followed by python manage.py migrate
+- Run `python manage.py makemigrations` followed by `python manage.py migrate`
 
 #### Port Already in Use
 
 If port 8000 or 5173 is already in use:
-- Backend: python manage.py runserver 8001 (or any available port)
-- Frontend: Edit vite.config.js to change the port
-- Update VITE_API_URL accordingly
+- **Backend**: `python manage.py runserver 8001` (or any available port)
+- **Frontend**: Edit `vite.config.js` to change the port
+- Update `VITE_API_URL` accordingly
+
+#### Profile Pictures Not Loading
+
+If profile pictures don't appear:
+- Check that `MEDIA_ROOT` and `MEDIA_URL` are set in Django settings
+- Verify the backend is serving media files with absolute URLs
+- Ensure `./backend/media` directory exists and has proper permissions
 
 ---
 

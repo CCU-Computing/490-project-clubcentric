@@ -1,55 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ActionButton } from "../../!base/ActionButton";
-import { get_club, get_membership, delete_club } from "../../../services/clubService";
-import { CreateClubForm } from "../../!form/club/ClubCreateForm";
+import { delete_club, join_club } from "../../../services/clubService";
 import { UpdateClubForm } from "../../!form/club/ClubUpdateForm";
 import "../css/Cards.css";
 
 export const ClubInfoCard = ({
-  clubId,
+  club,
+  userRole,
   currentUserId,
-  onDelete
+  onDelete,
+  onClubUpdate,
+  onMembershipChange
 }) => {
-  const [club, setClub] = useState(null);
-  const [userRole, setUserRole] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
-  useEffect(() => {
-    fetchClubData();
-  }, [clubId, currentUserId]);
-
-  const fetchClubData = async () => {
-    setLoading(true);
-    setError('');
-
-    try {
-      // Fetch club info
-      const clubData = await get_club(clubId);
-      if (!clubData) {
-        throw new Error('Failed to load club information');
-      }
-      setClub(clubData);
-
-      // Fetch user's membership to determine role
-      if (currentUserId) {
-        const membership = await get_membership(clubId, currentUserId);
-        setUserRole(membership?.role || 'member');
-      }
-    } catch (err) {
-      setError(err.message || 'Failed to load club data');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [isJoining, setIsJoining] = useState(false);
 
   const handleDelete = async () => {
     setError('');
 
     try {
-      const result = await delete_club(clubId);
+      const result = await delete_club(club.id);
       if (!result) {
         throw new Error('Failed to delete club');
       }
@@ -60,24 +32,33 @@ export const ClubInfoCard = ({
     }
   };
 
+  const handleJoinClub = async () => {
+    setError('');
+    setIsJoining(true);
+
+    try {
+      const result = await join_club(club.id);
+      if (!result) {
+        throw new Error('Failed to join club');
+      }
+
+      // Refresh membership data
+      if (onMembershipChange) onMembershipChange();
+    } catch (err) {
+      setError(err.message || 'Failed to join club');
+    } finally {
+      setIsJoining(false);
+    }
+  };
+
   const canEdit = userRole === 'organizer';
+  const isNotMember = currentUserId && !userRole;
 
-  if (loading) {
-    return (
-      <div className="card">
-        <div className="card-loading">
-          <div className="spinner"></div>
-          <p>Loading club information...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error && !club) {
+  if (!club) {
     return (
       <div className="card">
         <div className="card-error">
-          <p>{error}</p>
+          <p>Club data not available</p>
         </div>
       </div>
     );
@@ -95,13 +76,23 @@ export const ClubInfoCard = ({
               </p>
             )}
           </div>
-          {canEdit && (
+          {(canEdit || isNotMember) && (
             <div className="card-actions">
-              <ActionButton
-                label="Edit Club"
-                onClick={() => setShowUpdateForm(true)}
-                variant="primary"
-              />
+              {canEdit && (
+                <ActionButton
+                  label="Edit Club"
+                  onClick={() => setShowUpdateForm(true)}
+                  variant="primary"
+                />
+              )}
+              {isNotMember && (
+                <ActionButton
+                  label={isJoining ? "Joining..." : "Join Club"}
+                  onClick={handleJoinClub}
+                  disabled={isJoining}
+                  variant="primary"
+                />
+              )}
             </div>
           )}
         </div>
@@ -201,12 +192,12 @@ export const ClubInfoCard = ({
 
       {showUpdateForm && (
         <UpdateClubForm
-          clubId={clubId}
+          clubId={club.id}
           initialData={club}
           onClose={() => setShowUpdateForm(false)}
           onSuccess={() => {
             setShowUpdateForm(false);
-            fetchClubData();
+            if (onClubUpdate) onClubUpdate();
           }}
         />
       )}

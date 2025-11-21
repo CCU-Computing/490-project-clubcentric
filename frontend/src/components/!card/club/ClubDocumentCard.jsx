@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { ActionButton } from "../../!base/ActionButton";
-import { get_membership } from "../../../services/clubService";
 import { get_managers, delete_manager } from "../../../services/documentService";
 import { CreateManagerForm } from "../../!form/document/CreateManagerForm";
 import { UpdateManagerForm } from "../../!form/document/UpdateManagerForm";
@@ -8,11 +7,10 @@ import "../css/Cards.css";
 
 export const ClubDocumentCard = ({
   clubId,
-  currentUserId,
+  userRole,
   onSelectManager
 }) => {
   const [managers, setManagers] = useState([]);
-  const [userRole, setUserRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -21,7 +19,7 @@ export const ClubDocumentCard = ({
 
   useEffect(() => {
     fetchDocumentData();
-  }, [clubId, currentUserId]);
+  }, [clubId]);
 
   const fetchDocumentData = async () => {
     setLoading(true);
@@ -35,12 +33,6 @@ export const ClubDocumentCard = ({
         setManagers([]);
       } else {
         setManagers(Array.isArray(managerData) ? managerData : [managerData]);
-      }
-
-      // Get current user's role
-      if (currentUserId) {
-        const membership = await get_membership(clubId, currentUserId);
-        setUserRole(membership?.role || 'member');
       }
     } catch (err) {
       // Handle 404 gracefully - just means no document managers yet
