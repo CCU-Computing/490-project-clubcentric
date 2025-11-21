@@ -1,13 +1,8 @@
-# Campus Club Collaboration WebApp
-
-[![Build Status](https://img.shields.io/github/actions/workflow/status/yourorg/mywebapp/ci.yml)](https://github.com/yourorg/mywebapp/actions)  
-[![Coverage Status](https://img.shields.io/codecov/c/github/yourorg/mywebapp)](https://codecov.io/github/yourorg/mywebapp)  
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
+# ClubCentric: Campus Club Collaboration Platform
 
 ## Overview
 
-MyWebApp is a full-stack web application for **Main User Story**.
-It enables users to create, edit, and share documents, with live updates and history tracking.
+ClubCentric is a full-stack web application designed to streamline collaboration between campus clubs and organizations. The platform enables club organizers to manage events, calendars, documents, and memberships while facilitating inter-club collaboration and event planning.
 
 ## Roles
 
@@ -54,107 +49,344 @@ Currently, the team is focused on having
 
 ## Tech Stack
 
-- Backend: Django (Python 3.x)  
-- Frontend: React with TypeScript  
-- Database: PostgreSQL  
-- Authentication: JWT / OAuth  
-- Deployment: Docker + Kubernetes  
-- CI / CD: GitHub Actions  
+### Backend
+- Framework: Django 5.2.7
+- API: Django REST Framework 3.16.1
+- Database: PostgreSQL with psycopg2-binary 2.9.11
+- Authentication: Django session-based authentication with CSRF protection
+- CORS: django-cors-headers 4.9.0
+- File uploads: Pillow 12.0.0
+
+### Frontend
+- Framework: React 19.1.1
+- Build tool: Vite 7.1.5
+- Routing: React Router DOM 7.9.1
+- HTTP client: Axios 1.12.2
+- UI components: Material-UI 7.3.3
+- Calendar: FullCalendar 6.1.19
+- Styling: TailwindCSS 4.1.17 with Emotion
 
 ---
 
 ## Prerequisites
 
-Before you begin, you’ll need:
+Before you begin, ensure you have the following installed:
 
-- Python 3.10+  
-- Node.js 16+ / npm or yarn  
-- PostgreSQL 13+  
-- `git` on your machine  
-- Docker (if you wish to use containers)  
+- Python 3.10 or higher
+- Node.js 16 or higher with npm
+- PostgreSQL 13 or higher
+- Git
+- A code editor such as VS Code or similar
 
 ---
 
 ## Setup & Installation
 
-Below is a local dev setup. For production, see [Deployment](#deployment).
+### 1. Clone the Repository
 
 ```bash
-# clone the repo
-git clone https://github.com/yourorg/mywebapp.git
-cd mywebapp
+git clone https://github.com/yourorg/clubcentric.git
+cd clubcentric
+```
 
-# backend setup
+### 2. Database Setup
+
+Create a PostgreSQL database for the project:
+
+```bash
+psql -U postgres
+CREATE DATABASE clubcentric;
+CREATE USER clubcentric_user WITH PASSWORD 'your_password';
+ALTER ROLE clubcentric_user SET client_encoding TO 'utf8';
+ALTER ROLE clubcentric_user SET default_transaction_isolation TO 'read committed';
+ALTER ROLE clubcentric_user SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE clubcentric TO clubcentric_user;
+\q
+```
+
+### 3. Backend Setup
+
+```bash
 cd backend
+
+# create and activate virtual environment
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# install dependencies
 pip install -r requirements.txt
-cp .env.example .env
-# edit .env to configure DATABASE_URL, etc.
+
+# create environment file
+touch .env
+```
+
+Edit the `.env` file with your database credentials:
+
+```
+DEBUG=True
+SECRET_KEY=your-secret-key-here
+DATABASE_NAME=clubcentric
+DATABASE_USER=clubcentric_user
+DATABASE_PASSWORD=your_password
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+ALLOWED_HOSTS=localhost,127.0.0.1
+```
+
+Run migrations and create a superuser:
+
+```bash
 python manage.py migrate
 python manage.py createsuperuser
+```
 
-# frontend setup
+### 4. Frontend Setup
+
+```bash
 cd ../frontend
+
+# install dependencies
 npm install
-cp .env.example .env
-# edit .env to set e.g. REACT_APP_API_URL
 
-# back to project root
-cd ..
-docker-compose up
+# create environment file
+touch .env
+```
 
+Edit the `.env` file:
+
+```
+VITE_API_URL=http://localhost:8000
 ```
 
 ---
 
 ## Configuration
 
-Environment variables (in `.env`):
+### Backend Configuration
 
-```
-DEBUG=True
-DATABASE_URL=postgres://user:pass@localhost:5432/mydb
-SECRET_KEY=your_secret_key
-DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
-REACT_APP_API_URL=http://localhost:8000/api
-...
-```
+The backend uses environment variables for configuration. Key settings include:
 
-You may also configure email server, caching, etc.
+- DEBUG: Set to True for development, False for production
+- SECRET_KEY: Django secret key for cryptographic signing
+- DATABASE_NAME: PostgreSQL database name
+- DATABASE_USER: PostgreSQL username
+- DATABASE_PASSWORD: PostgreSQL password
+- DATABASE_HOST: Database host (default: localhost)
+- DATABASE_PORT: Database port (default: 5432)
+- ALLOWED_HOSTS: Comma-separated list of allowed hostnames
+
+### Frontend Configuration
+
+The frontend uses Vite environment variables:
+
+- VITE_API_URL: Backend API base URL (default: http://localhost:8000)
+
+### CORS Configuration
+
+The backend is configured to accept requests from:
+- http://localhost:5173 (Vite dev server)
+- http://localhost:3000 (alternative frontend port)
+
+Modify `backend/myproject/settings.py` to adjust CORS settings for production.
 
 ---
 
-## Running the App (Dev Mode)
+## Running the Application
 
-Once dependencies are installed:
+### Development Mode
+
+Start the backend server:
 
 ```bash
-# from project root
-# start backend
 cd backend
-source venv/bin/activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 python manage.py runserver
-
-# start frontend (in separate terminal)
-cd frontend
-npm start
 ```
 
-Then visit `http://localhost:3000` in your browser.
+The backend will be available at http://localhost:8000
+
+In a separate terminal, start the frontend development server:
+
+```bash
+cd frontend
+npm run dev
+```
+
+The frontend will be available at http://localhost:5173
+
+### Accessing the Application
+
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:8000
+- Django Admin: http://localhost:8000/admin
+
+---
+
+## Project Architecture
+
+### Backend Structure
+
+The backend follows Django's app-based architecture:
+
+```
+backend/
+├── myproject/              # Main project configuration
+│   ├── settings.py         # Django settings
+│   ├── urls.py            # URL routing configuration
+│   └── wsgi.py            # WSGI application entry point
+├── users/                  # User management app
+│   ├── models.py          # User model
+│   ├── views.py           # User-related views
+│   └── urls.py            # User API endpoints
+├── clubs/                  # Club management app
+│   ├── models.py          # Club and Membership models
+│   ├── views.py           # Club CRUD operations
+│   └── urls.py            # Club API endpoints
+├── calendar_app/           # Calendar and meeting management
+│   ├── models.py          # Calendar and Meeting models
+│   ├── views.py           # Calendar CRUD and permissions
+│   └── urls.py            # Calendar API endpoints
+├── document/               # Document manager app
+│   ├── models.py          # DocumentManager and Document models
+│   ├── views.py           # Document upload and management
+│   └── urls.py            # Document API endpoints
+└── media/                  # User-uploaded files storage
+
+```
+
+### Frontend Structure
+
+The frontend uses a component-based React architecture:
+
+```
+frontend/
+├── src/
+│   ├── components/
+│   │   ├── navbar/        # Navigation component
+│   │   ├── clubs/         # Club-related components
+│   │   ├── calendars/     # Calendar components
+│   │   ├── !card/         # Reusable card components
+│   │   ├── !form/         # Form components for CRUD operations
+│   │   └── !base/         # Base UI components
+│   ├── pages/             # Page-level components
+│   │   ├── HomePage.jsx
+│   │   ├── ClubPage.jsx
+│   │   ├── ClubSearchPage.jsx
+│   │   └── CalendarPage.jsx
+│   ├── services/          # API service layer
+│   │   ├── api.js         # Axios instance configuration
+│   │   ├── userService.js
+│   │   ├── clubService.js
+│   │   ├── calendarService.js
+│   │   └── documentService.js
+│   ├── utils/             # Utility functions
+│   │   └── cookies.js     # CSRF token handling
+│   └── App.jsx            # Main application component
+└── public/                # Static assets
+
+```
+
+### Data Models
+
+#### User Model
+- Extends Django's AbstractUser
+- Fields: username, email, first_name, last_name, bio, pfp
+- Relationships: clubs (through Membership), calendars, document_managers
+
+#### Club Model
+- Fields: name, description, image
+- Relationships: members (through Membership), calendars, document_managers
+
+#### Membership Model
+- Links users to clubs with roles
+- Roles: organizer, member
+- Fields: user, club, role, joined_at
+
+#### Calendar Model
+- Can belong to either a user or a club
+- Fields: name, club (nullable), user (nullable)
+- Relationships: meetings
+
+#### Meeting Model
+- Belongs to a calendar
+- Fields: calendar, date, description
+
+#### DocumentManager Model
+- Can belong to either a user or a club
+- Fields: name, club (nullable), user (nullable)
+- Relationships: documents
+
+#### Document Model
+- Belongs to a document manager
+- Fields: title, file, uploaded_at, document_manager
+
+### API Endpoints
+
+#### User Endpoints
+- POST /user/login/ - User login
+- POST /user/logout/ - User logout
+- POST /user/register/ - User registration
+- GET /user/get/ - Get user details
+- POST /user/update/ - Update user profile
+- POST /user/delete/ - Delete user account
+
+#### Club Endpoints
+- POST /clubs/create/ - Create a club
+- GET /clubs/get/ - Get club details
+- GET /clubs/list/ - List all clubs
+- POST /clubs/update/ - Update club information
+- POST /clubs/delete/ - Delete a club
+
+#### Membership Endpoints
+- POST /clubs/membership/create/ - Join a club
+- GET /clubs/membership/get/ - Get membership details
+- POST /clubs/membership/update/ - Update membership role
+- POST /clubs/membership/delete/ - Leave a club
+
+#### Calendar Endpoints
+- POST /calendar/create/ - Create a calendar
+- GET /calendar/get/ - Get calendars (user or club)
+- POST /calendar/update/ - Update calendar
+- POST /calendar/delete/ - Delete calendar
+
+#### Meeting Endpoints
+- POST /calendar/meetings/create/ - Create a meeting
+- GET /calendar/meetings/list/ - List meetings for a calendar
+- POST /calendar/meetings/update/ - Update meeting
+- POST /calendar/meetings/delete/ - Delete meeting
+
+#### Document Manager Endpoints
+- POST /documents/managers/create/ - Create document manager
+- GET /documents/managers/get/ - Get document managers
+- POST /documents/managers/update/ - Update manager
+- POST /documents/managers/delete/ - Delete manager
+
+#### Document Endpoints
+- POST /documents/upload/ - Upload a document
+- GET /documents/get/ - Get documents
+- POST /documents/delete/ - Delete document
+
+### Authentication and Permissions
+
+The application uses Django's session-based authentication with CSRF protection:
+
+- Login required: Most endpoints require authentication
+- Role-based access: Organizers have additional permissions for club operations
+- CSRF tokens: Required for all POST requests
+- Membership verification: Users must be club members to access club resources
 
 ---
 
 ## Testing
 
-To run backend tests:
+Backend testing is currently in development. To run tests when available:
 
 ```bash
 cd backend
-pytest
+python manage.py test
 ```
 
-To run frontend tests:
+Frontend testing with Jest/Vitest:
 
 ```bash
 cd frontend
@@ -163,81 +395,126 @@ npm test
 
 ---
 
-## Deployment (Production)
+## Features and Roadmap
 
-We support Dockerized deployment:
+### Current Features
 
-```bash
-docker build -t yourorg/mywebapp:latest .
-docker-compose -f docker-compose.prod.yml up
-```
+- User authentication and profile management
+- Club creation and management
+- Membership system with role-based permissions (organizer, member)
+- Calendar management for users and clubs
+- Meeting scheduling and management
+- Document manager system for organizing files
+- Document upload and storage
+- Club search and discovery
+- Inter-club collaboration tools
 
-Alternatively, deploy via Kubernetes, or host on AWS/GCP/Azure.
-See `deploy/` directory for manifests and scripts.
+### Planned Features
 
----
-
-## Architecture / Workflow
-
-Below is an outline of the system and team workflow:
-
-```
-Client (React) ←→ REST API (Django) ←→ PostgreSQL
-```
-
-* The frontend uses HTTP + WebSocket (for real-time sync)
-* The backend has modules: auth, document, collaboration, notifications
-* User stories / tasks are tracked in our backlog (see `docs/user-stories.md`)
-* Our development workflow is feature branching, PR review → CI → merge → deploy
-
-You can see the detailed workflow diagram in `docs/architecture.md`.
+- Event collaboration between multiple clubs
+- Analytics dashboard for event quality metrics
+- Recruitment and networking tools
+- Club dues management system
+- Advanced search based on common interest analytics
+- Email notifications for events and updates
+- Mobile-responsive design improvements
+- Export functionality for calendars and documents
 
 ---
 
-## Roadmap
+## Development Workflow
 
-* Support offline editing
-* Mobile app (iOS / Android)
-* Role-based permissions (admin/custom roles)
-* Audit logs and rollback functionality
-* Plugin / extension system
+### Git Workflow
+
+The project follows a feature branch workflow:
+
+1. Clone the repository and create a new branch from main
+2. Name branches descriptively: feature/calendar-view, fix/login-bug, etc.
+3. Make commits with clear, descriptive messages
+4. Push your branch and open a pull request
+5. Request review from a team member
+6. Address feedback and merge when approved
+
+### Code Style
+
+Backend (Python):
+- Follow PEP 8 style guidelines
+- Use meaningful variable and function names
+- Add docstrings to functions and classes
+- Keep views focused on a single responsibility
+
+Frontend (JavaScript/React):
+- Use functional components with hooks
+- Keep components small and reusable
+- Use consistent naming conventions (PascalCase for components)
+- Add comments for complex logic
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Database Connection Error
+
+If you encounter database connection errors:
+- Verify PostgreSQL is running: sudo service postgresql status
+- Check database credentials in .env file
+- Ensure the database exists: psql -U postgres -l
+
+#### CORS Errors
+
+If the frontend cannot connect to the backend:
+- Verify CORS_ALLOWED_ORIGINS in backend/myproject/settings.py
+- Check that VITE_API_URL in frontend/.env matches the backend URL
+- Ensure both servers are running
+
+#### Migration Errors
+
+If migrations fail:
+- Delete all migration files except __init__.py in each app's migrations folder
+- Drop and recreate the database
+- Run python manage.py makemigrations followed by python manage.py migrate
+
+#### Port Already in Use
+
+If port 8000 or 5173 is already in use:
+- Backend: python manage.py runserver 8001 (or any available port)
+- Frontend: Edit vite.config.js to change the port
+- Update VITE_API_URL accordingly
 
 ---
 
 ## Contributing
 
-We welcome contributions! Please read [CONTRIBUTING.md](path%20with%20spaces/CONTRIBUTING.md) for guidelines, coding style, and PR process.
+Contributions are welcome. Please follow these guidelines:
 
+1. Fork the repository
+2. Create a feature branch with a descriptive name
+3. Make your changes with clear commit messages
+4. Ensure all existing tests pass
+5. Add tests for new features if applicable
+6. Update documentation as needed
+7. Submit a pull request with a clear description
 
-Typically:
-
-1. Fork the repo
-2. Create a feature branch (`feature/your-feature`)
-3. Commit with clear messages
-4. Open a pull request with description and link to issue
-5. A maintainer will review and merge
-6. Update documentation 
-
-Be sure to run tests & linters before submitting.
+For major changes, please open an issue first to discuss the proposed changes.
 
 ---
 
 ## License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+This project is developed as part of an academic course at Stevens Institute of Technology.
 
 ---
 
-## Acknowledgments
+## Team Contact
 
-* Inspired by [Some other project]
-* Uses open source libraries: Django, React, Celery, etc.
-* Thanks to contributors and the community
+For questions or support, contact the development team:
 
----
+- Lead Architect: ArthurHenrique Ferreira
+- Project Organizer: Lauren Harman
+- User Interface Designer: Liam McLoughlin
+- Quality Assurance Lead: Marcos Carvajal
+- Backend Developer: Raymond Pridgen
 
-## Contact / Support
-
-For issues and bug reports, please open an issue on the GitHub repo.
-For general questions, contact **Your Name** ([you@yourorg.com](mailto:you@yourorg.com)).
-Join our Slack / Discord / Teams (invite link in docs).
+For bug reports, please create an issue in the GitHub repository.

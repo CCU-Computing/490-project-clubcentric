@@ -5,6 +5,7 @@ import { Navigate } from "react-router-dom";
 // Import Pages
 import DashboardPage from "./pages/DashboardPage";
 import ClubPage from "./pages/club/ClubPage";
+import ClubsPage from "./pages/ClubsPage";
 import LoginPage from "./pages/auth/LoginPage";
 import SignUpPage from './pages/auth/SignUpPage';
 import ProfilePage from "./pages/ProfilePage";
@@ -88,6 +89,16 @@ function App() {
                 {
                   <ProtectedRoute>
                     <ViewUserPage/>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/clubs"
+                element=
+                {
+                  <ProtectedRoute>
+                    <ClubsPage/>
                   </ProtectedRoute>
                 }
               />

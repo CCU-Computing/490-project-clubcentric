@@ -1,50 +1,50 @@
 import api from "./api"
 import { getCookie } from "../utils/cookies"
 
-export async function create_calendar(club_id, calendar_name) 
+export async function create_calendar(club_id, calendar_name)
 {
-  try 
+  try
   {
-    if (calendar_name == null) 
+    if (calendar_name == null)
     {
       console.error("Missing fields.");
       return null;
     }
-    else 
+    else
     {
+      // Create FormData instead of JSON
+      const formData = new FormData();
+      formData.append('calendar_name', calendar_name);
+
       // Making user calendar
       if (club_id == null)
       {
         const response = await api.post(
-			`calendar/create/`,
+		`/calendar/create/`,
+		formData,
+		{
+			headers:
 			{
-          		calendar_name : calendar_name
-        	},
-			{
-				headers:
-				{
-					"X-CSRFToken": getCookie("csrftoken")
-				}
+				"X-CSRFToken": getCookie("csrftoken")
+			}
     		}
-		);
+	);
         return response.data;
       }
       // Club calendar
       else
       {
+        formData.append('club_id', club_id);
         const response = await api.post(
-			`calendar/create/`,
+		`/calendar/create/`,
+		formData,
+		{
+			headers:
 			{
-			club_id : club_id,
-			calendar_name : calendar_name
-			},
-			{
-				headers:
-				{
-					"X-CSRFToken": getCookie("csrftoken")
-				}
+				"X-CSRFToken": getCookie("csrftoken")
+			}
     		}
-		);
+	);
         return response.data;
       }
     }
@@ -56,12 +56,12 @@ export async function create_calendar(club_id, calendar_name)
   }
 }
 
-export async function get_calendars(club_id) 
+export async function get_calendars(club_id)
 {
-	try 
+	try
 	{
 		// Get user's calendars
-		if (club_id == null) 
+		if (club_id == null)
 		{
 			const response = await api.get(
 				`/calendar/get/`,
@@ -75,7 +75,7 @@ export async function get_calendars(club_id)
 			return response.data;
 		}
 		// Club's calendars
-		else 
+		else
 		{
 			const response = await api.get(
 				`/calendar/get/`,
@@ -100,23 +100,24 @@ export async function get_calendars(club_id)
 	}
 }
 
-export async function update_calendar(calendar_id, calendar_name) 
+export async function update_calendar(calendar_id, calendar_name)
 {
-	try 
+	try
 	{
-		if (calendar_id == null || calendar_name == null) 
+		if (calendar_id == null || calendar_name == null)
 		{
 			console.error("Missing fields.");
 			return null;
 		}
-		else 
+		else
 		{
+			const formData = new FormData();
+			formData.append('cal_id', calendar_id);
+			formData.append('cal_name', calendar_name);
+
 			const response = await api.post(
-				`calendar/update/`,
-				{
-				cal_id : calendar_id,
-				cal_name : calendar_name
-				},
+				`/calendar/update/`,
+				formData,
 				{
 					headers:
 					{
@@ -134,22 +135,23 @@ export async function update_calendar(calendar_id, calendar_name)
 	}
 }
 
-export async function delete_calendar(calendar_id) 
+export async function delete_calendar(calendar_id)
 {
-	try 
+	try
 	{
-		if (calendar_id == null) 
+		if (calendar_id == null)
 		{
 			console.error("Missing fields.");
 			return null;
 		}
-		else 
+		else
 		{
+			const formData = new FormData();
+			formData.append('cal_id', calendar_id);
+
 			const response = await api.post(
-				`calendar/delete/`,
-				{
-				cal_id : calendar_id,
-				},
+				`/calendar/delete/`,
+				formData,
 				{
 					headers:
 					{
@@ -167,24 +169,25 @@ export async function delete_calendar(calendar_id)
 	}
 }
 
-export async function create_meeting(calendar_id, datetime_str, description) 
+export async function create_meeting(calendar_id, datetime_str, description)
 {
-	try 
+	try
 	{
-		if (calendar_id == null || datetime_str == null || description == null) 
+		if (calendar_id == null || datetime_str == null || description == null)
 		{
 			console.error("Missing fields.");
 			return null;
 		}
-		else 
+		else
 		{
+			const formData = new FormData();
+			formData.append('calendar_id', calendar_id);
+			formData.append('datetime_str', datetime_str);
+			formData.append('description', description);
+
 			const response = await api.post(
 				`/calendar/meetings/create/`,
-				{
-				calendar_id: calendar_id,
-				datetime_str: datetime_str,
-				description : description
-				},
+				formData,
 				{
 					headers:
 					{
@@ -202,16 +205,16 @@ export async function create_meeting(calendar_id, datetime_str, description)
 	}
 }
 
-export async function get_meetings(calendar_id) 
+export async function get_meetings(calendar_id)
 {
-	try 
+	try
 	{
-		if (calendar_id == null) 
+		if (calendar_id == null)
 		{
 			console.error("Missing fields.");
 			return null;
 		}
-		else 
+		else
 		{
 			const response = await api.get(
 				`/calendar/meetings/list/`,
@@ -224,7 +227,7 @@ export async function get_meetings(calendar_id)
 					{
 						"X-CSRFToken": getCookie("csrftoken")
 					}
-				}	
+				}
 			);
 			return response.data;
 		}
@@ -236,23 +239,24 @@ export async function get_meetings(calendar_id)
 	}
 }
 
-export async function update_meeting(meeting_id, description) 
+export async function update_meeting(meeting_id, description)
 {
-	try 
+	try
 	{
-		if (meeting_id == null || description == null) 
+		if (meeting_id == null || description == null)
 		{
 			console.error("Missing fields.");
 			return null;
 		}
-		else 
+		else
 		{
+			const formData = new FormData();
+			formData.append('meet_id', meeting_id);
+			formData.append('desc', description);
+
 			const response = await api.post(
 				`/calendar/meetings/update/`,
-				{
-				meet_id : meeting_id,
-				desc : description
-				},
+				formData,
 				{
 					headers:
 					{
@@ -270,22 +274,23 @@ export async function update_meeting(meeting_id, description)
 	}
 }
 
-export async function delete_meeting(meeting_id) 
+export async function delete_meeting(meeting_id)
 {
-	try 
+	try
 	{
-		if (meeting_id == null) 
+		if (meeting_id == null)
 		{
 			console.error("Missing fields.");
 			return null;
 		}
-		else 
+		else
 		{
+			const formData = new FormData();
+			formData.append('meet_id', meeting_id);
+
 			const response = await api.post(
 				`/calendar/meetings/delete/`,
-				{
-				meet_id : meeting_id
-				},
+				formData,
 				{
 					headers:
 					{

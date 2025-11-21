@@ -5,15 +5,16 @@ import { FileField } from "../../!base/FileField";
 import { SelectField } from "../../!base/SelectField";
 import { ActionButton } from "../../!base/ActionButton";
 import { update_club } from "../../../services/clubService";
+import { create_calendar } from "../../../services/calendarService";
 import '../css/CalMeet.css';
 import { CreateMeetingForm } from "./CreateMeeting";
 import { UpdateCalendarForm } from "./UpdateCalendar";
 import { UpdateMeetingForm } from "./UpdateMeeting";
 
-export const CreateCalendarForm = ({ 
+export const CreateCalendarForm = ({
   clubId,
   onClose,
-  onSuccess 
+  onSuccess
 }) => {
   const [calendarName, setCalendarName] = useState('');
   const [error, setError] = useState('');
@@ -21,7 +22,7 @@ export const CreateCalendarForm = ({
 
   const handleSubmit = async () => {
     setError('');
-    
+
     if (!calendarName.trim()) {
       setError('Calendar name is required');
       return;
@@ -30,28 +31,17 @@ export const CreateCalendarForm = ({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/calendars', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          club_id: clubId,
-          calendar_name: calendarName
-        })
-      });
+      const result = await create_calendar(clubId, calendarName);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create calendar');
+      if (!result) {
+        throw new Error('Failed to create calendar');
       }
 
-      const data = await response.json();
-      if (onSuccess) onSuccess(data);
+      if (onSuccess) onSuccess(result);
       if (onClose) onClose();
-      
+
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Failed to create calendar');
     } finally {
       setIsSubmitting(false);
     }
