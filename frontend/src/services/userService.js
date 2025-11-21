@@ -1,4 +1,4 @@
-import api from "./api"
+import api from "./api"g
 import { getCookie } from "../utils/cookies";
 
 export async function create_user(username, password, first_name, last_name, email) 
