@@ -503,7 +503,7 @@ For major changes, please open an issue first to discuss the proposed changes.
 
 ## License
 
-This project is developed as part of an academic course at Stevens Institute of Technology.
+This project is developed as part of an academic course at Coastal Carolina University.
 
 ---
 
