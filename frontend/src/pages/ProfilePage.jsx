@@ -7,7 +7,7 @@ import { UserDocumentCard } from '../components/!card/user/UserDocumentCard';
 import { CalendarDetailCard } from '../components/!card/shared/CalendarDetailCard';
 import { DocumentDetailCard } from '../components/!card/shared/DocumentDetailCard';
 import { get_user } from '../services/userService';
-import { getClubs } from '../services/clubService';
+import { get_membership } from '../services/clubService';
 
 const ProfilePage = () => {
     const navigate = useNavigate();
@@ -31,10 +31,18 @@ const ProfilePage = () => {
                 setUser(userData);
 
                 // Fetch clubs user is a member of
-                // This would ideally come from a dedicated endpoint
-                const allClubs = await getClubs();
-                // For now, showing all clubs - you may want to filter by membership
-                setUserClubs(allClubs || []);
+                try {
+                    const memberships = await get_membership(null, null);
+                    // memberships is {club_id: role} dict
+                    if (memberships && typeof memberships === 'object') {
+                        const clubIds = Object.keys(memberships);
+                        // TODO: Fetch full club details for these IDs
+                        setUserClubs(clubIds);
+                    }
+                } catch (error) {
+                    console.error("Error fetching user clubs:", error);
+                    setUserClubs([]);
+                }
             } else {
                 console.error("Failed to fetch user data or user is not logged in.");
                 navigate('/login');
@@ -66,7 +74,7 @@ const ProfilePage = () => {
     if (!user) {
         return (
             <div className="profile-page-container min-h-screen bg-gray-100">
-                <Navbar />
+
                 <div className="container mx-auto p-4 md:p-8 pt-8 text-center text-xl text-red-600">
                     You must be logged in to view this page.
                 </div>
@@ -96,24 +104,7 @@ const ProfilePage = () => {
                             <h2 className="card-title">My Clubs</h2>
                         </div>
                         <div className="card-body">
-                            <ul className="card-list">
-                                {userClubs.map((club) => (
-                                    <li key={club.id} className="card-list-item">
-                                        <div className="list-item-content">
-                                            <h3 className="list-item-title">{club.name}</h3>
-                                            <p className="list-item-subtitle">{club.description}</p>
-                                        </div>
-                                        <div className="list-item-actions">
-                                            <button
-                                                onClick={() => navigate(`/club/${club.id}`)}
-                                                className="action-button btn-primary"
-                                            >
-                                                View Club
-                                            </button>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
+                            <p className="text-gray-600">You are a member of {userClubs.length} club(s)</p>
                         </div>
                     </div>
                 )}

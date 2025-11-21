@@ -11,7 +11,7 @@ class Club(models.Model):
     display_picture = models.ImageField(upload_to="clubs/", blank=True)
     links = models.JSONField(default=list, blank=True)
     tags = ArrayField(
-        models.CharField(max_length=20),
+        models.CharField(max_length=25),
         default=list,
         blank=True
     )

@@ -86,24 +86,32 @@ export async function update_user(username, first_name, last_name, email, bio, p
 {
     try
     {
-        // Return if invalid inputs
-        if (username == null && first_name == null && last_name == null && email == null && bio == null && profile_picture == null)
+        const formData = new FormData();
+        let fieldsPresent = false;
+
+        const appendIfPresent = (key, value) => {
+            if (value !== null && value !== undefined) {
+                formData.append(key, value);
+                fieldsPresent = true;
+            }
+        };
+
+        appendIfPresent("username", username);
+        appendIfPresent("first_name", first_name);
+        appendIfPresent("last_name", last_name);
+        appendIfPresent("email", email);
+        appendIfPresent("bio", bio);
+        appendIfPresent("profile_picture", profile_picture);
+
+        // check that at least one valid field was provided
+        if (!fieldsPresent)
         {
-            console.error("Missing fields.");
+            console.error("No fields provided for update.");
             return null;
         }
         else
         {
-            // Use FormData for the entire request if there's a file
-            const formData = new FormData();
-
-            if (username) formData.append("username", username);
-            if (first_name) formData.append("first_name", first_name);
-            if (last_name) formData.append("last_name", last_name);
-            if (email) formData.append("email", email);
-            if (bio) formData.append("bio", bio);
-            if (profile_picture) formData.append("profile_picture", profile_picture);
-
+            // Send the FormData object as the body
             const response = await api.post(
                 `/user/update/`,
                 formData,
@@ -120,6 +128,10 @@ export async function update_user(username, first_name, last_name, email, bio, p
     catch (error)
     {
         console.error("Update failed:", error);
+
+        if (error.response) {
+            console.error("API Error Response Data:", error.response.data);
+        }
         return null;
     }
 }
