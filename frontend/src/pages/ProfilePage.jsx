@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/navbar/Navbar';
+<<<<<<< HEAD
 import { UserProfileCard } from '../components/!card/user/UserProfileCard';
 import { UserCalendarCard } from '../components/!card/user/UserCalendarCard';
 import { UserDocumentCard } from '../components/!card/user/UserDocumentCard';
@@ -8,6 +9,28 @@ import { CalendarDetailCard } from '../components/!card/shared/CalendarDetailCar
 import { DocumentDetailCard } from '../components/!card/shared/DocumentDetailCard';
 import { get_user } from '../services/userService';
 import { get_membership } from '../services/clubService';
+=======
+import UserInfoBlock from '../components/profile/UserInfoBlock';
+import UserClubsList from '../components/profile/UserClubsList';
+import { get_user, update_user } from '../services/userService';
+import anonProfilePic from '../assets/images/anon_profile_pic.png';
+import ClubCalendars from '../components/calendars/ClubCalendars';
+
+// ------------------------------------------
+
+// Utility for notification styles
+const getStatusMessageStyles = (type) => {
+    switch (type) {
+        case 'success':
+            return "p-3 mb-4 rounded-lg text-center bg-green-100 text-green-700";
+        case 'error':
+            // Required style: light red background (bg-red-100) and centered text (text-red-700, text-center)
+            return "p-3 mb-4 rounded-lg text-center bg-red-100 text-red-700"; 
+        default:
+            return "hidden";
+    }
+};
+>>>>>>> TheFix
 
 const ProfilePage = () => {
     const navigate = useNavigate();
@@ -74,7 +97,11 @@ const ProfilePage = () => {
     if (!user) {
         return (
             <div className="profile-page-container min-h-screen bg-gray-100">
+<<<<<<< HEAD
 
+=======
+                
+>>>>>>> TheFix
                 <div className="container mx-auto p-4 md:p-8 pt-8 text-center text-xl text-red-600">
                     You must be logged in to view this page.
                 </div>
@@ -84,8 +111,13 @@ const ProfilePage = () => {
 
     return (
         <div className="profile-page-container min-h-screen bg-gray-100">
+<<<<<<< HEAD
             <Navbar />
             <div className="container mx-auto p-4 md:p-8 pt-8">
+=======
+            
+            <div className="container mx-auto p-4 md:p-8 pt-8"> 
+>>>>>>> TheFix
                 <h1 className="text-4xl font-bold text-gray-800 mb-6 border-b pb-2">
                     Your Profile
                 </h1>
@@ -109,6 +141,7 @@ const ProfilePage = () => {
                     </div>
                 )}
 
+<<<<<<< HEAD
                 {/* Show calendar detail if one is selected */}
                 {selectedCalendar ? (
                     <CalendarDetailCard
@@ -138,6 +171,17 @@ const ProfilePage = () => {
                         onSelectManager={setSelectedManager}
                     />
                 )}
+=======
+                <UserInfoBlock 
+                    user={userForDisplay} 
+                    isEditing={isEditing}
+                    setIsEditing={setIsEditing}
+                    handleUpdate={handleUpdate} // Pass the update handler
+                />
+                
+                {/* Only display clubs list if not editing */}
+                {!isEditing && <UserClubsList clubs={clubs} />}
+>>>>>>> TheFix
             </div>
         </div>
     );

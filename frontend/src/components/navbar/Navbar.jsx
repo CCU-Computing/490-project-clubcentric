@@ -6,7 +6,11 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import { logout_user } from '../../services/userService';
 
 import { Box, AppBar, Toolbar, IconButton, Typography, Drawer, CssBaseline, List, ListItemButton, ListItemIcon, ListItemText, Collapse } from '@mui/material';
+<<<<<<< HEAD
 import { Menu as MenuIcon, MenuOpen as MenuOpenIcon, ExpandLess, ExpandMore, Groups2 as Groups2Icon, Person as PersonIcon, Home as HomeIcon, CalendarMonth as EventIcon, Search as SearchIcon, Logout as LogoutIcon } from '@mui/icons-material';
+=======
+import { Menu as MenuIcon, MenuOpen as MenuOpenIcon, ExpandLess, ExpandMore, Groups2 as Groups2Icon, Person as PersonIcon, Home as HomeIcon, CalendarMonth as EventIcon, Search as SearchIcon, ContentPaste as ClipboardIcon } from '@mui/icons-material';
+>>>>>>> TheFix
 
 const drawerWidth = 240;
 const shortDrawerWidth = 80;
@@ -14,8 +18,14 @@ const shortDrawerWidth = 80;
 const menuItems = [
   { label: 'Dashboard', to: '/dashboard', icon: <HomeIcon /> },
   { label: 'Clubs', to: '/clubs', icon: <Groups2Icon /> },
+<<<<<<< HEAD
   { label: 'Profile', to: '/profile', icon: <PersonIcon /> },
   { label: 'Search Clubs', to: '/search', icon: <SearchIcon /> }
+=======
+  { label: 'Events', to: '/events', icon: <EventIcon /> },
+  { label: 'Documents', to: '/documents', icon: <ClipboardIcon /> },
+  { label: 'Club Search', to: '/club_search', icon: <SearchIcon /> }
+>>>>>>> TheFix
 ];
 
 export default function Navbar({ content }) {
@@ -48,7 +58,7 @@ export default function Navbar({ content }) {
         position="fixed"
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: '#093331',
+          backgroundColor: '#006F71',
           color: '#fff'
         }}
       >
