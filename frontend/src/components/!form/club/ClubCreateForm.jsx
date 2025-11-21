@@ -4,6 +4,7 @@ import { DateField } from "../../!base/DateField";
 import { FileField } from "../../!base/FileField";
 import { SelectField } from "../../!base/SelectField";
 import { ActionButton } from "../../!base/ActionButton";
+import { create_club } from "../../../services/clubService";
 import "../css/ClubCreate.css"
 
 export const CreateClubForm = ({ 
@@ -20,13 +21,13 @@ export const CreateClubForm = ({
 
   const handleSubmit = async () => {
     setError('');
-    
+
     // Validate required fields
     if (!formData.name.trim()) {
       setError('Club name is required');
       return;
     }
-    
+
     if (!formData.description.trim()) {
       setError('Description is required');
       return;
@@ -34,34 +35,23 @@ export const CreateClubForm = ({
 
     setIsSubmitting(true);
 
-    const payload = {
-      name: formData.name,
-      description: formData.description
-    };
-
     try {
-      // Replace with your actual API endpoint
-      const response = await fetch('/api/clubs', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
-      });
+      // Use the create_club service function
+      const result = await create_club(
+        formData.name.trim(),
+        formData.description.trim()
+      );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create club');
+      if (!result) {
+        throw new Error('Failed to create club');
       }
 
-      const data = await response.json();
-      
       // Success - call onSuccess callback and close
-      if (onSuccess) onSuccess(data);
+      if (onSuccess) onSuccess(result);
       if (onClose) onClose();
-      
+
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Failed to create club');
     } finally {
       setIsSubmitting(false);
     }

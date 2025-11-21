@@ -4,6 +4,7 @@ import { DateField } from "../../!base/DateField";
 import { FileField } from "../../!base/FileField";
 import { SelectField } from "../../!base/SelectField";
 import { ActionButton } from "../../!base/ActionButton";
+import { update_user } from "../../../services/userService";
 import "../css/UpdateUser.css"
 
 export const UpdateUserForm = ({ 
@@ -27,39 +28,27 @@ export const UpdateUserForm = ({
     setError('');
     setIsSubmitting(true);
 
-    // Build payload - send null for empty fields
-    const payload = {
-      username: formData.username || null,
-      first_name: formData.first_name || null,
-      last_name: formData.last_name || null,
-      email: formData.email || null,
-      bio: formData.bio || null,
-      profile_picture: formData.profile_picture || null
-    };
-
     try {
-      // Replace with your actual API endpoint
-      const response = await fetch('/api/users/update', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
-      });
+      // Use the update_user service function
+      const result = await update_user(
+        formData.username || null,
+        formData.first_name || null,
+        formData.last_name || null,
+        formData.email || null,
+        formData.bio || null,
+        formData.profile_picture || null
+      );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to update user');
+      if (!result) {
+        throw new Error('Failed to update user');
       }
 
-      const data = await response.json();
-      
       // Success - call onSuccess callback and close
-      if (onSuccess) onSuccess(data);
+      if (onSuccess) onSuccess(result);
       if (onClose) onClose();
-      
+
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Failed to update user');
     } finally {
       setIsSubmitting(false);
     }

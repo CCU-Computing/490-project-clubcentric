@@ -19,7 +19,7 @@ export async function create_manager(name, club_id) {
         }
 
         const response = await api.post(
-            "managers/create/",
+            "/documents/managers/create/",
             formData,
             {
                 headers:
@@ -44,7 +44,7 @@ export async function get_managers(club_id)
         if (club_id == null)
         {
             const response = await api.get(
-                "managers/get/",
+                "/documents/managers/get/",
                 {
                     headers:
                     {
@@ -57,7 +57,7 @@ export async function get_managers(club_id)
         else
         {
             const response = await api.get(
-                "managers/get/",
+                "/documents/managers/get/",
                 {
                     params:
                     {
@@ -94,7 +94,7 @@ export async function update_manager(manager_id, name)
         formData.append('name', name);
 
         const response = await api.post(
-            "managers/update/",
+            "/documents/managers/update/",
             formData,
             {
                 headers:
@@ -126,7 +126,7 @@ export async function delete_manager(manager_id)
         formData.append('manager_id', manager_id);
 
         const response = await api.post(
-            "managers/delete/",
+            "/documents/managers/delete/",
             formData,
             {
                 headers:
@@ -159,7 +159,7 @@ export async function upload_document(title, manager_id, uploaded_file)
     try
     {
         const response = await api.post(
-            "upload/",
+            "/documents/upload/",
             formData,
             {
                 headers:
@@ -195,7 +195,7 @@ export async function get_document(document_id, manager_id)
         if (document_id)
         {
             const response = await api.get(
-                "get/",
+                "/documents/get/",
                 {
                     params :
                     {
@@ -212,7 +212,7 @@ export async function get_document(document_id, manager_id)
         else if (manager_id)
         {
             const response = await api.get(
-                "get/",
+                "/documents/get/",
                 {
                     params :
                     {
@@ -248,7 +248,7 @@ export async function delete_document(document_id)
     try
     {
         const response = await api.post(
-            "delete/",
+            "/documents/delete/",
             formData,
             {
                 headers:

@@ -66,8 +66,12 @@ def update_club(request):
     club_id = request.POST.get("club_id")
     club_name = request.POST.get("club_name")
     club_description = request.POST.get("club_description")
+    club_summary = request.POST.get("club_summary")
+    club_videoEmbed = request.POST.get("club_videoEmbed")
     club_picture = request.FILES.get("club_picture")
     club_links = request.POST.get("club_links")
+    club_tags = request.POST.get("club_tags")
+    club_lastMeetingDate = request.POST.get("club_lastMeetingDate")
 
     if not club_id:
         return JsonResponse({"error": "Missing required field: club_id"}, status=400)
@@ -76,30 +80,50 @@ def update_club(request):
         club = Club.objects.get(id=club_id)
     except Club.DoesNotExist:
         return JsonResponse({"error": "club not found"}, status=404)
-    
+
     if not is_member(user=request.user, club=club, role="organizer"):
         return JsonResponse({"error": "must be an organizer of this club to update data"}, status=409)
-    
-    updated = []
-    
-    if club_name:
-        club.name = club_name
-        updated.append(('club_name', club.name))
 
-    if club_description:
-        club.description = club_description
-        updated.append(('club_description', club.description))
+    try:
+        if club_name:
+            club.name = club_name
 
-    if club_picture:
-        club.display_picture = club_picture
-        updated.append(('club_picture', club.display_picture.url))
+        if club_description:
+            club.description = club_description
 
-    if club_links:
-        club.links = club_links
-        updated.append(("club_links", club.links))
+        if club_summary:
+            club.summary = club_summary
 
-    club.save()
-    return JsonResponse(updated, safe=False)
+        if club_videoEmbed:
+            club.videoEmbed = club_videoEmbed
+
+        if club_picture:
+            club.display_picture = club_picture
+
+        if club_links:
+            # Parse JSON string to Python object for JSONField
+            club.links = json.loads(club_links)
+
+        if club_tags:
+            # Parse JSON string to Python list for ArrayField
+            club.tags = json.loads(club_tags)
+
+        if club_lastMeetingDate:
+            # Parse date string to date object
+            if club_lastMeetingDate:
+                parsed_date = parse_datetime(club_lastMeetingDate)
+                if parsed_date:
+                    club.lastMeetingDate = parsed_date.date()
+                else:
+                    club.lastMeetingDate = None
+
+        club.save()
+        return JsonResponse({"status": True})
+
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON format for links or tags"}, status=400)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
 
 @require_POST
 @login_required

@@ -32,39 +32,38 @@ export const UpdateClubForm = ({
     setError('');
     setIsSubmitting(true);
 
-    const payload = {
-      club_id: clubId,
-      name: formData.name || null,
-      description: formData.description || null,
-      picture: formData.picture || null,
-      links: formData.links || null,
-      summary: formData.summary || null,
-      videoEmbed: formData.videoEmbed || null,
-      tags: formData.tags || null,
-      lastMeetingDate: formData.lastMeetingDate || null
-    };
-
     try {
-      const response = await fetch(`/api/clubs/${clubId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
-      });
+      // Parse tags and links if they're strings
+      const tagsArray = typeof formData.tags === 'string'
+        ? formData.tags.split(' ').filter(t => t.trim() !== '')
+        : (Array.isArray(formData.tags) ? formData.tags : []);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to update club');
+      const linksArray = typeof formData.links === 'string'
+        ? formData.links.split(' ').filter(l => l.trim() !== '')
+        : (Array.isArray(formData.links) ? formData.links : []);
+
+      // Use the update_club service function
+      const result = await update_club(
+        clubId,
+        formData.name || null,
+        formData.description || null,
+        formData.picture || null,
+        linksArray,
+        formData.summary || null,
+        formData.videoEmbed || null,
+        tagsArray,
+        formData.lastMeetingDate || null
+      );
+
+      if (!result) {
+        throw new Error('Failed to update club');
       }
 
-      const data = await response.json();
-      
-      if (onSuccess) onSuccess(data);
+      if (onSuccess) onSuccess(result);
       if (onClose) onClose();
-      
+
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Failed to update club');
     } finally {
       setIsSubmitting(false);
     }
