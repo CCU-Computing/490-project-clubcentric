@@ -11,7 +11,6 @@ import Navbar from './components/navbar/Navbar' // Navigation Bar
 import ClubSearch from './pages/ClubSearch'
 import DocumentsPage from "./pages/Documents";
 import ProtectedRoute from './components/auth/AuthProvider';
-import { useAuth } from './hooks/useAuth';
 
 
 function App() {
