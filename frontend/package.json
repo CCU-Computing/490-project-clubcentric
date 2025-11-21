@@ -19,6 +19,7 @@
     "@mui/material": "^7.3.3",
     "@mui/system": "^7.3.3",
     "axios": "^1.12.2",
+    "lucide-react": "^0.554.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.1"

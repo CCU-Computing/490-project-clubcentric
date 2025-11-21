@@ -7,6 +7,8 @@ import UserClubsList from '../components/profile/UserClubsList';
 import { get_user } from '../services/userService'; // Import get_user service
 import anonProfilePic from '../assets/images/anon_profile_pic.png';
 import ClubCalendars from '../components/calendars/ClubCalendars';
+import CalendarSelector from '../components/calendars/CalendarSelector';
+
 // Mock data for the clubs list (Keep this for now, until club data is also fetched)
 const mockClubs = [
     { id: 1, name: 'One Punch Man Club', description: 'This club is for people who love exercise and being a hero for fun!' },
@@ -86,7 +88,7 @@ const ProfilePage = () => {
 
                 <UserInfoBlock user={userForDisplay} />
                 <UserClubsList clubs={clubs} />
-                <ClubCalendars clubId={null} />
+                <CalendarSelector clubId={null} />
             </div>
         </div>
     );
