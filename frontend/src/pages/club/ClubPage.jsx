@@ -9,6 +9,9 @@ import { ClubCalendarCard } from "../../components/!card/club/ClubCalendarCard";
 import { ClubDocumentCard } from "../../components/!card/club/ClubDocumentCard";
 import { CalendarDetailCard } from "../../components/!card/shared/CalendarDetailCard";
 import { DocumentDetailCard } from "../../components/!card/shared/DocumentDetailCard";
+import { MergeRequestCard } from "../../components/!card/club/MergeRequestCard";
+import { MergeRequestCreateForm } from "../../components/!form/club/MergeRequestCreateForm";
+import { ActionButton } from "../../components/!base/ActionButton";
 
 export default function ClubPage() {
   const { id } = useParams();
@@ -19,6 +22,8 @@ export default function ClubPage() {
   const [loading, setLoading] = useState(true);
   const [selectedCalendar, setSelectedCalendar] = useState(null);
   const [selectedManager, setSelectedManager] = useState(null);
+  const [showMergeRequestForm, setShowMergeRequestForm] = useState(false);
+  const [mergeRequestKey, setMergeRequestKey] = useState(0);
 
   useEffect(() => {
     fetchClubData();
@@ -66,6 +71,17 @@ export default function ClubPage() {
     navigate("/search");
   };
 
+  const handleMergeRequestSuccess = () => {
+    // Refresh merge request card by incrementing key
+    setMergeRequestKey(prev => prev + 1);
+    setShowMergeRequestForm(false);
+  };
+
+  const handleMergeRequestChange = () => {
+    // Refresh merge request card by incrementing key
+    setMergeRequestKey(prev => prev + 1);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100">
@@ -94,13 +110,23 @@ export default function ClubPage() {
     <div className="min-h-screen bg-gray-100">
       <Navbar />
       <div className="container mx-auto p-4 md:p-8 pt-8">
-        {/* Back button */}
-        <button
-          onClick={() => navigate("/search")}
-          className="mb-4 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-        >
-          ← Back to Search
-        </button>
+        {/* Back button and actions */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <button
+            onClick={() => navigate("/search")}
+            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+          >
+            ← Back to Search
+          </button>
+
+          {canEdit && (
+            <ActionButton
+              label="Create Merge Request"
+              onClick={() => setShowMergeRequestForm(true)}
+              variant="primary"
+            />
+          )}
+        </div>
 
         {/* Club Info Card */}
         <ClubInfoCard
@@ -117,6 +143,15 @@ export default function ClubPage() {
           clubId={id}
           currentUserId={currentUser?.id}
           userRole={userRole}
+        />
+
+        {/* Merge Request Card */}
+        <MergeRequestCard
+          key={mergeRequestKey}
+          clubId={id}
+          clubName={club.name}
+          userRole={userRole}
+          onMergeRequestChange={handleMergeRequestChange}
         />
 
         {/* Show calendar detail if one is selected */}
@@ -149,6 +184,16 @@ export default function ClubPage() {
           />
         )}
       </div>
+
+      {/* Merge Request Form Modal */}
+      {showMergeRequestForm && (
+        <MergeRequestCreateForm
+          clubId={id}
+          clubName={club.name}
+          onClose={() => setShowMergeRequestForm(false)}
+          onSuccess={handleMergeRequestSuccess}
+        />
+      )}
     </div>
   );
 }

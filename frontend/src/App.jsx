@@ -35,101 +35,84 @@ function App() {
     );
   }
 
-  if (!isAuthenticated)
-  {
+  // Not authenticated - show login/signup only (no navbar)
+  if (!isAuthenticated) {
     return (
-            <Routes>
-                <Route path="/login" element={<LoginPage/>} />
-                <Route path="/signup" element={<SignUpPage/>} />
-                <Route path="*" element={<Navigate to="/login" replace />} />
-            </Routes>
-        );
+      <Routes>
+        <Route path="/login" element={<LoginPage/>} />
+        <Route path="/signup" element={<SignUpPage/>} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    );
   }
 
-  else
-  {
-    return (
-    <>
-      <Navbar
-          content={
-            // Put all URLs in the routes block, each url gets a <Route/>
-            <Routes>
-              {/* To see a page with a :id in the url, add in an id parameter. For example: http://localhost:5173/edit/1 */}
-              <Route path="/login" element={<LoginPage/>}/>
-              <Route 
-                path="/signup" 
-                element=
-                {
-                    <SignUpPage/>
-                }
-              />
-              <Route
-                path="/dashboard"
-                element=
-                {
-                  <ProtectedRoute>
-                    <DashboardPage/>
-                  </ProtectedRoute>
-                }
-              />
+  // Authenticated - show navbar with protected routes
+  return (
+    <Navbar
+      content={
+        <Routes>
+          <Route path="/login" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/signup" element={<Navigate to="/dashboard" replace />} />
 
-              <Route
-                path="/profile"
-                element=
-                {
-                  <ProtectedRoute>
-                    <ProfilePage/>
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage/>
+              </ProtectedRoute>
+            }
+          />
 
-              <Route
-                path="/user/:id"
-                element=
-                {
-                  <ProtectedRoute>
-                    <ViewUserPage/>
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage/>
+              </ProtectedRoute>
+            }
+          />
 
-              <Route
-                path="/clubs"
-                element=
-                {
-                  <ProtectedRoute>
-                    <ClubsPage/>
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="/user/:id"
+            element={
+              <ProtectedRoute>
+                <ViewUserPage/>
+              </ProtectedRoute>
+            }
+          />
 
-              <Route
-                path="/search"
-                element=
-                {
-                  <ProtectedRoute>
-                    <ClubSearchPage/>
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="/clubs"
+            element={
+              <ProtectedRoute>
+                <ClubsPage/>
+              </ProtectedRoute>
+            }
+          />
 
-              <Route
-                path="/club/:id"
-                element=
-                {
-                  <ProtectedRoute>
-                    <ClubPage/>
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="*" element={<Navigate to="/login" replace />} />
-            </Routes>
-          }
-      />
+          <Route
+            path="/search"
+            element={
+              <ProtectedRoute>
+                <ClubSearchPage/>
+              </ProtectedRoute>
+            }
+          />
 
-    </>
-  )
-  }
+          <Route
+            path="/club/:id"
+            element={
+              <ProtectedRoute>
+                <ClubPage/>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      }
+    />
+  );
 }
 
 export default App

@@ -35,7 +35,6 @@ def login_user(request):
     else:
         return JsonResponse({'error': 'Invalid credentials'}, status=401)
 
-@login_required
 @require_POST
 def logout_user(request):
     logout(request)
@@ -74,10 +73,13 @@ def create_user(request):
 
 
 @require_GET
-@login_required
 def get_user_data(request):
+    # Check if user is authenticated
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "not authenticated"}, status=401)
+
     user_id = request.GET.get("user_id")
-    
+
     # Determine which user we are looking for
     target_user = request.user
     if user_id:

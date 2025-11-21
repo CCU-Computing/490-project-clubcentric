@@ -28,15 +28,6 @@ Currently, the team is focused on having
 
 
 ---
-
-## ✨ Latest Updates
-
-- **🐳 Docker Support**: Full containerization with automatic setup
-- **🖼️ Profile Pictures**: Fixed media file serving with absolute URLs
-- **📝 FormData Fixes**: All API endpoints now properly handle file uploads
-- **🔧 Permission Fixes**: Resolved all Docker volume permission issues
-- **📚 Comprehensive Documentation**: Updated guides for Docker and manual setup
-
 ## Table of Contents
 
 1. [Tech Stack](#tech-stack)
@@ -209,7 +200,7 @@ Modify `backend/myproject/settings.py` to adjust CORS settings for production.
 
 ## Running the Application
 
-### 🐳 Docker (Recommended)
+###  Docker (Recommended)
 
 The easiest way to run ClubCentric is using Docker, which handles all dependencies and configuration automatically.
 
@@ -236,7 +227,7 @@ docker-compose up --build
 
 ---
 
-### 💻 Local Development (Manual Setup)
+###  Local Development (Manual Setup)
 
 If you prefer to run without Docker:
 
@@ -335,26 +326,36 @@ frontend/
 
 #### User Model
 - Extends Django's AbstractUser
-- Fields: username, email, first_name, last_name, bio, pfp
+- Fields: username, email, first_name, last_name, bio, profile_picture
 - Relationships: clubs (through Membership), calendars, document_managers
 
 #### Club Model
-- Fields: name, description, image
-- Relationships: members (through Membership), calendars, document_managers
+- Fields: name, description, summary, display_picture, videoEmbed, links (JSONField), tags (ArrayField), lastMeetingDate
+- Relationships: members (through Membership), calendars, document_managers, merge_requests
+- File uploads: Club pictures with size (10MB) and type validation
 
 #### Membership Model
 - Links users to clubs with roles
 - Roles: organizer, member
-- Fields: user, club, role, joined_at
+- Fields: user, club, role, date_joined
+- Unique constraint: (user, club) - prevents duplicate memberships
 
 #### Calendar Model
 - Can belong to either a user or a club
-- Fields: name, club (nullable), user (nullable)
+- Fields: name, club (nullable), user (nullable), is_club_mirror, source_club (for mirrors)
+- Special feature: Mirror calendars automatically sync with source club calendars
 - Relationships: meetings
 
 #### Meeting Model
 - Belongs to a calendar
-- Fields: calendar, date, description
+- Fields: calendar, date, description, is_mirror, source_meeting (for mirrors)
+- Mirror meetings: Automatically created/synced from club calendars
+
+#### MergeRequest Model
+- Facilitates club-to-club merging
+- Fields: club_1, club_2, accepted_1, accepted_2, merged_club (nullable), created
+- Validation: Prevents merging already-merged clubs or clubs involved in completed merges
+- Process: Both clubs must accept before merge completes
 
 #### DocumentManager Model
 - Can belong to either a user or a club
@@ -364,61 +365,101 @@ frontend/
 #### Document Model
 - Belongs to a document manager
 - Fields: title, file, uploaded_at, document_manager
+- File storage: Organized by user/club with unique identifiers
 
 ### API Endpoints
 
+All endpoints require authentication except login, logout, and registration.
+
 #### User Endpoints
-- POST /user/login/ - User login
-- POST /user/logout/ - User logout
-- POST /user/register/ - User registration
-- GET /user/get/ - Get user details
-- POST /user/update/ - Update user profile
-- POST /user/delete/ - Delete user account
+- `POST /user/login/` - User login (CSRF exempt)
+- `POST /user/logout/` - User logout
+- `POST /user/create/` - User registration (CSRF exempt)
+- `GET /user/get/` - Get user details (own or by user_id)
+- `POST /user/update/` - Update user profile (including profile picture)
+- `POST /user/update_password/` - Update user password
+- `POST /user/delete/` - Delete user account
 
 #### Club Endpoints
-- POST /clubs/create/ - Create a club
-- GET /clubs/get/ - Get club details
-- GET /clubs/list/ - List all clubs
-- POST /clubs/update/ - Update club information
-- POST /clubs/delete/ - Delete a club
+- `POST /clubs/create/` - Create a club (creator becomes organizer)
+- `GET /clubs/get/?club_id=<id>` - Get specific club details
+- `GET /clubs/get/` - List all clubs (summary view)
+- `POST /clubs/update/` - Update club information (organizers only)
+  - Supports: name, description, summary, picture, links, tags, videoEmbed, lastMeetingDate
+  - File validation: 10MB max, images only (JPEG, PNG, GIF, WebP)
+- `POST /clubs/delete/` - Delete a club (organizers only, cascades to all related data)
 
 #### Membership Endpoints
-- POST /clubs/membership/create/ - Join a club
-- GET /clubs/membership/get/ - Get membership details
-- POST /clubs/membership/update/ - Update membership role
-- POST /clubs/membership/delete/ - Leave a club
+- `POST /clubs/members/add/` - Join a club (creates mirror calendar)
+- `GET /clubs/members/get/?club_id=<id>` - Get club memberships
+- `GET /clubs/members/get/?club_id=<id>&user_id=<id>` - Get specific user's membership
+- `GET /clubs/members/get/` - Get all memberships for authenticated user
+- `POST /clubs/members/update/` - Update membership role (organizers only)
+- `POST /clubs/members/remove/` - Leave club or remove member (deletes mirror calendar)
+
+#### Merge Request Endpoints
+- `POST /clubs/merge/create/` - Create merge request between two clubs
+  - Initiating club automatically accepts
+  - Validates clubs aren't products of previous merges
+- `GET /clubs/merge/get/?club_id=<id>` - Get all merge requests for a club
+  - Returns array of requests with acceptance status
+- `POST /clubs/merge/update/` - Accept merge request
+  - When both clubs accept, creates merged club
+  - Transfers all members to new merged club
+- `POST /clubs/merge/delete/` - Delete/cancel merge request
 
 #### Calendar Endpoints
-- POST /calendar/create/ - Create a calendar
-- GET /calendar/get/ - Get calendars (user or club)
-- POST /calendar/update/ - Update calendar
-- POST /calendar/delete/ - Delete calendar
+- `POST /calendar/create/` - Create a calendar (user or club)
+- `GET /calendar/get/?club_id=<id>` - Get club calendars (members only)
+- `GET /calendar/get/` - Get user calendars
+- `POST /calendar/update/` - Update calendar name
+- `POST /calendar/delete/` - Delete calendar (and all meetings)
 
 #### Meeting Endpoints
-- POST /calendar/meetings/create/ - Create a meeting
-- GET /calendar/meetings/list/ - List meetings for a calendar
-- POST /calendar/meetings/update/ - Update meeting
-- POST /calendar/meetings/delete/ - Delete meeting
+- `POST /calendar/meetings/create/` - Create a meeting
+  - Club meetings: organizers only
+  - Prevents creation in mirror calendars
+- `GET /calendar/meetings/list/?calendar_id=<id>` - List meetings for a calendar
+- `POST /calendar/meetings/update/` - Update meeting description
+  - Prevents editing mirror meetings
+- `POST /calendar/meetings/delete/` - Delete meeting
+  - Prevents deleting mirror meetings
+  - Deleting source meeting removes all mirrors
 
 #### Document Manager Endpoints
-- POST /documents/managers/create/ - Create document manager
-- GET /documents/managers/get/ - Get document managers
-- POST /documents/managers/update/ - Update manager
-- POST /documents/managers/delete/ - Delete manager
+- `POST /documents/create/` - Create document manager (user or club)
+- `GET /documents/get/?club_id=<id>` - Get club document managers (members only)
+- `GET /documents/get/` - Get user document managers
+- `POST /documents/update/` - Update manager name (organizers for club managers)
+- `POST /documents/delete/` - Delete manager (and all documents)
 
 #### Document Endpoints
-- POST /documents/upload/ - Upload a document
-- GET /documents/get/ - Get documents
-- POST /documents/delete/ - Delete document
+- `POST /documents/upload/` - Upload a document to a manager
+  - Organizers only for club managers
+- `GET /documents/get/?doc_id=<id>` - Get single document with download URL
+- `GET /documents/get/?manager_id=<id>` - Get all documents in a manager
+- `POST /documents/delete/` - Delete document (organizers only for club documents)
 
 ### Authentication and Permissions
 
 The application uses Django's session-based authentication with CSRF protection:
 
-- Login required: Most endpoints require authentication
-- Role-based access: Organizers have additional permissions for club operations
-- CSRF tokens: Required for all POST requests
-- Membership verification: Users must be club members to access club resources
+**Authentication:**
+- Session-based: Cookies store session data after login
+- CSRF protection: Required for all POST requests (except login/registration)
+- Manual checks: Some endpoints use manual authentication checks returning 401 instead of redirects
+
+**Role-Based Permissions:**
+- **Organizers**: Full control over club, can manage members, create/edit club calendars and meetings
+- **Members**: Can view club content, join/leave clubs, access club calendars and documents
+- **Public**: Can only access login and registration pages
+
+**Permission Checks:**
+- Club operations: Must be club member or organizer
+- Membership management: Organizers can add/remove members
+- Calendar editing: Organizers for club calendars, owners for personal calendars
+- Document management: Organizers for club documents, owners for personal documents
+- Mirror calendars: Read-only, synced from source club calendars
 
 ---
 
@@ -444,18 +485,64 @@ npm test
 
 ### Current Features
 
-- User authentication and profile management
-- Club creation and management
-- Membership system with role-based permissions (organizer, member)
-- Calendar management for users and clubs
-- Meeting scheduling and management
-- Document manager system for organizing files
-- Document upload and storage
-- Club search and discovery
-- Inter-club collaboration tools
+**User Management:**
+- User authentication (login/logout/registration)
+- Profile management with bio and profile pictures
+- Password updates with session preservation
+- Account deletion
+
+**Club Management:**
+- Create and manage clubs with rich profiles
+- Club pictures, descriptions, summaries, video embeds
+- Tags and links for club information
+- Search and discover clubs
+- Track last meeting dates
+
+**Membership System:**
+- Role-based permissions (organizer, member)
+- Join and leave clubs
+- Organizers can add/remove members
+- Organizers can promote members to organizer role
+- Automatic mirror calendar creation on join
+
+**Club Collaboration:**
+- Merge request system for club partnerships
+- Multi-club merge negotiations
+- Concurrent merge requests supported
+- Validation prevents re-merging merged clubs
+- Combined membership after successful merge
+
+**Calendar System:**
+- Personal calendars for individual users
+- Club calendars for organizations
+- Mirror calendars that auto-sync with club calendars
+- Multiple calendars per user/club
+- Calendar-level permissions
+
+**Meeting Management:**
+- Schedule meetings on any calendar
+- Date/time and description tracking
+- Organizer-only editing for club meetings
+- Mirror meeting sync from club calendars
+- Prevents editing/deleting mirror meetings
+
+**Document Management:**
+- Document managers for organizing files
+- User and club document managers
+- File upload with validation
+- Secure file storage by user/club
+- Download access with permission checks
+
+**Security & Validation:**
+- Session-based authentication
+- CSRF protection on all mutations
+- File upload validation (size, type)
+- Permission checks on all operations
+- Safe file URL generation
 
 ### Planned Features
 
+- WebSocket support for real-time calendar updates
 - Event collaboration between multiple clubs
 - Analytics dashboard for event quality metrics
 - Recruitment and networking tools
@@ -464,6 +551,7 @@ npm test
 - Email notifications for events and updates
 - Mobile-responsive design improvements
 - Export functionality for calendars and documents
+- Batch operations for bulk updates
 
 ---
 

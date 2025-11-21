@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ActionButton } from "../../!base/ActionButton";
-import { delete_club, join_club } from "../../../services/clubService";
+import { delete_club, join_club, remove_membership } from "../../../services/clubService";
 import { UpdateClubForm } from "../../!form/club/ClubUpdateForm";
 import "../css/Cards.css";
 
@@ -16,6 +16,7 @@ export const ClubInfoCard = ({
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
+  const [isLeaving, setIsLeaving] = useState(false);
 
   const handleDelete = async () => {
     setError('');
@@ -51,8 +52,28 @@ export const ClubInfoCard = ({
     }
   };
 
+  const handleLeaveClub = async () => {
+    setError('');
+    setIsLeaving(true);
+
+    try {
+      const result = await remove_membership(club.id);
+      if (!result) {
+        throw new Error('Failed to leave club');
+      }
+
+      // Refresh membership data
+      if (onMembershipChange) onMembershipChange();
+    } catch (err) {
+      setError(err.message || 'Failed to leave club');
+    } finally {
+      setIsLeaving(false);
+    }
+  };
+
   const canEdit = userRole === 'organizer';
   const isNotMember = currentUserId && !userRole;
+  const isMember = userRole === 'member';
 
   if (!club) {
     return (
@@ -76,7 +97,7 @@ export const ClubInfoCard = ({
               </p>
             )}
           </div>
-          {(canEdit || isNotMember) && (
+          {(canEdit || isNotMember || isMember) && (
             <div className="card-actions">
               {canEdit && (
                 <ActionButton
@@ -91,6 +112,14 @@ export const ClubInfoCard = ({
                   onClick={handleJoinClub}
                   disabled={isJoining}
                   variant="primary"
+                />
+              )}
+              {isMember && (
+                <ActionButton
+                  label={isLeaving ? "Leaving..." : "Leave Club"}
+                  onClick={handleLeaveClub}
+                  disabled={isLeaving}
+                  variant="secondary"
                 />
               )}
             </div>
@@ -117,7 +146,7 @@ export const ClubInfoCard = ({
               </div>
             )}
 
-            {club.tags && club.tags.length > 0 && (
+            {club.tags && Array.isArray(club.tags) && club.tags.length > 0 && (
               <div className="info-row">
                 <span className="info-label">Tags:</span>
                 <span className="info-value">{club.tags.join(', ')}</span>
@@ -142,7 +171,7 @@ export const ClubInfoCard = ({
               </div>
             )}
 
-            {club.links && club.links.length > 0 && (
+            {club.links && Array.isArray(club.links) && club.links.length > 0 && (
               <div className="info-row">
                 <span className="info-label">Links:</span>
                 <div className="info-value">

@@ -173,11 +173,15 @@ def create_meeting(request):
         calendar = Calendar.objects.get(id=calendar_id)
     except Calendar.DoesNotExist:
         return JsonResponse({"error": "Calendar not found"}, status=404)
-    
+
+    # Prevent creating meetings in mirror calendars
+    if calendar.is_club_mirror:
+        return JsonResponse({"error": "Cannot create meetings in mirror calendars. Meetings are synced from club calendars."}, status=403)
+
     # Club calendar
     if calendar.club:
         if not is_member(user=request.user, club=calendar.club, role="organizer"):
-            return JsonResponse({"error" : "You are not a member of this club"}, status=403) 
+            return JsonResponse({"error" : "Only club organizers can create meetings"}, status=403) 
         meets = Meeting.objects.filter(calendar=calendar)
         for meet in meets:
             if meet.date == date:
@@ -237,25 +241,32 @@ def update_meeting(request):
         meeting = Meeting.objects.get(id=meet_id)
     except Meeting.DoesNotExist:
         return JsonResponse({"error": "Meeting not found"}, status=404)
-    
+
+    # Prevent editing mirror meetings directly
+    if meeting.is_mirror:
+        return JsonResponse({"error": "Cannot edit mirror meetings directly. Edit the original meeting in the club calendar."}, status=403)
+
     calendar = meeting.calendar
-    
+
     # Club
     if calendar.club:
         if not is_member(user=request.user, club=calendar.club, role="organizer"):
-            return JsonResponse({"error" : "You are not a leader of this club"}, status=403)
+            return JsonResponse({"error" : "Only club organizers can edit club meetings"}, status=403)
         meeting.description = desc
         meeting.save()
         return JsonResponse({"status": True})
-    
+
     # User
     if calendar.user:
         if calendar.user != request.user:
             return JsonResponse({"error": "this meeting does not belong to you"}, status=403)
+        # Don't allow editing mirror calendars
+        if calendar.is_club_mirror:
+            return JsonResponse({"error": "Cannot edit meetings in mirror calendars"}, status=403)
         meeting.description = desc
         meeting.save()
         return JsonResponse({"status": True})
-    
+
     return JsonResponse({"status" : False})
 
 @login_required
@@ -269,21 +280,28 @@ def delete_meeting(request):
         meeting = Meeting.objects.get(id=meet_id)
     except Meeting.DoesNotExist:
         return JsonResponse({"error": "Meeting not found"}, status=404)
-    
+
+    # Prevent deleting mirror meetings directly
+    if meeting.is_mirror:
+        return JsonResponse({"error": "Cannot delete mirror meetings directly. Delete the original meeting in the club calendar."}, status=403)
+
     calendar = meeting.calendar
-    
+
     # Club
     if calendar.club:
         if not is_member(user=request.user, club=calendar.club, role="organizer"):
-            return JsonResponse({"error" : "You are not a leader of this club"}, status=403)
+            return JsonResponse({"error" : "Only club organizers can delete club meetings"}, status=403)
         meeting.delete()
         return JsonResponse({"status": True})
-    
+
     # User
     if calendar.user:
         if calendar.user != request.user:
             return JsonResponse({"error": "this meeting does not belong to you"}, status=403)
+        # Don't allow deleting from mirror calendars
+        if calendar.is_club_mirror:
+            return JsonResponse({"error": "Cannot delete meetings from mirror calendars"}, status=403)
         meeting.delete()
         return JsonResponse({"status": True})
-    
+
     return JsonResponse({"status" : False})

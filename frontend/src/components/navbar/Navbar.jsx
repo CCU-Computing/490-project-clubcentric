@@ -3,7 +3,7 @@ import Menu from './Menu';
 import ShortMenu from './ShortMenu';
 import logo from '../../assets/images/Chants_Logo.png';
 import { Link, useLocation, useNavigate } from 'react-router';
-import { logout_user } from '../../services/userService';
+import { useAuth } from '../../hooks/useAuth';
 
 import { Box, AppBar, Toolbar, IconButton, Typography, Drawer, CssBaseline, List, ListItemButton, ListItemIcon, ListItemText, Collapse } from '@mui/material';
 import { Menu as MenuIcon, MenuOpen as MenuOpenIcon, ExpandLess, ExpandMore, Groups2 as Groups2Icon, Person as PersonIcon, Home as HomeIcon, CalendarMonth as EventIcon, Search as SearchIcon, Logout as LogoutIcon } from '@mui/icons-material';
@@ -24,6 +24,7 @@ export default function Navbar({ content }) {
   const location = useLocation();
   const path = location.pathname;
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   // Function to change the value of isBigMenu to the opposite (true/false)
   const changeMenu = () => {
@@ -33,8 +34,8 @@ export default function Navbar({ content }) {
   // Handle logout
   const handleLogout = async () => {
     try {
-      await logout_user();
-      navigate('/');
+      await logout();
+      navigate('/login');
     } catch (error) {
       console.error('Logout failed:', error);
     }

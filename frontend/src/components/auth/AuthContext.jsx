@@ -15,9 +15,12 @@ export function AuthProvider({ children })
                 const userData = await get_user();
                 if (userData && userData.id) {
                     setIsAuthenticated(true);
+                } else {
+                    setIsAuthenticated(false);
                 }
             } catch (error) {
-                console.log('No active session');
+                // 401 or any error means not authenticated
+                setIsAuthenticated(false);
             } finally {
                 setIsLoading(false);
             }
