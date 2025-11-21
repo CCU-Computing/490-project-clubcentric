@@ -65,22 +65,22 @@ def calendars_list(request):
         
         # List of calendars associated with the club
         allCals = [
-                {"id" : cal.id, "name" : cal.name} 
+                {"id" : cal.id, "calendar_name" : cal.name}
                 for cal in club.calendars.all()
                 ]
         return JsonResponse(allCals, safe=False)
-    
+
     # Return user calendars
-    else:  
+    else:
         # Get the club from ID
         try:
             user = User.objects.get(id=request.user.id)
         except User.DoesNotExist:
             return JsonResponse({"error": "User not found"}, status=404)
-        
+
         # List of calendars associated with the User
         allCals = [
-                {"id" : cal.id, "name" : cal.name} 
+                {"id" : cal.id, "calendar_name" : cal.name}
                 for cal in user.calendars.all()
                 ]
         return JsonResponse(allCals, safe=False)

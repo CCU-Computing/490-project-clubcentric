@@ -55,13 +55,9 @@ def view_clubs(request):
         "id" : club.id,
         "name" : club.name,
         "description" : club.description,
-        "summary" : club.summary,
-        "videoEmbed" : club.videoEmbed,
         "links" : club.links if club.links else None,
-        "picture": request.build_absolute_url(club.display_picture.file.url) if club.display_picture else None,
-        "tags" : club.tags,
-        "lastMeetingDate" : club.lastMeetingDate
-    }
+        "picture": request.build_absolute_url(club.display_picture.file.url) if club.display_picture else None
+        }
     return JsonResponse(data)
 
 @login_required
@@ -72,10 +68,6 @@ def update_club(request):
     club_description = request.POST.get("club_description")
     club_picture = request.FILES.get("club_picture")
     club_links = request.POST.get("club_links")
-    club_summary = request.POST.get("club_summary")
-    club_videoEmbed = request.POST.get("club_videoEmbed")
-    club_tags = request.POST.get("club_tags")
-    club_lastMeetingDate = request.POST.get("club_lastMeetingDate")
 
     if not club_id:
         return JsonResponse({"error": "Missing required field: club_id"}, status=400)
@@ -105,44 +97,6 @@ def update_club(request):
     if club_links:
         club.links = club_links
         updated.append(("club_links", club.links))
-    
-    if club_summary:
-        club.summary = club_summary
-        updated.append(("club_summary", club.summary))
-
-    
-    if club_videoEmbed:
-        club.videoEmbed = club_videoEmbed
-        updated.append(("club_videoEmbed", club.videoEmbed))
-
-    if club_tags:
-        try:
-            # 1. Deserialize the JSON string into a Python list
-            tag_list = json.loads(club_tags) 
-            
-            # 2. Check type and assign
-            if isinstance(tag_list, list):
-                club.tags = tag_list
-                updated.append(('club_tags', club.tags))
-            else:
-                return JsonResponse({"error": "club_tags must be a JSON array (list)"}, status=400)
-                
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON format for club_tags"}, status=400)
-    if club_lastMeetingDate:
-        try:
-            # We assume the date is sent in the standard YYYY-MM-DD format (like "2025-11-19")
-            # Convert the string to a date object using strptime and then extract the date part
-            meeting_date = datetime.strptime(club_lastMeetingDate, '%Y-%m-%d').date()
-            club.lastMeetingDate = meeting_date
-            updated.append(('club_lastMeetingDate', club.lastMeetingDate.isoformat()))
-        except ValueError:
-            return JsonResponse({"error": "Invalid date format for club_lastMeetingDate. Use YYYY-MM-DD."}, status=400)
-    
-    # Handle deletion/clearing of the optional date field
-    elif club_lastMeetingDate == '':
-        club.lastMeetingDate = None
-        updated.append(('club_lastMeetingDate', None))
 
     club.save()
     return JsonResponse(updated, safe=False)
@@ -252,19 +206,19 @@ def get_club_membership(request):
             except Membership.DoesNotExist:
                 return JsonResponse({"error": "user not a member of the club"}, status=404)
             if member:
-                return JsonResponse({"status": True})
+                return JsonResponse({"role": member.role})
 
         # All club memberships
         else:
             membership = Membership.objects.filter(club=club)
-            members = {
-                m.user.id: m.role for m in membership
-            }
-            
+            members = [
+                {"user_id": m.user.id, "role": m.role} for m in membership
+            ]
+
             if not members:
-                return JsonResponse({"message": "No members in this club"})
+                return JsonResponse([], safe=False)
             else:
-                return JsonResponse(members)
+                return JsonResponse(members, safe=False)
 
 @login_required
 @require_POST

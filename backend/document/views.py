@@ -213,7 +213,7 @@ def get_documents(request):
 @login_required
 @require_POST
 def delete_document(request):
-    doc_id = request.GET.get("doc_id")
+    doc_id = request.POST.get("doc_id")
     
     if not doc_id:
         return JsonResponse({"error": "missing required fields"}, status=400)
