@@ -9,9 +9,10 @@ import ClubsPage from "./pages/ClubsPage";
 import LoginPage from "./pages/auth/LoginPage";
 import SignUpPage from './pages/auth/SignUpPage';
 import ProfilePage from "./pages/ProfilePage";
-import ViewUserPage from "./pages/ViewUserPage";
-import ClubSearchPage from './pages/ClubSearchPage';
-import Navbar from './components/navbar/Navbar'; // Navigation Bar
+import AnalyticsPage from "./pages/AnalyticsPage";
+import NetworkingPage from "./pages/NetworkingPage";
+import Navbar from './components/navbar/Navbar' // Navigation Bar
+import ClubSearch from './pages/ClubSearch'
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
 
@@ -72,14 +73,39 @@ function App() {
             }
           />
 
-          <Route
-            path="/user/:id"
-            element={
-              <ProtectedRoute>
-                <ViewUserPage/>
-              </ProtectedRoute>
-            }
-          />
+              <Route 
+                path="/club/:id" 
+                element=
+                {
+                  <ProtectedRoute>
+                    <ClubPage/>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route 
+                path="/analytics" 
+                element=
+                {
+                  <ProtectedRoute>
+                    <AnalyticsPage/>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route 
+                path="/network" 
+                element=
+                {
+                  <ProtectedRoute>
+                    <NetworkingPage/>
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="*" element={<Navigate to="/login" replace />} />
+            </Routes>
+          }
+      />
 
           <Route
             path="/clubs"
