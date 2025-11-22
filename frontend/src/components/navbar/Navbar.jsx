@@ -14,9 +14,8 @@ const shortDrawerWidth = 80;
 const menuItems = [
   { label: 'Dashboard', to: '/dashboard', icon: <HomeIcon /> },
   { label: 'Clubs', to: '/clubs', icon: <Groups2Icon /> },
-  { label: 'Club Search', to: '/search', icon: <SearchIcon /> },
-  { label: 'Events', to: '/events', icon: <EventIcon /> },
-  { label: 'Analytics', to: '/analytics', icon: <AnalyticsIcon /> },
+  { label: 'Profile', to: '/profile', icon: <PersonIcon /> },
+  { label: 'Search Clubs', to: '/search', icon: <SearchIcon /> },
   { label: 'Network', to: '/network', icon: <ConnectWithoutContactIcon /> }
 ];
 
