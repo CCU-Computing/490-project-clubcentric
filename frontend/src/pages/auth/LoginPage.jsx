@@ -16,7 +16,7 @@ export default function LoginPage() {
     const ok = await login(username, password);
 
     if (ok) {
-      navigate("/home");
+      navigate("/dashboard");
     } else {
       setError("Invalid username or password");
     }

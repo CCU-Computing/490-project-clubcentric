@@ -82,9 +82,9 @@ export async function get_user(user_id)
     }
 }
 
-export async function update_user(username, first_name, last_name, email, bio, profile_picture) 
+export async function update_user(username, first_name, last_name, email, bio, profile_picture)
 {
-    try 
+    try
     {
         const formData = new FormData();
         let fieldsPresent = false;
@@ -101,26 +101,26 @@ export async function update_user(username, first_name, last_name, email, bio, p
         appendIfPresent("last_name", last_name);
         appendIfPresent("email", email);
         appendIfPresent("bio", bio);
-        appendIfPresent("profile_picture", profile_picture); // Should be a File object or null/undefined
+        appendIfPresent("profile_picture", profile_picture);
 
         // check that at least one valid field was provided
-        if (!fieldsPresent) 
+        if (!fieldsPresent)
         {
             console.error("No fields provided for update.");
             return null;
         }
-        else 
+        else
         {
-            // Send the single FormData object as the body.
+            // Send the FormData object as the body
             const response = await api.post(
-                `/user/update/`, 
-                formData, // <-- Send the combined FormData object
+                `/user/update/`,
+                formData,
                 {
-					headers:
-					{
-						"X-CSRFToken": getCookie("csrftoken")
-					}
-				}
+                    headers:
+                    {
+                        "X-CSRFToken": getCookie("csrftoken")
+                    }
+                }
             );
             return response.data;
         }
@@ -128,7 +128,7 @@ export async function update_user(username, first_name, last_name, email, bio, p
     catch (error)
     {
         console.error("Update failed:", error);
-        
+
         if (error.response) {
             console.error("API Error Response Data:", error.response.data);
         }
@@ -136,12 +136,13 @@ export async function update_user(username, first_name, last_name, email, bio, p
     }
 }
 
-export async function delete_user() 
+export async function delete_user()
 {
-    try 
+    try
     {
         const response = await api.post(
             `/user/delete/`,
+            {},
             {
                 headers:
                 {
@@ -188,12 +189,13 @@ export async function login_user(username, password)
     }
 }
 
-export async function logout_user() 
+export async function logout_user()
 {
-    try 
+    try
     {
         const response = await api.post(
             `/user/logout/`,
+            {},
             {
                 headers:
                 {
@@ -210,36 +212,37 @@ export async function logout_user()
     }
 }
 
-export async function change_password(password) 
+export async function change_password(password)
 {
-    try 
+    try
     {
         // Return if invalid inputs
-        if (password == null) 
+        if (password == null)
         {
             console.error("Missing fields.");
             return null;
         }
-        else 
+        else
         {
+            const formData = new FormData();
+            formData.append("password", password);
+
             const response = await api.post(
-                `/user/login/`, 
+                `/user/password/`,
+                formData,
                 {
-                    password: password
-                },
-                {
-					headers:
-					{
-						"X-CSRFToken": getCookie("csrftoken")
-					}
-				}
+                    headers:
+                    {
+                        "X-CSRFToken": getCookie("csrftoken")
+                    }
+                }
             );
             return response.data;
         }
     }
     catch (error)
     {
-        console.error("Login failed:", error);
+        console.error("Password change failed:", error);
         return null;
     }
 }

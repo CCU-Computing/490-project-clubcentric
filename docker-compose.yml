@@ -1,25 +1,63 @@
 services:
+  db:
+    image: postgres:16-alpine
+    container_name: clubcentric_db
+    environment:
+      POSTGRES_DB: clubcentric_db
+      POSTGRES_USER: clubuser
+      POSTGRES_PASSWORD: clubpass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clubuser -d clubcentric_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - clubcentric_network
+
   backend:
     build:
       context: .
       dockerfile: backend.dockerfile
+    container_name: clubcentric_backend
+    environment:
+      - DB_NAME=clubcentric_db
+      - DB_USER=clubuser
+      - DB_PASSWORD=clubpass
+      - DB_HOST=db
+      - DB_PORT=5432
     ports:
       - "8000:8000"
     volumes:
       - ./backend:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - clubcentric_network
 
   frontend:
     build:
       context: .
       dockerfile: frontend.dockerfile
+    container_name: clubcentric_frontend
+    environment:
+      - VITE_API_URL=http://localhost:8000
     ports:
       - "5173:5173"
     volumes:
       - ./frontend:/app
-      - vite_cache:/app/node_modules/.vite
-    stdin_open: true
-    tty: true
-    user: "1000:1000"
-  
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - clubcentric_network
 
-# docker-compose up --build
+volumes:
+  postgres_data:
+
+networks:
+  clubcentric_network:

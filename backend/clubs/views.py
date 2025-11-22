@@ -33,7 +33,8 @@ def create_club(request):
     club = Club.objects.create(name=club_name, description=club_description)
     Membership.objects.create(user=request.user, club=club, role="organizer")
     return JsonResponse({"status": True, "id" : club.id})
-  
+
+@login_required
 def view_clubs(request):
     club_id = request.GET.get("club_id")
     # If no id provided, return all clubs
@@ -51,17 +52,25 @@ def view_clubs(request):
     except Club.DoesNotExist:
         return JsonResponse({"error" : "Club not found"}, status=404)
     
+    # Build picture URL safely
+    picture_url = None
+    if club.display_picture:
+        try:
+            picture_url = request.build_absolute_uri(club.display_picture.url)
+        except:
+            picture_url = None
+
     data = {
         "id" : club.id,
         "name" : club.name,
         "description" : club.description,
-        "summary" : club.summary,
-        "videoEmbed" : club.videoEmbed,
-        "links" : club.links if club.links else None,
-        "picture": request.build_absolute_url(club.display_picture.file.url) if club.display_picture else None,
-        "tags" : club.tags,
-        "lastMeetingDate" : club.lastMeetingDate
-    }
+        "summary" : club.summary or "",
+        "videoEmbed" : club.videoEmbed or "",
+        "tags" : club.tags if club.tags else [],
+        "links" : club.links if club.links else [],
+        "lastMeetingDate" : club.lastMeetingDate.isoformat() if club.lastMeetingDate else None,
+        "picture": picture_url
+        }
     return JsonResponse(data)
 
 @login_required
@@ -70,10 +79,10 @@ def update_club(request):
     club_id = request.POST.get("club_id")
     club_name = request.POST.get("club_name")
     club_description = request.POST.get("club_description")
-    club_picture = request.FILES.get("club_picture")
-    club_links = request.POST.get("club_links")
     club_summary = request.POST.get("club_summary")
     club_videoEmbed = request.POST.get("club_videoEmbed")
+    club_picture = request.FILES.get("club_picture")
+    club_links = request.POST.get("club_links")
     club_tags = request.POST.get("club_tags")
     club_lastMeetingDate = request.POST.get("club_lastMeetingDate")
 
@@ -84,68 +93,61 @@ def update_club(request):
         club = Club.objects.get(id=club_id)
     except Club.DoesNotExist:
         return JsonResponse({"error": "club not found"}, status=404)
-    
+
     if not is_member(user=request.user, club=club, role="organizer"):
         return JsonResponse({"error": "must be an organizer of this club to update data"}, status=409)
-    
-    updated = []
-    
-    if club_name:
-        club.name = club_name
-        updated.append(('club_name', club.name))
 
-    if club_description:
-        club.description = club_description
-        updated.append(('club_description', club.description))
+    try:
+        if club_name:
+            club.name = club_name
 
-    if club_picture:
-        club.display_picture = club_picture
-        updated.append(('club_picture', club.display_picture.url))
+        if club_description:
+            club.description = club_description
 
-    if club_links:
-        club.links = club_links
-        updated.append(("club_links", club.links))
-    
-    if club_summary:
-        club.summary = club_summary
-        updated.append(("club_summary", club.summary))
+        if club_summary:
+            club.summary = club_summary
 
-    
-    if club_videoEmbed:
-        club.videoEmbed = club_videoEmbed
-        updated.append(("club_videoEmbed", club.videoEmbed))
+        if club_videoEmbed:
+            club.videoEmbed = club_videoEmbed
 
-    if club_tags:
-        try:
-            # 1. Deserialize the JSON string into a Python list
-            tag_list = json.loads(club_tags) 
-            
-            # 2. Check type and assign
-            if isinstance(tag_list, list):
-                club.tags = tag_list
-                updated.append(('club_tags', club.tags))
+        if club_picture:
+            # Validate file before saving
+            if club_picture.size > 10 * 1024 * 1024:  # 10MB limit
+                return JsonResponse({"error": "File size too large. Maximum 10MB allowed."}, status=400)
+
+            # Check file type
+            allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
+            if club_picture.content_type not in allowed_types:
+                return JsonResponse({"error": "Invalid file type. Only JPEG, PNG, GIF, and WebP images are allowed."}, status=400)
+
+            try:
+                club.display_picture = club_picture
+            except Exception as pic_error:
+                return JsonResponse({"error": f"Failed to save picture: {str(pic_error)}"}, status=400)
+
+        if club_links:
+            # Parse JSON string to Python object for JSONField
+            club.links = json.loads(club_links)
+
+        if club_tags:
+            # Parse JSON string to Python list for ArrayField
+            club.tags = json.loads(club_tags)
+
+        if club_lastMeetingDate:
+            # Parse date string to date object
+            parsed_date = parse_datetime(club_lastMeetingDate)
+            if parsed_date:
+                club.lastMeetingDate = parsed_date.date()
             else:
-                return JsonResponse({"error": "club_tags must be a JSON array (list)"}, status=400)
-                
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON format for club_tags"}, status=400)
-    if club_lastMeetingDate:
-        try:
-            # We assume the date is sent in the standard YYYY-MM-DD format (like "2025-11-19")
-            # Convert the string to a date object using strptime and then extract the date part
-            meeting_date = datetime.strptime(club_lastMeetingDate, '%Y-%m-%d').date()
-            club.lastMeetingDate = meeting_date
-            updated.append(('club_lastMeetingDate', club.lastMeetingDate.isoformat()))
-        except ValueError:
-            return JsonResponse({"error": "Invalid date format for club_lastMeetingDate. Use YYYY-MM-DD."}, status=400)
-    
-    # Handle deletion/clearing of the optional date field
-    elif club_lastMeetingDate == '':
-        club.lastMeetingDate = None
-        updated.append(('club_lastMeetingDate', None))
+                club.lastMeetingDate = None
 
-    club.save()
-    return JsonResponse(updated, safe=False)
+        club.save()
+        return JsonResponse({"status": True})
+
+    except json.JSONDecodeError as json_error:
+        return JsonResponse({"error": f"Invalid JSON format for links or tags: {str(json_error)}"}, status=400)
+    except Exception as e:
+        return JsonResponse({"error": f"Failed to update club: {str(e)}"}, status=400)
 
 @require_POST
 @login_required
@@ -172,16 +174,16 @@ def delete_club(request):
     calendars = Calendar.objects.filter(club=club)
     for cal in calendars:
         # Meetings
-        meetings = Calendar.objects.filter(club=club)
+        meetings = Meeting.objects.filter(calendar=cal)
         for meet in meetings:
             meet.delete()
         cal.delete()
-    
+
     # Document Managers
     document_managers = DocumentManager.objects.filter(club=club)
     for manager in document_managers:
         # Documents
-        documents = Document.objects.filter(club=club)
+        documents = Document.objects.filter(manager=manager)
         for doc in documents:
             doc.delete()
         manager.delete()
@@ -201,17 +203,43 @@ def join_club(request):
         club = Club.objects.get(id=club_id)
     except Club.DoesNotExist:
         return JsonResponse({"error": "club not found"}, status=404)
-    
+
     if is_member(user=request.user, club=club):
         return JsonResponse({'error': "already a member of this club"}, status=409)
-    
 
+
+    # Create membership
     Membership.objects.create(
         user = request.user,
         club=club,
         role='member'
     )
-    
+
+    # Create mirror calendar for user
+    mirror_calendar = Calendar.objects.create(
+        name=club.name,
+        user=request.user,
+        is_club_mirror=True,
+        source_club=club
+    )
+
+    # Copy all existing club meetings to user's mirror calendar
+    club_calendars = Calendar.objects.filter(club=club)
+    for club_calendar in club_calendars:
+        meetings = Meeting.objects.filter(calendar=club_calendar)
+        for meeting in meetings:
+            # Prepend original calendar name to description
+            original_description = meeting.description or ""
+            mirror_description = f"[{club_calendar.name}] {original_description}"
+
+            Meeting.objects.create(
+                calendar=mirror_calendar,
+                date=meeting.date,
+                description=mirror_description,
+                is_mirror=True,
+                source_meeting=meeting
+            )
+
     return JsonResponse({"status": True})
   
 @login_required
@@ -252,19 +280,19 @@ def get_club_membership(request):
             except Membership.DoesNotExist:
                 return JsonResponse({"error": "user not a member of the club"}, status=404)
             if member:
-                return JsonResponse({"status": True})
+                return JsonResponse({"role": member.role})
 
         # All club memberships
         else:
             membership = Membership.objects.filter(club=club)
-            members = {
-                m.user.id: m.role for m in membership
-            }
-            
+            members = [
+                {"user_id": m.user.id, "role": m.role} for m in membership
+            ]
+
             if not members:
-                return JsonResponse({"message": "No members in this club"})
+                return JsonResponse([], safe=False)
             else:
-                return JsonResponse(members)
+                return JsonResponse(members, safe=False)
 
 @login_required
 @require_POST
@@ -335,6 +363,14 @@ def delete_membership(request):
             if is_member(user=user, club=club, role='member'):
                 member = Membership.objects.get(user=user, club=club, role='member')
                 member.delete()
+
+                # Delete user's mirror calendar for this club
+                Calendar.objects.filter(
+                    user=user,
+                    is_club_mirror=True,
+                    source_club=club
+                ).delete()
+
                 return JsonResponse({"status": True})
 
             elif is_member(user=user, club=club, role='organizer'):
@@ -351,8 +387,16 @@ def delete_membership(request):
         if is_member(user=request.user, club=club):
             member = Membership.objects.get(user=request.user, club=club)
             member.delete()
+
+            # Delete user's mirror calendar for this club
+            Calendar.objects.filter(
+                user=request.user,
+                is_club_mirror=True,
+                source_club=club
+            ).delete()
+
             return JsonResponse({"status": True})
-        
+
         else:
             return JsonResponse({"error": "you are not a member of this club"}, status=404)
 
@@ -373,15 +417,29 @@ def create_merge_request(request):
         return JsonResponse({"error": "club(s) not found"}, status=404)
 
     if is_member(user=request.user, club=club_1, role='organizer'):
-        # If either club is a product of a previous merge
-        if MergeRequest.objects.filter(merged_club=club_1).exists() or MergeRequest.objects.filter(merged_club=club_2).exists():
-            return JsonResponse({"error": "one or both of the clubs are products of previous merges"}, status=409)
-    
-        # Check for existing request
+        # Prevent merging clubs that are themselves products of previous merges
+        if MergeRequest.objects.filter(merged_club=club_1).exists():
+            return JsonResponse({"error": "club_1 is a product of a previous merge and cannot be merged again"}, status=409)
+        if MergeRequest.objects.filter(merged_club=club_2).exists():
+            return JsonResponse({"error": "club_2 is a product of a previous merge and cannot be merged again"}, status=409)
+
+        # Prevent clubs that have already completed a merge from merging again
+        if MergeRequest.objects.filter(
+            models.Q(club_1=club_1) | models.Q(club_2=club_1),
+            merged_club__isnull=False
+        ).exists():
+            return JsonResponse({"error": "club_1 has already completed a merge and cannot merge again"}, status=409)
+        if MergeRequest.objects.filter(
+            models.Q(club_1=club_2) | models.Q(club_2=club_2),
+            merged_club__isnull=False
+        ).exists():
+            return JsonResponse({"error": "club_2 has already completed a merge and cannot merge again"}, status=409)
+
+        # Check for duplicate request between same two clubs
         if MergeRequest.objects.filter(club_1=club_1, club_2=club_2).exists() or MergeRequest.objects.filter(club_1=club_2, club_2=club_1).exists():
-            return JsonResponse({"error": "request already exists"}, status=409)
-        
-        request = MergeRequest.objects.create(club_1=club_1, club_2=club_2, accepted_1=True, merged_club=None)
+            return JsonResponse({"error": "merge request between these clubs already exists"}, status=409)
+
+        merge_request = MergeRequest.objects.create(club_1=club_1, club_2=club_2, accepted_1=True, merged_club=None)
         return JsonResponse({"status": True})
     else:
         return JsonResponse({"error": "you are not an organizer of this club"}, status=403)
@@ -392,36 +450,52 @@ def view_merge_request(request):
 
     if not club_id:
         return JsonResponse({"error": "missing required fields"}, status=400)
-    
+
     try:
         club = Club.objects.get(id=club_id)
     except Club.DoesNotExist:
         return JsonResponse({"error": "club not found"}, status=404)
-    
-    # Find in club 1 position
-    merge_req = MergeRequest.objects.filter(club_1=club)
-    if not merge_req.exists():
-        # Find in club 2 position
-        merge_req = MergeRequest.objects.filter(club_2=club)
-        if not merge_req.exists():
-            return JsonResponse({"error": "merge request for this club does not exist"}, status=404)
 
-        # Request exists
-        if merge_req.accepted_2:
-            if merge_req.accepted_1:
-                return JsonResponse({"ready to merge": True})
-            else:
-                return JsonResponse({"waiting for other club to accept": True})
+    # Find ALL merge requests for this club
+    merge_requests = MergeRequest.objects.filter(
+        models.Q(club_1=club) | models.Q(club_2=club)
+    )
+
+    if not merge_requests.exists():
+        return JsonResponse([], safe=False)
+
+    # Build response list with detailed information for each request
+    response_list = []
+    for merge_req in merge_requests:
+        # Determine which club is "ours" and which is "theirs"
+        if merge_req.club_1 == club:
+            our_club = merge_req.club_1
+            other_club = merge_req.club_2
+            we_accepted = merge_req.accepted_1
+            they_accepted = merge_req.accepted_2
         else:
-            return JsonResponse({"waiting for your club to accept": True})
-    
-    if merge_req.accepted_1:
-        if merge_req.accepted_2:
-            return JsonResponse({"ready to merge": True})
-        else:
-            return JsonResponse({"waiting for other club to accept": True})
-    else:
-        return JsonResponse({"waiting for your club to accept": True})
+            our_club = merge_req.club_2
+            other_club = merge_req.club_1
+            we_accepted = merge_req.accepted_2
+            they_accepted = merge_req.accepted_1
+
+        # Build response for this merge request
+        merge_data = {
+            "merge_request_id": merge_req.id,
+            "our_club_id": our_club.id,
+            "our_club_name": our_club.name,
+            "other_club_id": other_club.id,
+            "other_club_name": other_club.name,
+            "we_accepted": we_accepted,
+            "they_accepted": they_accepted,
+            "waiting for your club to accept": not we_accepted,
+            "waiting for other club to accept": we_accepted and not they_accepted,
+            "ready to merge": we_accepted and they_accepted and not merge_req.merged_club,
+            "merged_id": merge_req.merged_club.id if merge_req.merged_club else None
+        }
+        response_list.append(merge_data)
+
+    return JsonResponse(response_list, safe=False)
 
 @login_required
 @require_POST
@@ -447,19 +521,16 @@ def update_merge_request(request):
         return JsonResponse({"error": "merge request for this club does not exist"}, status=404)
 
     ready = merge_req.accept(club)
-    
+
     if ready:
         if not merge_req.created:
-            merge_req.perform_merge()
-            return JsonResponse({"status": True, "merged_id": merge_req.new_club.id})
+            merged_club = merge_req.perform_merge()
+            return JsonResponse({"status": True, "merged_id": merged_club.id})
         else:
-            return JsonResponse({"status" : True, "merged_id": merge_req.new_club.id})
+            return JsonResponse({"status": True, "merged_id": merge_req.merged_club.id})
     else:
-        if not request.accepted_1:
-            return JsonResponse({"status": True, "awaiting": merge_req.club_2.id})
-    
-        if not request.accepted_2:
-            return JsonResponse({"status": True, "awaiting" : merge_req.club_1.id})
+        # Merge not ready yet, one club still needs to accept
+        return JsonResponse({"status": True})
 
 @login_required
 @require_POST

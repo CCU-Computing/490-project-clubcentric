@@ -6,18 +6,18 @@ from django.core.exceptions import ValidationError
 class DocumentManager(models.Model):
     name = models.CharField(max_length=50)
     club = models.ForeignKey(
-        Club, 
-        null=True,
-        blank=True,
-        on_delete=models.CASCADE, 
-        related_name="documents")
-
-    user = models.ForeignKey(
-        User, 
+        Club,
         null=True,
         blank=True,
         on_delete=models.CASCADE,
-        related_name="documents"
+        related_name="document_managers")
+
+    user = models.ForeignKey(
+        User,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="document_managers"
     )
 
     def clean(self):

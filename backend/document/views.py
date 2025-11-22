@@ -182,10 +182,18 @@ def get_documents(request):
             if manager.user != request.user:
                 return JsonResponse({"error" : "you are not the owner of this document"}, status=403)
 
+        # Safely build file URL
+        file_url = None
+        if document.file:
+            try:
+                file_url = request.build_absolute_uri(document.file.url)
+            except:
+                file_url = None
+
         return JsonResponse({
             "id": document.id,
             "title": document.title,
-            "file": request.build_absolute_uri(document.file.url)
+            "file": file_url
         })
 
     if manager_id:
@@ -201,19 +209,28 @@ def get_documents(request):
         if manager.user:
             if manager.user != request.user:
                 return JsonResponse({"error" : "you are not the owner of this document"}, status=403)
-        
+
         documents = []
         for doc in manager.documents.all():
+            # Safely build file URL
+            file_url = None
+            if doc.file:
+                try:
+                    file_url = request.build_absolute_uri(doc.file.url)
+                except:
+                    file_url = None
+
             documents.append({
-                "id": doc.id, 
-                "title": doc.title, 
-                "file" : request.build_absolute_uri(doc.file.url)})
+                "id": doc.id,
+                "title": doc.title,
+                "file": file_url
+            })
         return JsonResponse(documents, safe=False)
 
 @login_required
 @require_POST
 def delete_document(request):
-    doc_id = request.GET.get("doc_id")
+    doc_id = request.POST.get("doc_id")
     
     if not doc_id:
         return JsonResponse({"error": "missing required fields"}, status=400)

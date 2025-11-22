@@ -1,15 +1,14 @@
-FROM node:22.19
+FROM node:22-slim
 
-# Working dir
 WORKDIR /app
 
-# Dependencies
-COPY frontend/package.json frontend/package-lock.json ./
-RUN npm install
+# Copy package files
+COPY frontend/package*.json ./
 
-# React code
-COPY frontend/ .
+# Copy entrypoint script
+COPY docker-entrypoint-frontend.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 5173
 
-CMD ["npm", "run", "dev"]
+ENTRYPOINT ["/docker-entrypoint.sh"]

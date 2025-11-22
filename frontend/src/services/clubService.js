@@ -156,9 +156,9 @@ export async function update_club(club_id, name, description, picture, links, su
     }
 }
 
-export async function delete_club(club_id) 
+export async function delete_club(club_id)
 {
-	try 
+	try
 	{
 		if (club_id == null)
 		{
@@ -167,11 +167,12 @@ export async function delete_club(club_id)
 		}
 		else
 		{
+			const formData = new FormData();
+			formData.append("club_id", club_id);
+
 			const response = await api.post(
 				`/clubs/delete/`,
-				{
-					club_id : club_id
-				},
+				formData,
 				{
 					headers:
 					{
@@ -189,20 +190,22 @@ export async function delete_club(club_id)
 	}
 }
 
-export async function join_club(club_id) 
+export async function join_club(club_id)
 {
-	try 
+	try
 	{
-		if (club_id == null) 
+		if (club_id == null)
 		{
 			console.error("Missing fields.");
 			return null;
 		}
+
+		const formData = new FormData();
+		formData.append("club_id", club_id);
+
 		const response = await api.post(
 			`/clubs/members/add/`,
-			{
-				club_id : club_id,
-			},
+			formData,
 			{
 				headers:
 				{
@@ -247,9 +250,9 @@ export async function get_membership(club_id, user_id)
 	}
 }
 
-export async function update_membership(user_id, club_id, role) 
+export async function update_membership(user_id, club_id, role)
 {
-	try 
+	try
 	{
 		if (club_id == null || user_id == null || role == null)
 		{
@@ -258,13 +261,14 @@ export async function update_membership(user_id, club_id, role)
 		}
 		else
 		{
+			const formData = new FormData();
+			formData.append("user_id", user_id);
+			formData.append("club_id", club_id);
+			formData.append("new_role", role);
+
 			const response = await api.post(
 				`/clubs/members/update/`,
-				{
-					user_id : user_id,
-					club_id : club_id,
-					new_role : role
-				},
+				formData,
 				{
 					headers:
 					{
@@ -282,9 +286,9 @@ export async function update_membership(user_id, club_id, role)
 	}
 }
 
-export async function remove_membership(club_id, user_id) 
+export async function remove_membership(club_id, user_id)
 {
-	try 
+	try
 	{
 		if (club_id == null)
 		{
@@ -293,12 +297,15 @@ export async function remove_membership(club_id, user_id)
 		}
 		else
 		{
+			const formData = new FormData();
+			formData.append("club_id", club_id);
+			if (user_id) {
+				formData.append("user_id", user_id);
+			}
+
 			const response = await api.post(
 				`/clubs/members/remove/`,
-				{
-					club_id : club_id,
-					user_id : user_id
-				},
+				formData,
 				{
 					headers:
 					{
@@ -316,21 +323,23 @@ export async function remove_membership(club_id, user_id)
 	}
 }
 
-export async function create_merge(club_id_1, club_id_2) 
+export async function create_merge(club_id_1, club_id_2)
 {
-	try 
+	try
 	{
-		if (club_id_1 == null || club_id_2 == null) 
+		if (club_id_1 == null || club_id_2 == null)
 		{
 			console.error("Missing fields.");
 			return null;
 		}
+
+		const formData = new FormData();
+		formData.append("club_id_1", club_id_1);
+		formData.append("club_id_2", club_id_2);
+
 		const response = await api.post(
 			`/clubs/merge/create/`,
-			{
-				club_id_1 : club_id_1,
-				club_id_2 : club_id_2
-			},
+			formData,
 			{
 				headers:
 				{
@@ -373,9 +382,9 @@ export async function get_merge(club_id)
 	}
 }
 
-export async function update_merge(club_id) 
+export async function update_merge(club_id)
 {
-	try 
+	try
 	{
 		if (club_id == null)
 		{
@@ -384,11 +393,12 @@ export async function update_merge(club_id)
 		}
 		else
 		{
+			const formData = new FormData();
+			formData.append("club_id", club_id);
+
 			const response = await api.post(
 				`/clubs/merge/update/`,
-				{
-					club_id : club_id
-				},
+				formData,
 				{
 					headers:
 					{
@@ -406,9 +416,9 @@ export async function update_merge(club_id)
 	}
 }
 
-export async function delete_merge(club_id) 
+export async function delete_merge(club_id)
 {
-	try 
+	try
 	{
 		if (club_id == null)
 		{
@@ -417,11 +427,12 @@ export async function delete_merge(club_id)
 		}
 		else
 		{
+			const formData = new FormData();
+			formData.append("club_id", club_id);
+
 			const response = await api.post(
 				`/clubs/merge/delete/`,
-				{
-					club_id : club_id
-				},
+				formData,
 				{
 					headers:
 					{

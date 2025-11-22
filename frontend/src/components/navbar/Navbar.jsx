@@ -2,7 +2,8 @@ import { React, useState } from 'react';
 import Menu from './Menu';
 import ShortMenu from './ShortMenu';
 import logo from '../../assets/images/Chants_Logo.png';
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
+import { useAuth } from '../../hooks/useAuth';
 
 import { Box, AppBar, Toolbar, IconButton, Typography, Drawer, CssBaseline, List, ListItemButton, ListItemIcon, ListItemText, Collapse } from '@mui/material';
 import { Menu as MenuIcon, MenuOpen as MenuOpenIcon, ExpandLess, ExpandMore, Groups2 as Groups2Icon, Person as PersonIcon, Home as HomeIcon, CalendarMonth as EventIcon, Search as SearchIcon, Analytics as AnalyticsIcon, ConnectWithoutContact as ConnectWithoutContactIcon } from '@mui/icons-material';
@@ -11,8 +12,7 @@ const drawerWidth = 240;
 const shortDrawerWidth = 80;
 
 const menuItems = [
-  { label: 'Home', to: '/home', icon: <HomeIcon /> },
-  { label: 'Profile', to: '/profile', icon: <PersonIcon /> },
+  { label: 'Dashboard', to: '/dashboard', icon: <HomeIcon /> },
   { label: 'Clubs', to: '/clubs', icon: <Groups2Icon /> },
   { label: 'Club Search', to: '/club_search', icon: <SearchIcon /> },
   { label: 'Events', to: '/events', icon: <EventIcon /> },
@@ -25,10 +25,22 @@ export default function Navbar({ content }) {
   const [isBigMenu, setIsBigMenu] = useState(false);
   const location = useLocation();
   const path = location.pathname;
+  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   // Function to change the value of isBigMenu to the opposite (true/false)
   const changeMenu = () => {
     setIsBigMenu(!isBigMenu);
+  };
+
+  // Handle logout
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   return (
@@ -57,11 +69,25 @@ export default function Navbar({ content }) {
               ml: 1,
               fontSize: '2rem',
               fontWeight: 'bold',
-              fontFamily: 'Segoe UI'
+              fontFamily: 'Segoe UI',
+              flexGrow: 1
             }}
           >
             Club Centric
           </Typography>
+          {/* Logout Button */}
+          <IconButton
+            onClick={handleLogout}
+            sx={{
+              color: 'white',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.1)'
+              }
+            }}
+            aria-label="logout"
+          >
+            <LogoutIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
 

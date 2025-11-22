@@ -1,0 +1,232 @@
+/* UpdateClubForm.css */
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+/* Modal Container */
+.modal-container {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 42rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  border: 3px solid #093331;
+}
+
+/* Close Button */
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: #A27752;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.close-button:hover {
+  opacity: 0.8;
+}
+
+/* Modal Header */
+.modal-header {
+  padding: 1.5rem;
+  border-bottom: 2px solid #093331;
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #093331;
+  margin: 0;
+}
+
+/* Modal Body */
+.modal-body {
+  padding: 1.5rem;
+}
+
+/* Error Message */
+.error-message {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background-color: #fee;
+  border: 2px solid #fcc;
+}
+
+.error-message p {
+  color: #c00;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* Form Field */
+.form-field {
+  margin-bottom: 1rem;
+}
+
+/* Form Label */
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #093331;
+  margin-bottom: 0.5rem;
+}
+
+/* Form Input */
+.form-input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 2px solid #093331;
+  font-size: 1rem;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #A27752;
+  box-shadow: 0 0 0 3px rgba(162, 119, 82, 0.1);
+}
+
+.form-input::placeholder {
+  color: #999;
+}
+
+/* Form Textarea */
+.form-textarea {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 2px solid #093331;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: #A27752;
+  box-shadow: 0 0 0 3px rgba(162, 119, 82, 0.1);
+}
+
+.form-textarea::placeholder {
+  color: #999;
+}
+
+/* File Input */
+.file-input-hidden {
+  display: none;
+}
+
+.file-input-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 2px solid #093331;
+  background-color: #A27752;
+  color: white;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  font-weight: 500;
+  box-sizing: border-box;
+}
+
+.file-input-label:hover {
+  opacity: 0.8;
+}
+
+/* Action Buttons */
+.action-button {
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.action-button:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+.action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: #093331;
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #A27752;
+  color: white;
+}
+
+/* Button Group */
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 2px solid #093331;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .modal-overlay {
+    padding: 0.5rem;
+  }
+
+  .modal-container {
+    max-height: 95vh;
+  }
+
+  .modal-header,
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .action-button {
+    width: 100%;
+  }
+}

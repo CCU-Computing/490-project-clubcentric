@@ -6,4 +6,4 @@ export function getCookie(name)
     return null;
 }
 
-export default getCookie();
+export default getCookie;

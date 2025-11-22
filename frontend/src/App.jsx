@@ -1,10 +1,11 @@
 import './App.css'
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import './components/!card/css/Cards.css'
+import { Routes, Route } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 // Import Pages
-import HomePage from "./pages/HomePage";
-import ClubsPage from './pages/ClubsPage';
+import DashboardPage from "./pages/DashboardPage";
 import ClubPage from "./pages/club/ClubPage";
+import ClubsPage from "./pages/ClubsPage";
 import LoginPage from "./pages/auth/LoginPage";
 import SignUpPage from './pages/auth/SignUpPage';
 import ProfilePage from "./pages/ProfilePage";
@@ -17,75 +18,60 @@ import { useAuth } from './hooks/useAuth';
 
 function App() {
 
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
 
-  if (!isAuthenticated)
-  {
+  // Show loading spinner while checking session
+  if (isLoading) {
     return (
-            <Routes>
-                <Route path="/login" element={<LoginPage/>} />
-                <Route path="/signup" element={<SignUpPage/>} />
-                <Route path="*" element={<Navigate to="/login" replace />} />
-            </Routes>
-        );
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        flexDirection: 'column'
+      }}>
+        <div className="spinner"></div>
+        <p style={{ marginTop: '1rem', color: '#093331' }}>Loading...</p>
+      </div>
+    );
   }
-  
-  else
-  {
+
+  // Not authenticated - show login/signup only (no navbar)
+  if (!isAuthenticated) {
     return (
-    <>
-      <Navbar
-          content={
-            // Put all URLs in the routes block, each url gets a <Route/>
-            <Routes>
-              {/* To see a page with a :id in the url, add in an id parameter. For example: http://localhost:5173/edit/1 */}
-              <Route path="/login" element={<LoginPage/>}/>
-              <Route 
-                path="/signup" 
-                element=
-                {
-                    <SignUpPage/>
-                }
-              />
-              <Route 
-                path="/home" 
-                element=
-                {
-                  <ProtectedRoute>
-                    <HomePage/>
-                  </ProtectedRoute>
-                }
-              />
+      <Routes>
+        <Route path="/login" element={<LoginPage/>} />
+        <Route path="/signup" element={<SignUpPage/>} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    );
+  }
 
-              <Route 
-                path="/profile" 
-                element=
-                {
-                  <ProtectedRoute>
-                    <ProfilePage/>
-                  </ProtectedRoute>
-                }
-              />
+  // Authenticated - show navbar with protected routes
+  return (
+    <Navbar
+      content={
+        <Routes>
+          <Route path="/login" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/signup" element={<Navigate to="/dashboard" replace />} />
 
-              <Route 
-                path="/clubs" 
-                element=
-                {
-                  <ProtectedRoute>
-                    <ClubsPage/>
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage/>
+              </ProtectedRoute>
+            }
+          />
 
-              <Route 
-                path="/club_search" 
-                element=
-                {
-                  <ProtectedRoute>
-                    <ClubSearch/>
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage/>
+              </ProtectedRoute>
+            }
+          />
 
               <Route 
                 path="/club/:id" 
@@ -121,25 +107,38 @@ function App() {
           }
       />
 
-    </>
-  )
-  }
+          <Route
+            path="/clubs"
+            element={
+              <ProtectedRoute>
+                <ClubsPage/>
+              </ProtectedRoute>
+            }
+          />
 
+          <Route
+            path="/search"
+            element={
+              <ProtectedRoute>
+                <ClubSearchPage/>
+              </ProtectedRoute>
+            }
+          />
 
+          <Route
+            path="/club/:id"
+            element={
+              <ProtectedRoute>
+                <ClubPage/>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      }
+    />
+  );
 }
 
-<Router>
-      {/* You can style this wrapper */}
-      <div className="min-h-screen flex flex-col">
-        <header className="bg-gray-800 text-white p-4">
-          <h1 className="text-xl text-center font-bold">ClubCentric</h1>
-        </header>
-
-        <main className="flex-1 container mx-auto p-4">
-
-        </main>
-
-        
-      </div>
-    </Router>
 export default App
