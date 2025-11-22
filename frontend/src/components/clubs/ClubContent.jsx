@@ -9,7 +9,7 @@ import { Button, Tabs, Tab, Box as MuiBox } from "@mui/material";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import DescriptionIcon from "@mui/icons-material/Description";
-import ClubAnalyticsPage from "../../pages/club/ClubAnalyticsPage";
+import ClubAnalyticsPage from "../../pages/club/AnalyticsPage";
 
 export default function ClubContent({ clubId }) {
   const [club, setClub] = useState(null);
