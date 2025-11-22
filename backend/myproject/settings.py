@@ -56,7 +56,8 @@ INSTALLED_APPS = [
     'clubs',
     'calendar_app',
     'document',
-    'users'
+    'users',
+    'networking'
 ]
 
 MIDDLEWARE = [

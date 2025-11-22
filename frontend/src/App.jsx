@@ -14,6 +14,7 @@ import ClubSearchPage from './pages/ClubSearchPage';
 import Navbar from './components/navbar/Navbar'; // Navigation Bar
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
+import NetworkingPage from './pages/NetworkingPage';
 
 function App() {
 
@@ -104,6 +105,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <ClubPage/>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/network"
+            element={
+              <ProtectedRoute>
+                <NetworkingPage/>
               </ProtectedRoute>
             }
           />

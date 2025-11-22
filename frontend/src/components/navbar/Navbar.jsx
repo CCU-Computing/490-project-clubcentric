@@ -6,7 +6,7 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../../hooks/useAuth';
 
 import { Box, AppBar, Toolbar, IconButton, Typography, Drawer, CssBaseline, List, ListItemButton, ListItemIcon, ListItemText, Collapse } from '@mui/material';
-import { Menu as MenuIcon, MenuOpen as MenuOpenIcon, ExpandLess, ExpandMore, Groups2 as Groups2Icon, Person as PersonIcon, Home as HomeIcon, CalendarMonth as EventIcon, Search as SearchIcon, Logout as LogoutIcon } from '@mui/icons-material';
+import { Menu as MenuIcon, MenuOpen as MenuOpenIcon, ExpandLess, ExpandMore, Groups2 as Groups2Icon, Person as PersonIcon, Home as HomeIcon, CalendarMonth as EventIcon, Search as SearchIcon, Analytics as AnalyticsIcon, ConnectWithoutContact as ConnectWithoutContactIcon, Logout as LogoutIcon } from '@mui/icons-material';
 
 const drawerWidth = 240;
 const shortDrawerWidth = 80;
@@ -15,7 +15,8 @@ const menuItems = [
   { label: 'Dashboard', to: '/dashboard', icon: <HomeIcon /> },
   { label: 'Clubs', to: '/clubs', icon: <Groups2Icon /> },
   { label: 'Profile', to: '/profile', icon: <PersonIcon /> },
-  { label: 'Search Clubs', to: '/search', icon: <SearchIcon /> }
+  { label: 'Search Clubs', to: '/search', icon: <SearchIcon /> },
+  { label: 'Network', to: '/network', icon: <ConnectWithoutContactIcon /> }
 ];
 
 export default function Navbar({ content }) {

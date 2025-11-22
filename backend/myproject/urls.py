@@ -23,6 +23,7 @@ import clubs.urls as club_urls
 import calendar_app.urls as cal_urls
 import users.urls as user_urls
 import document.urls as doc_urls
+import networking.urls as networking_urls
 
 urlpatterns = [
     path(f'admin/', admin.site.urls),
@@ -37,6 +38,9 @@ urlpatterns = [
 
     # Documents
     path(f"documents/", include(doc_urls)),
+
+     # Networking endpoints
+    path(f'networking/', include(networking_urls)),
 
 ]
 
