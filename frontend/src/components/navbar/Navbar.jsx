@@ -5,8 +5,9 @@ import logo from '../../assets/images/Chants_Logo.png';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../../hooks/useAuth';
 
+
 import { Box, AppBar, Toolbar, IconButton, Typography, Drawer, CssBaseline, List, ListItemButton, ListItemIcon, ListItemText, Collapse } from '@mui/material';
-import { Menu as MenuIcon, MenuOpen as MenuOpenIcon, ExpandLess, ExpandMore, Groups2 as Groups2Icon, Person as PersonIcon, Home as HomeIcon, CalendarMonth as EventIcon, Search as SearchIcon, Analytics as AnalyticsIcon, ConnectWithoutContact as ConnectWithoutContactIcon } from '@mui/icons-material';
+import { Menu as MenuIcon, MenuOpen as MenuOpenIcon, ExpandLess, ExpandMore, Groups2 as Groups2Icon, Person as PersonIcon, Home as HomeIcon, CalendarMonth as EventIcon, Search as SearchIcon, Analytics as AnalyticsIcon, ConnectWithoutContact as ConnectWithoutContactIcon, Logout as LogoutIcon} from '@mui/icons-material';
 
 const drawerWidth = 240;
 const shortDrawerWidth = 80;
@@ -14,7 +15,7 @@ const shortDrawerWidth = 80;
 const menuItems = [
   { label: 'Dashboard', to: '/dashboard', icon: <HomeIcon /> },
   { label: 'Clubs', to: '/clubs', icon: <Groups2Icon /> },
-  { label: 'Club Search', to: '/club_search', icon: <SearchIcon /> },
+  { label: 'Club Search', to: '/search', icon: <SearchIcon /> },
   { label: 'Events', to: '/events', icon: <EventIcon /> },
   { label: 'Analytics', to: '/analytics', icon: <AnalyticsIcon /> },
   { label: 'Network', to: '/network', icon: <ConnectWithoutContactIcon /> }
